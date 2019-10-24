@@ -1,0 +1,22 @@
+#main-page {
+    min-height: 100%; 
+    min-width: 100%;
+    width: auto;
+    height: auto;
+    background-image: url("image/matthew.jpg");
+
+}
+
+
+.fill {
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+}
+
+.centered {
+    position: fixed; /* or absolute */
+    top: 50%;
+    left: 50%;
+  }
