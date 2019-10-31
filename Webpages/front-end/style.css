@@ -11,13 +11,19 @@
 .masthead-2 {
     height: 100vh;
     min-height: 500px;
-    background-image: url('image/austin.jpg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
 }
 
 .contact-profile{
     max-width: 60%;
     height:auto;
+}
+
+.project-list{
+    list-style-type: none;
+}
+
+.thumb { 
+    object-fit: cover;
+    width:400px;
+    height:400px ;
 }
