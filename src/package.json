@@ -2,9 +2,9 @@
   "name": "invasive-species",
   "version": "1.0.0",
   "description": "A platform for the integration of traditional and local knowledge with ecosystem service assessments and environmental decision making.",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
