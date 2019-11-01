@@ -4,6 +4,7 @@
   "description": "A platform for the integration of traditional and local knowledge with ecosystem service assessments and environmental decision making.",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/cseseniordesign/invasive-species#readme",
   "dependencies": {
-    "d3": "^5.12.0"
+    "d3": "^5.12.0",
+    "express": "^4.17.1"
   }
 }
