@@ -2,7 +2,7 @@
 ### Deptartment of Agronomy and Horticulture 
 #### Senior Design Repository
 
-**Authors: **
+**Authors:**
 
 - Burbach, Christopher (Product Manager, Squad Lead)
 - Saltzman, Alexis (Development Manager)
