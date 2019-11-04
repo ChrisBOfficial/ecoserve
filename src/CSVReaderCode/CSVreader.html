@@ -43,7 +43,7 @@
 		$('#files').parse({
 			config: {
 				delimiter: "auto",
-				complete: displayHTMLTable,
+				complete: dataParse,
 			},
 			before: function(file, inputElem)
 			{
@@ -60,39 +60,87 @@
 		});
     });
 	
-	function displayHTMLTable(results){
-		var table = "<table class='table'>";
+	function dataParse(results){
 		var data = results.data;
 		var emailNum = -1;
 		var emailList = [];
-		 
-		for(i=0;i<data.length;i++){
-			table+= "<tr>";
+		var data_obj = {
+				familiarity:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				forage_imp:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				forage_unc:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				livestock_imp:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				livestock_unc:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]}, 
+
+				water_imp:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				water_unc:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				wildfood_imp:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				wildfood_unc:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				forest_product_imp:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				forest_product_unc:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				pollination_imp:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				pollination_unc:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				eco_integrity_imp:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]}, 
+
+				eco_integrity_unc:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				biodiversity_imp:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				biodiversity_unc:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				scale_size:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]},
+
+				scale_unc:{canada_thistle:[], leafy_spurge:[],musk_thistle:[], plumeless_thistle:[], sericea_lespedeza:[], 
+					spotted_diffuse_knapweed:[], russian_olive:[], scotch_thistle:[], eastern_redcedar:[], smooth_brome:[]}};
+		var l1 = Object.keys(data_obj);
+		var l2 = Object.keys(data_obj[l1[0]]);
+		
+		for(i=3;i<data.length;i++){
+			
 			var row = data[i];
 			var cells = row.join(",").split(",");
-			if (i == 1 || i == 2){
-				//cleans up second and third line for display in the table by skipping them, only header (data[0]) is needed
-			}
-			else{
-				for(j=0;j<cells.length;j++){
-					if (cells[j] == "RecipientEmail"){
-						emailNum = j;
-						emailList += cells[j];
+			var q=0;
+			emailList.push(cells[11]);
+			var responses = cells.slice(19);
+				for(j=0;j<l1.length;j++){
+					for(k=0; k<l2.length;k++){
+						data_obj[l1[j]][l2[k]].push(responses[q]);
+						q+=1;
 					}
-					if (j == emailNum){
-						emailList += cells[j];
-					}
-					table+= "<td>";
-					table+= cells[j];
-					table+= "</th>";
-				}
-				table+= "</tr>";
-			}
-			
+				}	
 		}
-		table+= "</table>";
-
-		$("#parsed_csv_list").html(table);
+		var out = JSON.stringify(data_obj);
+					document.write(out);
+		document.write(emailList);
 		emailList+="something";
 		var blob = new Blob(emailList, {type: "text/plain;charset=utf-8"});
 		saveAs(blob, "testfile1.txt");
