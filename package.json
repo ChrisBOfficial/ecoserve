@@ -7,6 +7,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build"
   },
+  "main": "server.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/cseseniordesign/invasive-species.git"
@@ -17,6 +18,7 @@
   "homepage": "https://github.com/cseseniordesign/invasive-species#readme",
   "dependencies": {
     "d3": "^5.12.0",
+    "express": "^4.17.1",
     "vue": "^2.6.10",
     "vue-router": "^3.1.3",
     "vuex": "^3.0.1"
