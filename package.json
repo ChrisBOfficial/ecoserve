@@ -1,11 +1,14 @@
 {
   "name": "invasive-species",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A platform for the integration of traditional and local knowledge with ecosystem service assessments and environmental decision making.",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build"
+    "build": "vue-cli-service build",
+    "prestart": "npm install",
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "main": "server.js",
   "repository": {

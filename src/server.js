@@ -1,22 +1,20 @@
-var port = process.env.PORT || 3000;
-
-//Importing dependencies
 const express = require('express');
-var path = require('path');
+const path = require('path');
 
-//Starting Express app
-const app = express();
+// Use AWS port if provided, 3000 otherwise
+var port = process.env.PORT || 3000,
+    app = express();
 
-//Set the base path to the dist folder
+// Serve files in dist folder for all HTTP requests
 app.use(express.static(path.join(__dirname, 'dist')));
 
-//Any routes will be redirected to the vue app
-app.get('*', function(req, res) {
+// Any routes will be redirected to the vue app, using index.html as homepage
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist/index.html'));
 });
 
 //Starting server on the port
 app.listen(port, () => {
-    console.log('Server started!');
-    console.log('on port ' + port);
+    console.log("Server started!");
+    console.log("Running on port " + port);
 });
