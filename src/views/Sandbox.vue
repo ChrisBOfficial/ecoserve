@@ -1,54 +1,46 @@
 <template>
-    <svg width='500' height='500'>
-        <g
-            class='flower'
-            v-for='flower in flowers'
-            :key='flower.name'
-            :style="{
-                transform: `translate(${flower.amount}px, ${flower.amount}px)`   
-            }"
-        >
-            <circle
-                class='flower__circle'
-                :r='flower.amount'
-                :fill='flower.color'
-            />
-
-            <text class='flower__label'>
-                {{ flower.name }}
-            </text>
-        </g>
-    </svg>
+    <div>
+        <h4>Plant stuff</h4>
+        <pie :data="names"/>
+        <br>
+        <button v-if="canAddName" v-on:click="addName">Add a name</button>
+    </div>
 </template>
 
 <script>
-const d3 = require('d3');
+var _ = require('lodash')
+import pie from '@/components/pie.vue'
+
+const NAMES = [
+    { name: 'Plant1', value: 2502 },
+    { name: 'Plant2', value: 2005 },
+    { name: 'Plant3', value: 1968 },
+    { name: 'Plant4', value: 1863 },
+    { name: 'Plant5', value: 1810 },
+    { name: 'Plant6', value: 1637 },
+    { name: 'Plant7', value: 1592 },
+    { name: 'Plant8', value: 1572 },
+    { name: 'Plant9', value: 1433 },
+    { name: 'Plant10', value: 1403 }
+]
 
 export default {
-    data: function () {
+    components: {
+        pie: pie
+    },
+    data: function() {
         return {
-            flowers: [
-                {
-                    name: 'Roses',
-                    amount: 25,
-                    color: '#cc2936'
-                },
-                {
-                    name: 'Tulips',
-                    amount: 40,
-                    color: '#f2c640'
-                },
-                {
-                    name: 'Daisies',
-                    amount: 15,
-                    color: '#2a93d4'
-                },
-                {
-                    name: 'Narcissus',
-                    amount: 9,
-                    color: '#F7AD0A'
-                }
-            ]
+            names: _.take(NAMES, 3)
+        }
+    },
+    computed: {
+        canAddName: function() {
+            return this.names.length < NAMES.length;
+        }
+    },
+    methods: {
+        addName: function() {
+            this.names.push(NAMES[this.names.length]);
         }
     }
 }

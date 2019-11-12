@@ -37,10 +37,22 @@
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
+var request = require('request');
 
 export default {
-    created: function () {
+    mounted: function () {
         console.log("PROJECT IS LOADED")
+        var options = {
+            method: 'GET',
+            url: 'https://ssp.ca1.qualtrics.com/API/v3/surveys',
+            headers: {
+                'x-api-token': process.env.API_KEY
+            }
+        };
+        request(options, function(error, response, body) {
+            if (error) throw new Error(error);
+            console.log(body);
+        });
     },
     components: {
         Header,
