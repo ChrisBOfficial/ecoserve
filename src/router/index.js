@@ -19,11 +19,6 @@ const routes = [
     path: '/project',
     name: 'project',
     component: () => import('@/views/Project.vue')
-  },
-  {
-    path:'/sandbox',
-    name: 'sandbox',
-    component: () => import('@/views/Sandbox.vue')
   }
 ]
 

@@ -46,7 +46,7 @@ export default {
             method: 'GET',
             url: 'https://ssp.ca1.qualtrics.com/API/v3/surveys',
             headers: {
-                'x-api-token': process.env.API_KEY
+                'X-API-TOKEN': process.env.Q_API_TOKEN
             }
         };
         request(options, function(error, response, body) {
