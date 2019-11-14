@@ -19,6 +19,11 @@ const routes = [
     path: '/project',
     name: 'project',
     component: () => import('@/views/Project.vue')
+  },
+  {
+    path: '/csv',
+    name: 'csv',
+    component: () => import('@/views/CSVupload.vue')
   }
 ]
 
