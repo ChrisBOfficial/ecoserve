@@ -8,7 +8,7 @@
     "build": "vue-cli-service build",
     "prestart": "npm install",
     "start": "node server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Under construction, no tests currently\" && exit 0"
   },
   "main": "server.js",
   "repository": {
