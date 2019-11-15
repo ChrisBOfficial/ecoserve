@@ -198,20 +198,31 @@ export default {
                         .attr('width', x.bandwidth())
                         .attr('height', d => y.range()[0] - y(d.val))
                         .attr('fill', '#' + (Math.random() * 0xFFFFFF << 0).toString(16))
+                            .append('title')
+                            .text(d => d.name)
             }
 
             var offset = 0;
+            var shift = false;
             for (var category in plantData) {
-                svg
+                if (shift) {
+                    svg
                     .append('g')
-                    .attr('id', 'bars-style')
+                    .attr('transform', `translate(${width + 80}, ${height * offset + 60})`)
+                    .call(addRectsWithName, plantData[category].name, plantData[category].plants);
+                    offset += 0.6;
+                }
+                else {
+                    svg
+                    .append('g')
                     .attr('transform', `translate(0, ${height * offset + 60})`)
                     .call(addRectsWithName, plantData[category].name, plantData[category].plants);
-                offset += 0.6;
+                }
+                shift = !shift;
             }
             svg
                 .attr('height', height * offset - 30)
-                .attr('width', 500);
+                .attr('width', width * 2 + 80);
         },
         generateEmail: function(results) {
             var data = results.data;
