@@ -20,7 +20,8 @@
             </div>
             <div class="row" id="parsed_csv_list">
             </div>
-            <p id="JSONoutput">{{ JSONoutput }}</p>
+            <svg id="dataChart" width="500" height="300"></svg>
+            <p>{{ JSONoutput }}</p>
         </div>	
     </body>
 </template>
@@ -29,13 +30,15 @@
 import math from "@/assets/math.min.js"
 import "@/assets/FileSaver.js"
 import Papa from "@/assets/papaparse.min.js"
+const d3 = require('d3');
 
 export default {
     data: function() {
         return {
             inputFile: File,
             uploaded: false,
-            JSONoutput: ""
+            JSONoutput: "",
+            parsedJSON: Object
         }
     },
     methods: {
@@ -146,6 +149,60 @@ export default {
                 }	
             }
             this.JSONoutput = JSON.stringify(data_obj);
+            this.chartData(data_obj);
+        },
+        chartData: function(inc_data) {
+            var svg = d3.select("#dataChart");
+            var width = +svg.attr('width');
+            var height = +svg.attr('height');
+            
+            var plantData = [];
+            for (var category in inc_data) {
+                var categoryData = [];
+                var index = 1;
+                for (var plant in inc_data[category]) {
+                    categoryData.push({name: index, val: inc_data[category][plant].sum});
+                    index += 1;
+                }
+                plantData.push(categoryData);
+            }
+            console.log(plantData);
+
+            function addRectsWithName(elem, name, rectData) {
+                var x = d3.scaleBand()
+                    .rangeRound([0, width]).padding(0.1)
+                    .domain(rectData.map(d => d.name));
+                var y = d3.scaleLinear()
+                    .rangeRound([height * 0.3 - 20, 0])
+                    .domain([0, d3.max(rectData, d => d.val)])
+
+                elem
+                    .append('text')
+                    .text(name)
+                    .attr('x', width / 2)
+                    .attr('y', -20)
+                    .attr('text-anchor', 'middle');
+                elem.selectAll('rect')
+                    .data(rectData)
+                    .enter()
+                        .append('rect')
+                        .attr('x', d => x(d.name))
+                        .attr('class', d => d.name)
+                        .attr('y', d => y(d.val))
+                        .attr('width', x.bandwidth())
+                        .attr('height', d => y.range()[0] - y(d.val))
+            }
+
+            var offset = 0;
+            for (var category in plantData) {
+                svg
+                    .append('g')
+                    .attr('id', 'bars-style')
+                    .attr('transform', `translate(0, ${height * offset + 60})`)
+                    .call(addRectsWithName, 'CSV', plantData[category]);
+                offset += 0.6;
+            }
+            svg.attr('height', height * offset);
         },
         generateEmail: function(results) {
             var data = results.data;
@@ -179,5 +236,5 @@ export default {
     @import "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css";
 
     .pdfobject-container { height: 500px;}
-	.pdfobject { border: 1px solid #666; }
+    .pdfobject { border: 1px solid #666; }
 </style>
