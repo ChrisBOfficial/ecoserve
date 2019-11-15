@@ -5,10 +5,9 @@
             <div class="well">
                 <div class="row">
                     <form class="form-inline">
-                        <div class="form-group">
-                            <label for="files2">Upload a CSV formatted file:</label>
-                            <input v-on:change="setFile" type="file" id="files2"  class="form-control" accept=".csv" required />
-                        </div>
+                        <label for="files2">Upload a CSV formatted file:</label>
+                        <p style="padding: 0 1em 0 0;"/>
+                        <input v-on:change="setFile" type="file" id="files2"  class="form-control" accept=".csv" required />
                         <div v-if="uploaded" class="form-group">
                             <button v-on:click="dataParse" type="submit" id="json-file" class="btn btn-primary">Show JSON</button>
                         </div>
@@ -20,7 +19,9 @@
             </div>
             <div class="row" id="parsed_csv_list">
             </div>
-            <svg id="dataChart" width="500" height="300"></svg>
+            <div class="well">
+                <svg id="dataChart"></svg>
+            </div>
             <p>{{ JSONoutput }}</p>
         </div>	
     </body>
@@ -37,8 +38,7 @@ export default {
         return {
             inputFile: File,
             uploaded: false,
-            JSONoutput: "",
-            parsedJSON: Object
+            JSONoutput: ""
         }
     },
     methods: {
@@ -153,8 +153,8 @@ export default {
         },
         chartData: function(inc_data) {
             var svg = d3.select("#dataChart");
-            var width = +svg.attr('width');
-            var height = +svg.attr('height');
+            var width = 500;
+            var height = 300;
             
             var plantData = [];
             for (var category in inc_data) {
@@ -191,6 +191,7 @@ export default {
                         .attr('y', d => y(d.val))
                         .attr('width', x.bandwidth())
                         .attr('height', d => y.range()[0] - y(d.val))
+                        .attr('fill', '#' + (Math.random() * 0xFFFFFF << 0).toString(16))
             }
 
             var offset = 0;
@@ -202,7 +203,9 @@ export default {
                     .call(addRectsWithName, 'CSV', plantData[category]);
                 offset += 0.6;
             }
-            svg.attr('height', height * offset);
+            svg
+                .attr('height', height * offset - 30)
+                .attr('width', 500);
         },
         generateEmail: function(results) {
             var data = results.data;
