@@ -63,6 +63,28 @@
 </html>
 <script type="text/javascript">
  $(document).ready(function(){
+	$('#email-btn').on("click",function(e){
+	   e.preventDefault();
+	   $('#files2').parse({
+		   config: {
+			   delimiter: "auto",
+			   complete: generateEmail,
+		   },
+		   before: function(file, inputElem)
+		   {
+			   //console.log("Parsing file...", file);
+		   },
+		   error: function(err, file2)
+		   {
+			   //console.log("ERROR:", err, file);
+		   },
+		   complete: function()
+		   {
+			   //console.log("Done with all files");
+		   }
+	   });
+    });
+
    $('#submit-file').on("click",function(e){
 	   e.preventDefault();
 	   $('#files').parse({
@@ -84,28 +106,6 @@
 		   }
 	   });
    });
-   
-   $('#email-btn').on("click",function(e){
-	   e.preventDefault();
-	   $('#files2').parse({
-		   config: {
-			   delimiter: "auto",
-			   complete: generateEmail,
-		   },
-		   before: function(file, inputElem)
-		   {
-			   //console.log("Parsing file...", file);
-		   },
-		   error: function(err, file2)
-		   {
-			   //console.log("ERROR:", err, file);
-		   },
-		   complete: function()
-		   {
-			   //console.log("Done with all files");
-		   }
-	   });
-    });
 
     $('#json-file').on("click",function(e){
 	   e.preventDefault();
@@ -129,6 +129,38 @@
 	   });
 	   
    });
+
+   function generateEmail(results){
+		 //document.write("function is being called");
+	   var data = results.data;
+	   var emailNum = -1;
+	   var emailList = "";
+		
+	   for(i=0;i<data.length;i++){
+		   //document.write("data is being read");
+		   var row = data[i];
+		   var cells = row.join(",").split(",");
+		   if (i == 1 || i == 2){
+			   //cleans up second and third line for display in the table by skipping them, only header (data[0]) is needed
+		   }
+		   else{
+			   for(j=0;j<cells.length;j++){
+				   if (cells[j] == "RecipientEmail"){
+					   emailNum = j;
+				   }
+				   else if (j == emailNum){
+					   emailList += cells[j];
+					   emailList += "; ";
+				   }
+				   else{
+					   
+				   }
+			   }
+		   }			
+	   }
+	   var blob = new Blob([emailList], {type: "text/plain;charset=utf-8"});
+		   saveAs(blob, "testfile1.txt");
+   }
 
    function displayHTMLTable(results){
 	   
@@ -166,38 +198,6 @@
 	   
         $("#parsed_csv_list").html(table);
 	   
-   }
-
-   function generateEmail(results){
-		 //document.write("function is being called");
-	   var data = results.data;
-	   var emailNum = -1;
-	   var emailList = "";
-		
-	   for(i=0;i<data.length;i++){
-		   //document.write("data is being read");
-		   var row = data[i];
-		   var cells = row.join(",").split(",");
-		   if (i == 1 || i == 2){
-			   //cleans up second and third line for display in the table by skipping them, only header (data[0]) is needed
-		   }
-		   else{
-			   for(j=0;j<cells.length;j++){
-				   if (cells[j] == "RecipientEmail"){
-					   emailNum = j;
-				   }
-				   else if (j == emailNum){
-					   emailList += cells[j];
-					   emailList += "; ";
-				   }
-				   else{
-					   
-				   }
-			   }
-		   }			
-	   }
-	   var blob = new Blob([emailList], {type: "text/plain;charset=utf-8"});
-		   saveAs(blob, "testfile1.txt");
    }
 
    function sum(total, num) {

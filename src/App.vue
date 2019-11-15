@@ -19,7 +19,7 @@ export default {
 </script>
 
 <!--CSS Styling-->
-<style>
+<style scoped>
 @import "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css";
 @import "./assets/style.css";
 </style>
