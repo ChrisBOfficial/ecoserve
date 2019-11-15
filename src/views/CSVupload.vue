@@ -6,7 +6,7 @@
                 <div class="row">
                     <form class="form-inline">
                         <label for="files2">Upload a CSV formatted file:</label>
-                        <p style="padding: 0 1em 0 0;"/>
+                        <p style="padding: 0 0.5em 0 0;"/>
                         <input v-on:change="setFile" type="file" id="files2"  class="form-control" accept=".csv" required />
                         <div v-if="uploaded" class="form-group">
                             <button v-on:click="dataParse" type="submit" id="json-file" class="btn btn-primary">Show JSON</button>
@@ -158,20 +158,26 @@ export default {
             
             var plantData = [];
             for (var category in inc_data) {
+                var categoryObj = { name: category }
                 var categoryData = [];
                 var index = 1;
                 for (var plant in inc_data[category]) {
-                    categoryData.push({name: index, val: inc_data[category][plant].sum});
+                    categoryData.push({
+                                        pos: index, 
+                                        name: plant, 
+                                        val: inc_data[category][plant].sum
+                    });
                     index += 1;
                 }
-                plantData.push(categoryData);
+                categoryObj.plants = categoryData;
+                plantData.push(categoryObj);
             }
             console.log(plantData);
-
+            
             function addRectsWithName(elem, name, rectData) {
                 var x = d3.scaleBand()
                     .rangeRound([0, width]).padding(0.1)
-                    .domain(rectData.map(d => d.name));
+                    .domain(rectData.map(d => d.pos));
                 var y = d3.scaleLinear()
                     .rangeRound([height * 0.3 - 20, 0])
                     .domain([0, d3.max(rectData, d => d.val)])
@@ -186,7 +192,7 @@ export default {
                     .data(rectData)
                     .enter()
                         .append('rect')
-                        .attr('x', d => x(d.name))
+                        .attr('x', d => x(d.pos))
                         .attr('class', d => d.name)
                         .attr('y', d => y(d.val))
                         .attr('width', x.bandwidth())
@@ -200,7 +206,7 @@ export default {
                     .append('g')
                     .attr('id', 'bars-style')
                     .attr('transform', `translate(0, ${height * offset + 60})`)
-                    .call(addRectsWithName, 'CSV', plantData[category]);
+                    .call(addRectsWithName, plantData[category].name, plantData[category].plants);
                 offset += 0.6;
             }
             svg
