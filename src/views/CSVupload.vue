@@ -7,75 +7,171 @@
                     <form class="form-inline">
                         <div class="form-group">
                             <label for="files2">Upload a CSV formatted file:</label>
-                            <input @change="setFile" type="file" id="files2"  class="form-control" accept=".csv" required />
+                            <input v-on:change="setFile" type="file" id="files2"  class="form-control" accept=".csv" required />
                         </div>
-                        <div class="form-group">
+                        <div v-if="uploaded" class="form-group">
+                            <button v-on:click="dataParse" type="submit" id="json-file" class="btn btn-primary">Show JSON</button>
+                        </div>
+                        <div v-if="uploaded" class="form-group">
                             <button v-on:click="emailParse" type="submit" id="email-btn" class="btn btn-primary">Generate Email List</button>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" id="submit-file" class="btn btn-primary">Generate Table</button>
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" id="json-file" class="btn btn-primary">Show JSON</button>
                         </div>
                     </form>
                 </div>        
             </div>
             <div class="row" id="parsed_csv_list">
             </div>
-            <p id="JSONoutput"></p>
+            <p id="JSONoutput">{{ JSONoutput }}</p>
         </div>	
     </body>
 </template>
 
 <script>
-import "@/assets/math.min.js"
+import math from "@/assets/math.min.js"
 import "@/assets/FileSaver.js"
 import Papa from "@/assets/papaparse.min.js"
 
 export default {
-    data () {
+    data: function() {
         return {
-            inputFile: File
+            inputFile: File,
+            uploaded: false,
+            JSONoutput: ""
         }
     },
     methods: {
         setFile: function(event) {
             this.inputFile = event.target.files[0]
+            this.uploaded = true
+        },
+        dataParse: function(event) {
+            event.preventDefault()
+            Papa.parse(this.inputFile, {
+                delimiter: "auto",
+                complete: this.dataFormat
+            });
         },
         emailParse: function(event) {
             event.preventDefault()
             Papa.parse(this.inputFile, {
                 delimiter: "auto",
-                complete: generateEmail
+                complete: this.generateEmail
             });
-        }
-    }
-}
+        },
+        dataFormat: function(results) {
+            var data = results.data;
+            var emailNum = -1;
+            var emailList = [];
+            var data_obj = {
+                        familiarity:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
 
-function generateEmail(results) {
-    var data = results.data;
-	var emailNum = -1;
-    var emailList = "";
+                    forage_imp:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
 
-    for(var i = 0; i < data.length; i++) {
-        var row = data[i];
-        var cells = row.join(",").split(",");
-        if(i != 1 && i != 2) {
-            for(var j = 0; j < cells.length; j++) {
-                if (cells[j] == "RecipientEmail") {
-				    emailNum = j;
-                } 
-                else if(j == emailNum) {
-					emailList += cells[j];
-					emailList += "; ";
-				}
+                    forage_unc:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    livestock_imp:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    livestock_unc:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}}, 
+
+                    water_imp:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    water_unc:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    wildfood_imp:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    wildfood_unc:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    forest_product_imp:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    forest_product_unc:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    pollination_imp:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    pollination_unc:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    eco_integrity_imp:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}}, 
+
+                    eco_integrity_unc:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    biodiversity_imp:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    biodiversity_unc:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    scale_size:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}},
+
+                    scale_unc:{canada_thistle:{values: []}, leafy_spurge:{values: []},musk_thistle:{values: []}, plumeless_thistle:{values: []}, sericea_lespedeza:{values: []}, 
+                        spotted_diffuse_knapweed:{values: []}, russian_olive:{values: []}, scotch_thistle:{values: []}, eastern_redcedar:{values: []}, smooth_brome:{values: []}}};
+            var l1 = Object.keys(data_obj);
+            var l2 = Object.keys(data_obj[l1[0]]);
+            
+            for(var i = 3; i < data.length; i++) {
+                var row = data[i];
+                var cells = row.join(",").split(",");
+                var q = 0;
+                emailList.push(cells[11]);
+                var responses = cells.slice(19);
+                
+                for(var j = 0; j < l1.length; j++) {
+                    for(var k = 0; k < l2.length; k++) {
+                        data_obj[l1[j]][l2[k]].values.push(parseInt(responses[q], 10));
+                        data_obj[l1[j]][l2[k]].sum = data_obj[l1[j]][l2[k]].values.filter(Boolean).reduce((total, num) => total + num);
+                        data_obj[l1[j]][l2[k]].n = data_obj[l1[j]][l2[k]].values.filter(Boolean).length;
+                        if(q == 9 || q >= 10 && math.floor(q / 10) % 2 != 0) {
+                            data_obj[l1[j]][l2[k]].mean = (data_obj[l1[j]][l2[k]].sum / data_obj[l1[j]][l2[k]].n - 6);
+                        }
+                        else {
+                            data_obj[l1[j]][l2[k]].mean = (data_obj[l1[j]][l2[k]].sum / data_obj[l1[j]][l2[k]].n);
+                        }
+                        data_obj[l1[j]][l2[k]].sd = math.std(data_obj[l1[j]][l2[k]].values.filter(Boolean));
+                        data_obj[l1[j]][l2[k]].se = (data_obj[l1[j]][l2[k]].sd) / (math.sqrt(data_obj[l1[j]][l2[k]].n));
+                        q += 1;
+                    }
+                }	
             }
+            this.JSONoutput = JSON.stringify(data_obj);
+        },
+        generateEmail: function(results) {
+            var data = results.data;
+            var emailNum = -1;
+            var emailList = "";
+
+            for(var i = 0; i < data.length; i++) {
+                var row = data[i];
+                var cells = row.join(",").split(",");
+                if(i != 1 && i != 2) {
+                    for(var j = 0; j < cells.length; j++) {
+                        if (cells[j] == "RecipientEmail") {
+                            emailNum = j;
+                        } 
+                        else if(j == emailNum) {
+                            emailList += cells[j];
+                            emailList += "; ";
+                        }
+                    }
+                }
+            }
+
+            var blob = new Blob([emailList], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, "testfile1.txt");
         }
     }
-
-    var blob = new Blob([emailList], {type: "text/plain;charset=utf-8"});
-	saveAs(blob, "testfile1.txt");
 }
 </script>
 
