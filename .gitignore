@@ -15,7 +15,6 @@ build/Release
 .env.*.local
 .env
 .env.test
-app-env.sh
 
 # Log files
 logs

@@ -199,7 +199,7 @@ export default {
                         .attr('height', d => y.range()[0] - y(d.val))
                         .attr('fill', '#' + (Math.random() * 0xFFFFFF << 0).toString(16))
                             .append('title')
-                            .text(d => d.name)
+                            .text(d => { d.name + " - " + d.val})
             }
 
             var offset = 0;

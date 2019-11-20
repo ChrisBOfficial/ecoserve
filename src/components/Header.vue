@@ -18,6 +18,10 @@
                 </li>
 
                 <li class="nav-item">
+                  <router-link class="nav-link" to="/csv">CSV</router-link>
+                </li>
+
+                <li class="nav-item">
                   <button style="width:auto;">LOGIN</button>
                 </li>
               </ul>

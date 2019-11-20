@@ -43,10 +43,12 @@ export default {
     mounted: function () {
         console.log("PROJECT IS LOADED")
         var options = {
+            crossDomain: true,
             method: 'GET',
-            url: 'https://ssp.ca1.qualtrics.com/API/v3/surveys',
+            url: 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/surveys',
             headers: {
-                'X-API-TOKEN': process.env.Q_API_TOKEN
+                'Content-Type': 'application/json',
+                'X-API-TOKEN': process.env.VUE_APP_Q_API_TOKEN
             }
         };
         request(options, function(error, response, body) {
