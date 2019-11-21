@@ -21,20 +21,21 @@ app.get('/', (_, res) => {
     res.sendFile(path.join(__dirname, distDirectory, '/index.html'));
 });
 
-app.get('/surveys', (_, res) => {
-    var options = {
-        method: 'GET',
-        url: 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/surveys',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-API-TOKEN': process.env.VUE_APP_Q_API_TOKEN
-        }
-    };
-    request(options, function(error, response, body) {
-        if (error) throw new Error(error);
-        res.send(body);
-    });
-});
+app.route('/api/surveys')
+    .get((req, res) => {
+        var options = {
+            method: 'GET',
+            url: 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/surveys',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-API-TOKEN': req.headers['x-api-token']
+            }
+        };
+        request(options, function(error, response, body) {
+            if (error) throw new Error(error);
+            res.send(body);
+        });
+    })
 
 //Starting server on the port
 app.listen(port, () => {

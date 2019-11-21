@@ -43,7 +43,10 @@ export default {
     mounted: function () {
         var options = {
             method: 'GET',
-            url: window.location.origin + '/surveys'
+            url: window.location.origin + '/api/surveys',
+            headers: {
+                'x-api-token': process.env.VUE_APP_Q_API_TOKEN
+            }
         };
         request(options, function(error, response, body) {
             if (error) throw new Error(error);
