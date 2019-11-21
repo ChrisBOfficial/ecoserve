@@ -23,14 +23,26 @@ app.get('/', (_, res) => {
 
 app.route('/api/surveys')
     .get((req, res) => {
-        var options = {
-            method: 'GET',
-            url: 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/surveys',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-API-TOKEN': req.headers['x-api-token']
-            }
-        };
+        var options;
+        if (req.query.surveyId === undefined) {
+            options = {
+                method: 'GET',
+                url: 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/surveys',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-TOKEN': req.headers['x-api-token']
+                }
+            };
+        } else {
+            options = {
+                method: 'GET',
+                url: 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/surveys/' + req.query.surveyId,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-TOKEN': req.headers['x-api-token']
+                }
+            };
+        }
         request(options, function(error, response, body) {
             if (error) throw new Error(error);
             res.send(body);

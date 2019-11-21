@@ -22,6 +22,9 @@
                                 <a href ="#" style="color:seagreen;">Project 4</a>
                                 <p>Brief description of project</p>
                             </li>
+                            <li class="project-list">
+                                <button v-on:click="getSpecificSurvey('SV_b78ghjEDgpEZU3j', ...arguments)">Log survey SV_b78ghjEDgpEZU3j</button>
+                            </li>
                         </ul>
                     </div>
                     <div class="col-6 text-center align-items-center">
@@ -41,22 +44,41 @@ var request = require('request');
 
 export default {
     mounted: function () {
-        var options = {
-            method: 'GET',
-            url: window.location.origin + '/api/surveys',
-            headers: {
-                'x-api-token': process.env.VUE_APP_Q_API_TOKEN
-            }
-        };
-        request(options, function(error, response, body) {
-            if (error) throw new Error(error);
-            var surveys = JSON.parse(body);
-            console.log(surveys);
-        });
+        this.getSurveys();
     },
     components: {
         Header,
         Footer
+    },
+    methods: {
+        getSurveys: function() {
+            var options = {
+                method: 'GET',
+                url: window.location.origin + '/api/surveys',
+                headers: {
+                    'x-api-token': process.env.VUE_APP_Q_API_TOKEN
+                }
+            };
+            request(options, function(error, response, body) {
+                if (error) throw new Error(error);
+                var surveys = JSON.parse(body);
+                console.log(surveys);
+            });
+        },
+        getSpecificSurvey: function(surveyId) {
+            var options = {
+                method: 'GET',
+                url: window.location.origin + '/api/surveys?surveyId=' + surveyId,
+                headers: {
+                    'x-api-token': process.env.VUE_APP_Q_API_TOKEN
+                }
+            };
+            request(options, function(error, response, body) {
+                if (error) throw new Error(error);
+                var surveys = JSON.parse(body);
+                console.log(surveys);
+            });
+        }
     }
 }
 </script>
