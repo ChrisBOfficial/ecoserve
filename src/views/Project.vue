@@ -41,19 +41,14 @@ var request = require('request');
 
 export default {
     mounted: function () {
-        console.log("PROJECT IS LOADED")
         var options = {
-            crossDomain: true,
             method: 'GET',
-            url: 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/surveys',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-API-TOKEN': process.env.VUE_APP_Q_API_TOKEN
-            }
+            url: window.location.origin + '/surveys'
         };
         request(options, function(error, response, body) {
             if (error) throw new Error(error);
-            console.log(body);
+            var surveys = JSON.parse(body);
+            console.log(surveys);
         });
     },
     components: {
