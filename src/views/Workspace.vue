@@ -1,16 +1,18 @@
 <template>
   <div>
     <Header/>
-    <section class="masthead-2">
-        <div class="container h-100">
-            <div class="row h-100 align-items-center">
-                <div class="col-6 text-center align-items-center">
-                  <button v-on:click="postSurvey">POST dummy survey</button>
-                  <button v-on:click="getSpecificSurvey('SV_b78ghjEDgpEZU3j', ...arguments)">Log survey SV_b78ghjEDgpEZU3j</button>
-                </div>
-            </div>
-        </div>
-    </section>
+    <div class="container" style="padding:10px 10px;">
+      <div class="well" style="padding-top: 136px;">
+          <button v-on:click="postSurvey">POST dummy survey</button>
+          <p>{{ postText }}</p>
+          <button v-on:click="getSpecificSurvey('SV_b78ghjEDgpEZU3j', ...arguments)">Log survey SV_b78ghjEDgpEZU3j</button>
+          <p>{{ getText }}</p>
+          <div style="width: 50%; margin: 0 auto;">
+            <p v-for="survey in formattedSurveyName" :key="survey">{{ survey }}</p>
+          </div>
+          <button v-on:click="getSurveys">Refresh surveys</button>
+      </div>
+    </div>
     <Footer/>
   </div>
 </template>
@@ -23,15 +25,32 @@ var request = require('request');
 
 export default {
   name: 'workspace',
+  data() {
+    return {
+      surveyList: [],
+      postText: "",
+      getText: ""
+    }
+  },
+  computed: {
+    formattedSurveyName: function() {
+      var formattedList = [];
+      this.surveyList.forEach(function(survey, index) {
+        formattedList.push("Survey " + (index + 1) + " - " + survey.name);
+      });
+      return formattedList
+    }
+  },
   components: {
     Header,
     Footer
   },
-  mounted: function() {
+  created: function() {
     this.getSurveys();
   },
   methods: {
     postSurvey: function() {
+      this.postText = "Creating survey...";
       var options = {
           method: 'POST',
           url: window.location.origin + '/api/surveys',
@@ -42,9 +61,28 @@ export default {
               'Accept': 'application/json'
           },
       };
+      var _this = this;
       request(options, function(error, response, body) {
           if (error) throw new Error(error);
           console.log(body);
+          _this.postText = "...survey created!";
+      });
+    },
+    getSpecificSurvey: function(surveyId) {
+      this.getText = "Pulling survey...";
+      var options = {
+          method: 'GET',
+          url: window.location.origin + '/api/surveys?surveyId=' + surveyId,
+          headers: {
+              'x-api-token': process.env.VUE_APP_Q_API_TOKEN
+          }
+      };
+      var _this = this;
+      request(options, function(error, response, body) {
+          if (error) throw new Error(error);
+          var survey = JSON.parse(body);
+          console.log(survey);
+          _this.getText = "...survey pulled!";
       });
     },
     getSurveys: function() {
@@ -55,24 +93,11 @@ export default {
               'x-api-token': process.env.VUE_APP_Q_API_TOKEN
           }
       };
+      var _this = this;
       request(options, function(error, response, body) {
           if (error) throw new Error(error);
-          var surveys = JSON.parse(body);
-          console.log(surveys);
-      });
-    },
-    getSpecificSurvey: function(surveyId) {
-      var options = {
-          method: 'GET',
-          url: window.location.origin + '/api/surveys?surveyId=' + surveyId,
-          headers: {
-              'x-api-token': process.env.VUE_APP_Q_API_TOKEN
-          }
-      };
-      request(options, function(error, response, body) {
-          if (error) throw new Error(error);
-          var surveys = JSON.parse(body);
-          console.log(surveys);
+          var res = JSON.parse(body);
+          _this.surveyList = res.result.elements;
       });
     }
   }
