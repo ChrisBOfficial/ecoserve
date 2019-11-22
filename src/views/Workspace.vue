@@ -69,13 +69,12 @@ export default {
               'Accept': 'application/json'
           },
       };
-      var _this = this;
       request(options, function(error, response, body) {
           if (error) throw new Error(error);
           console.log(body);
-          _this.postText = "...survey created!";
-          _this.getSurveys();
-      });
+          this.postText = "...survey created!";
+          this.getSurveys();
+      }.bind(this));
     },
     getSpecificSurvey: function(surveyId) {
       this.getText = "Pulling survey...";
@@ -86,13 +85,12 @@ export default {
               'x-api-token': process.env.VUE_APP_Q_API_TOKEN
           }
       };
-      var _this = this;
       request(options, function(error, response, body) {
           if (error) throw new Error(error);
           var survey = JSON.parse(body);
           console.log(survey);
-          _this.getText = "...survey pulled!";
-      });
+          this.getText = "...survey pulled and logged!";
+      }.bind(this));
     },
     getSurveys: function() {
       var options = {
@@ -102,12 +100,11 @@ export default {
               'x-api-token': process.env.VUE_APP_Q_API_TOKEN
           }
       };
-      var _this = this;
       request(options, function(error, response, body) {
           if (error) throw new Error(error);
           var res = JSON.parse(body);
-          _this.surveyList = res.result.elements;
-      });
+          this.surveyList = res.result.elements;
+      }.bind(this));
     }
   }
 }
