@@ -3,7 +3,7 @@
     <Header/>
     <div class="container" style="padding:10px 10px;">
       <div class="well" style="padding-top: 136px;">
-          <button v-on:click="postSurvey">POST dummy survey</button>
+          <button v-on:click="postSurvey('API Test Survey')">POST dummy survey</button>
           <p>{{ postText }}</p>
           <button v-on:click="getSpecificSurvey('SV_b78ghjEDgpEZU3j', ...arguments)">Log survey SV_b78ghjEDgpEZU3j</button>
           <p>{{ getText }}</p>
@@ -49,12 +49,20 @@ export default {
     this.getSurveys();
   },
   methods: {
-    postSurvey: function() {
+    postSurvey: function(name) {
+      var duplicate = false;
+      this.surveyList.forEach(survey => {
+        if (survey.name === name) {
+          this.postText = "Error: A survey with the name \"" + name + "\" already exists.";
+          duplicate = true;
+        }
+      });
+      if (duplicate) return;
       this.postText = "Creating survey...";
       var options = {
           method: 'POST',
           url: window.location.origin + '/api/surveys',
-          json: {"SurveyName": "API Test Survey", "Language": "EN", "ProjectCategory": "CORE"},
+          json: {"SurveyName": name, "Language": "EN", "ProjectCategory": "CORE"},
           headers: {
               'x-api-token': process.env.VUE_APP_Q_API_TOKEN,
               'content-type': 'application/json',
@@ -66,6 +74,7 @@ export default {
           if (error) throw new Error(error);
           console.log(body);
           _this.postText = "...survey created!";
+          _this.getSurveys();
       });
     },
     getSpecificSurvey: function(surveyId) {
