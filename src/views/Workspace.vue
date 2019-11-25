@@ -27,7 +27,6 @@ export default {
   name: 'workspace',
   data() {
     return {
-      surveyList: [],
       postText: "",
       getText: ""
     }
@@ -35,7 +34,7 @@ export default {
   computed: {
     formattedSurveyName: function() {
       var formattedList = [];
-      this.surveyList.forEach(function(survey, index) {
+      this.$store.state.surveys.forEach(function(survey, index) {
         formattedList.push("Survey " + (index + 1) + " - " + survey.name);
       });
       return formattedList
@@ -51,7 +50,7 @@ export default {
   methods: {
     postSurvey: function(name) {
       var duplicate = false;
-      this.surveyList.forEach(survey => {
+      this.$store.state.surveys.forEach(survey => {
         if (survey.name === name) {
           this.postText = "Error: A survey with the name \"" + name + "\" already exists.";
           duplicate = true;
@@ -87,8 +86,7 @@ export default {
       };
       request(options, function(error, response, body) {
           if (error) throw new Error(error);
-          var survey = JSON.parse(body);
-          console.log(survey);
+          var survey = JSON.parse(body).result;
           this.getText = "...survey pulled and logged!";
       }.bind(this));
     },
@@ -103,7 +101,7 @@ export default {
       request(options, function(error, response, body) {
           if (error) throw new Error(error);
           var res = JSON.parse(body);
-          this.surveyList = res.result.elements;
+          this.$store.state.surveys = res.result.elements;
       }.bind(this));
     }
   }
