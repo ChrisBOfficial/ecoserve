@@ -1,11 +1,11 @@
 # Invasive Species
-### Deptartment of Agronomy and Horticulture 
+### Deptartment of Agronomy and Horticulture
 #### Senior Design Repository
 
 **Authors:**
 
-- Burbach, Christopher (Product Manager, Squad Lead)
-- Saltzman, Alexis (Development Manager)
+- Burbach, Christopher (Development Manager, Squad Lead)
+- Saltzman, Alexis (Product Manager)
 - Kozisek, Nick
 - Ralph, Stephen
 - Doan, Vy

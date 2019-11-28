@@ -2,11 +2,20 @@
 ### Endpoints
 * `/api/surveys`
 	* Expects `x-api-token` as header
-	* Requests
-		* GET
-			* Blank request GETs all surveys
-			* Optional parameter `?surveyId=` GETs a specific survey associated with the provided surveyId
-		* POST
-			* Expects `json` payload
-				* Requires `SurveyName`, `Language`, and `ProjectCategory` values
-			* Expects `content-type` and `Accept` headers set to `application/json`
+	* GET
+		* Blank request GETs all surveys
+		* Optional parameter `?surveyId=` GETs a specific survey associated with the provided surveyId
+* `/api/projects`
+	* POST
+		* Expects `json` payload with following values:
+			* `name`
+			* `data`
+				* `description`
+				* `surveyID`
+				* `blocks`
+					* First Block
+						* Options
+					* Second Block
+						* Options
+					* etc
+		* Expects `content-type` and `Accept` headers set to `application/json`

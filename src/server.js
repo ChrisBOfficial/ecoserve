@@ -45,22 +45,6 @@ app.route('/api/surveys')
             res.send(body);
         });
     })
-    .post((req, res) => {
-        var options = {
-            method: 'POST',
-            url: 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/survey-definitions',
-            json: req.body,
-            headers: {
-                'x-api-token': req.headers['x-api-token'],
-                'content-type': 'application/json',
-                'Accept': 'application/json'
-            },
-        };
-        request(options, function(error, response, body) {
-            if (error) throw new Error(error);
-            res.send(body);
-        });
-    })
 
 app.route('/api/projects')
     .post((req, res) => {
