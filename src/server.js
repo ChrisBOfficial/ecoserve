@@ -1,5 +1,6 @@
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 var request = require('request');
 require('dotenv').config();
 
@@ -59,6 +60,14 @@ app.route('/api/surveys')
             if (error) throw new Error(error);
             res.send(body);
         });
+    })
+
+app.route('/api/projects')
+    .post((req, res) => {
+        var projects = JSON.parse(fs.readFileSync(__dirname + 'projects.json'));
+        projects[req.body.name] = req.body.data;
+        fs.writeFileSync(__dirname + 'projects.json', JSON.stringify(projects, null, 4));
+        res.status(200).send(projects);
     })
 
 //Starting server on the port

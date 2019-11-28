@@ -8,7 +8,7 @@
           <button v-on:click="getSpecificSurvey('SV_b78ghjEDgpEZU3j', ...arguments)">Log survey SV_b78ghjEDgpEZU3j</button>
           <p>{{ getText }}</p>
           <div style="width: 50%; margin: 0 auto;">
-            <p v-for="survey in formattedSurveyName" :key="survey">{{ survey }}</p>
+            <button v-for="survey in formattedSurveyName" :key="survey.name" v-on:click="saveSurvey(survey.name, survey.id)">{{ survey.name }}</button>
           </div>
           <button v-on:click="getSurveys">Refresh surveys</button>
       </div>
@@ -35,7 +35,8 @@ export default {
     formattedSurveyName: function() {
       var formattedList = [];
       this.$store.state.surveys.forEach(function(survey, index) {
-        formattedList.push("Survey " + (index + 1) + " - " + survey.name);
+        var surveyName = "Survey " + (index + 1) + " - " + survey.name;
+        formattedList.push({ name: surveyName, id: survey.id });
       });
       return formattedList
     }
@@ -66,7 +67,7 @@ export default {
               'x-api-token': process.env.VUE_APP_Q_API_TOKEN,
               'content-type': 'application/json',
               'Accept': 'application/json'
-          },
+          }
       };
       request(options, function(error, response, body) {
           if (error) throw new Error(error);
@@ -102,6 +103,23 @@ export default {
           if (error) throw new Error(error);
           var res = JSON.parse(body);
           this.$store.state.surveys = res.result.elements;
+      }.bind(this));
+    },
+    saveSurvey: function(surveyName, selectedID) {
+      var options = {
+        method: 'POST',
+        url: window.location.origin + '/api/projects',
+        json: { name: surveyName, data: { description: "A new project", 
+                                          surveyID: selectedID, 
+                                          blocks: { block1: ["barChart", "sorted"] } } },
+        headers: {
+          'content-type': 'application/json',
+          'Accept': 'application/json'
+        }
+      };
+      request(options, function(error, response, body) {
+        if (error) throw new Error(error);
+        console.log(body);
       }.bind(this));
     }
   }
