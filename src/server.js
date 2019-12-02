@@ -64,3 +64,5 @@ app.route('/api/projects')
 app.listen(port, () => {
     console.log("Server started on port " + port);
 });
+
+exports.app = app;
