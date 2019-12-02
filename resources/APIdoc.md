@@ -23,3 +23,8 @@
 					* etc
 		* Expects `content-type` and `accept` headers set to `application/json`
 		* Response returns updated `projects.json`
+	* DELETE
+		* Expects `json` payload with following values:
+			* `name`
+		* Expects `content-type` and `accept` headers set to `application/json`
+		* Response returns updated `projects.json`

@@ -65,6 +65,12 @@ app.route('/api/projects')
         fs.writeFileSync(projectsDir, JSON.stringify(projects, null, 4));
         res.send(projects);
     })
+    .delete((req, res) => {
+        var projects = JSON.parse(fs.readFileSync(projectsDir));
+        delete projects[req.body.name];
+        fs.writeFileSync(projectsDir, JSON.stringify(projects, null, 4));
+        res.send(projects);
+    })
 
 //Starting server on the port
 app.listen(port, () => {
