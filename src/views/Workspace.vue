@@ -58,6 +58,7 @@ export default {
       request(options, function(error, response, body) {
           if (error) throw new Error(error);
           var survey = JSON.parse(body).result;
+          console.log(survey);
           this.getText = "...survey pulled and logged!";
       }.bind(this));
     },
