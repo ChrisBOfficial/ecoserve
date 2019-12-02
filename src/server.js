@@ -9,13 +9,14 @@ var port = process.env.PORT || 3000,
     app = express();
 
 var distDirectory;
+var projectsDir;
 if (port == 3000) {
     distDirectory = '../dist';
+    projectsDir = path.join(__dirname, '/assets/projects.json');
 } else {
     distDirectory = 'dist';
+    projectsDir = path.join(__dirname, 'projects.json');
 }
-
-const projectsDir = path.join(__dirname, '/assets/projects.json');
 
 // Support JSON payloads in POST requests
 app.use(express.json());
