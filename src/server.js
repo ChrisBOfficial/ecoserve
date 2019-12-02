@@ -29,12 +29,13 @@ app.get('/', (_, res) => {
 
 app.route('/api/surveys')
     .get((req, res) => {
-        var targetUrl;
+        var specifier;
         if (req.query.surveyId === undefined) {
-            targetUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/surveys';
+            specifier = '';
         } else {
-            targetUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/surveys/' + req.query.surveyId;
+            specifier = req.query.surveyId;
         }
+        var targetUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.ualtrics.com/API/v3/surveys/' + specifier;
         var options = {
             method: 'GET',
             url: targetUrl,
@@ -43,9 +44,13 @@ app.route('/api/surveys')
                 'X-API-TOKEN': req.headers['x-api-token']
             }
         };
-        request(options, function(error, _, body) {
+        request(options, function(error, response, body) {
             if (error) throw new Error(error);
-            res.send(body);
+            if (response.statusCode !== 200) {
+                res.status(response.statusCode).send(response);
+            } else {
+                res.send(body);
+            }
         });
     })
 
