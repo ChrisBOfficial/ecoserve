@@ -1,15 +1,5 @@
 {
-    "Survey 1 - Scenario planning": {
-        "description": "A new project",
-        "surveyID": "SV_0N86PO2zWpbTtmR",
-        "blocks": {
-            "block1": [
-                "barChart",
-                "sorted"
-            ]
-        }
-    },
-    "Survey 2 - question type test": {
+    "question type test": {
         "description": "A new project",
         "surveyID": "SV_0Sw8xUSE8TUyoZv",
         "blocks": {
@@ -19,7 +9,7 @@
             ]
         }
     },
-    "Survey 3 - Presidential qualities": {
+    "Presidential qualities": {
         "description": "A new project",
         "surveyID": "SV_1B9ENurxTz9rPXD",
         "blocks": {
@@ -29,7 +19,7 @@
             ]
         }
     },
-    "Survey 4 - test": {
+    "test": {
         "description": "A new project",
         "surveyID": "SV_2aGW0ybxwsMfHQ9",
         "blocks": {
@@ -39,7 +29,7 @@
             ]
         }
     },
-    "Survey 5 - Invasive Spp. Impacts on Ecosystem Services": {
+    "Invasive Spp. Impacts on Ecosystem Services": {
         "description": "A new project",
         "surveyID": "SV_2uxJ9M4UuorBlGd",
         "blocks": {
@@ -49,7 +39,7 @@
             ]
         }
     },
-    "Survey 6 - Provisioning and supporting--invasive species impact survey": {
+    "Provisioning and supporting--invasive species impact survey": {
         "description": "A new project",
         "surveyID": "SV_3K7Ce3wJdtG1GPb",
         "blocks": {
@@ -59,7 +49,7 @@
             ]
         }
     },
-    "Survey 7 - Regulating--invasive species impact survey": {
+    "Regulating--invasive species impact survey": {
         "description": "A new project",
         "surveyID": "SV_6hWtP3oMrjwsK6p",
         "blocks": {
@@ -69,7 +59,7 @@
             ]
         }
     },
-    "Survey 8 - Provisioning and supporting-V2": {
+    "Provisioning and supporting-V2": {
         "description": "A new project",
         "surveyID": "SV_6sAAIAg9f3fg9yl",
         "blocks": {
@@ -79,7 +69,7 @@
             ]
         }
     },
-    "Survey 9 - API Test Survey": {
+    "API Test Survey": {
         "description": "A new project",
         "surveyID": "SV_6tUyGbaNXJuQkjb",
         "blocks": {
@@ -89,7 +79,7 @@
             ]
         }
     },
-    "Survey 10 - Multi-scale wildlife impacts": {
+    "Multi-scale wildlife impacts": {
         "description": "A new project",
         "surveyID": "SV_a4MdkksFfZaRlNb",
         "blocks": {
@@ -99,7 +89,7 @@
             ]
         }
     },
-    "Survey 11 - All questions--invasive species impact survey": {
+    "All questions--invasive species impact survey": {
         "description": "A new project",
         "surveyID": "SV_b78ghjEDgpEZU3j",
         "blocks": {
@@ -109,7 +99,7 @@
             ]
         }
     },
-    "Survey 12 - Decision impacts": {
+    "Decision impacts": {
         "description": "A new project",
         "surveyID": "SV_bpCXSpg3jJFbcUZ",
         "blocks": {
@@ -119,7 +109,7 @@
             ]
         }
     },
-    "Survey 13 - Cultural--invasive species impact survey": {
+    "Cultural--invasive species impact survey": {
         "description": "A new project",
         "surveyID": "SV_egSghPEXuEgQIQt",
         "blocks": {

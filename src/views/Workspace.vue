@@ -6,9 +6,10 @@
           <button v-on:click="getSpecificSurvey('SV_b78ghjEDgpEZU3j', ...arguments)">Log survey SV_b78ghjEDgpEZU3j</button>
           <p>{{ getText }}</p>
           <div style="width: 50%; margin: 0 auto;">
-            <button v-for="survey in formattedSurveyName" :key="survey.name" v-on:click="saveSurvey(survey.name, survey.id)">{{ survey.name }}</button>
+            <button v-for="survey in formattedSurveyName" :key="survey.displayName" v-on:click="saveSurvey(survey.name, survey.id)">{{ survey.displayName }}</button>
           </div>
           <button v-on:click="getSurveys">Refresh surveys</button>
+          <button v-on:click="deleteSurvey('Scenario planning')">Delete Project "Scenario planning"</button>
       </div>
     </div>
     <Footer/>
@@ -32,7 +33,7 @@ export default {
       var formattedList = [];
       this.$store.state.surveys.forEach(function(survey, index) {
         var surveyName = "Survey " + (index + 1) + " - " + survey.name;
-        formattedList.push({ name: surveyName, id: survey.id });
+        formattedList.push({ displayName: surveyName, id: survey.id, name: survey.name });
       });
       return formattedList
     }
@@ -82,6 +83,21 @@ export default {
                data: {description: "A new project", 
                       surveyID: selectedID, 
                       blocks: { block1: ["barChart", "sorted"] }}},
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json'
+        }
+      };
+      request(options, function(error, response, body) {
+        if (error) throw new Error(error);
+        console.log(body);
+      }.bind(this));
+    },
+    deleteSurvey: function(surveyName) {
+      var options = {
+        method: 'DELETE',
+        url: window.location.origin + '/api/projects',
+        json: { name: surveyName },
         headers: {
           'content-type': 'application/json',
           'accept': 'application/json'
