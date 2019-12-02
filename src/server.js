@@ -15,6 +15,8 @@ if (port == 3000) {
     distDirectory = 'dist';
 }
 
+const projectsDir = path.join(__dirname, '/assets/projects.json');
+
 // Support JSON payloads in POST requests
 app.use(express.json());
 // Serve files in dist folder for all HTTP requests
@@ -36,7 +38,7 @@ app.route('/api/surveys')
             method: 'GET',
             url: targetUrl,
             headers: {
-                'Content-Type': 'application/json',
+                'content-type': 'application/json',
                 'X-API-TOKEN': req.headers['x-api-token']
             }
         };
@@ -47,11 +49,15 @@ app.route('/api/surveys')
     })
 
 app.route('/api/projects')
+    .get((_, res) => {
+        var projects = JSON.parse(fs.readFileSync(projectsDir));
+        res.send(projects);
+    })
     .post((req, res) => {
-        var projects = JSON.parse(fs.readFileSync(__dirname + 'projects.json'));
+        var projects = JSON.parse(fs.readFileSync(projectsDir));
         projects[req.body.name] = req.body.data;
-        fs.writeFileSync(__dirname + 'projects.json', JSON.stringify(projects, null, 4));
-        res.status(200).send(projects);
+        fs.writeFileSync(projectsDir, JSON.stringify(projects, null, 4));
+        res.send(projects);
     })
 
 //Starting server on the port

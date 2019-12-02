@@ -6,6 +6,9 @@
 		* Blank request GETs all surveys
 		* Optional parameter `?surveyId=` GETs a specific survey associated with the provided surveyId
 * `/api/projects`
+	* GET
+        * Expects `Accept` header set to `application/json`
+        * Response returns `projects.json`
 	* POST
 		* Expects `json` payload with following values:
 			* `name`
@@ -19,3 +22,4 @@
 						* Options
 					* etc
 		* Expects `content-type` and `Accept` headers set to `application/json`
+		* Response returns updated `projects.json`

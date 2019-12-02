@@ -3,8 +3,6 @@
     <Header/>
     <div class="container" style="padding:10px 10px;">
       <div class="well" style="padding-top: 136px;">
-          <button v-on:click="postSurvey('API Test Survey')">POST dummy survey</button>
-          <p>{{ postText }}</p>
           <button v-on:click="getSpecificSurvey('SV_b78ghjEDgpEZU3j', ...arguments)">Log survey SV_b78ghjEDgpEZU3j</button>
           <p>{{ getText }}</p>
           <div style="width: 50%; margin: 0 auto;">
@@ -17,7 +15,6 @@
   </div>
 </template>
 
-
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
@@ -27,7 +24,6 @@ export default {
   name: 'workspace',
   data() {
     return {
-      postText: "",
       getText: ""
     }
   },
@@ -49,33 +45,6 @@ export default {
     this.getSurveys();
   },
   methods: {
-    postSurvey: function(name) {
-      var duplicate = false;
-      this.$store.state.surveys.forEach(survey => {
-        if (survey.name === name) {
-          this.postText = "Error: A survey with the name \"" + name + "\" already exists.";
-          duplicate = true;
-        }
-      });
-      if (duplicate) return;
-      this.postText = "Creating survey...";
-      var options = {
-          method: 'POST',
-          url: window.location.origin + '/api/surveys',
-          json: {"SurveyName": name, "Language": "EN", "ProjectCategory": "CORE"},
-          headers: {
-              'x-api-token': process.env.VUE_APP_Q_API_TOKEN,
-              'content-type': 'application/json',
-              'Accept': 'application/json'
-          }
-      };
-      request(options, function(error, response, body) {
-          if (error) throw new Error(error);
-          console.log(body);
-          this.postText = "...survey created!";
-          this.getSurveys();
-      }.bind(this));
-    },
     getSpecificSurvey: function(surveyId) {
       this.getText = "Pulling survey...";
       var options = {
@@ -109,12 +78,13 @@ export default {
       var options = {
         method: 'POST',
         url: window.location.origin + '/api/projects',
-        json: { name: surveyName, data: { description: "A new project", 
-                                          surveyID: selectedID, 
-                                          blocks: { block1: ["barChart", "sorted"] } } },
+        json: {name: surveyName, 
+               data: {description: "A new project", 
+                      surveyID: selectedID, 
+                      blocks: { block1: ["barChart", "sorted"] }}},
         headers: {
           'content-type': 'application/json',
-          'Accept': 'application/json'
+          'accept': 'application/json'
         }
       };
       request(options, function(error, response, body) {
