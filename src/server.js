@@ -35,7 +35,7 @@ app.route('/api/surveys')
         } else {
             specifier = req.query.surveyId;
         }
-        var targetUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.ualtrics.com/API/v3/surveys/' + specifier;
+        var targetUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/surveys/' + specifier;
         var options = {
             method: 'GET',
             url: targetUrl,
