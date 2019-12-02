@@ -8,7 +8,7 @@ describe('GET \'/\'', function() {
             .get('/')
             .expect('x-powered-by', 'Express')
             .expect(200)
-            .end(function(err, res) {
+            .end(function(err, _) {
                 if (err) return done(err);
                 done();
             });
