@@ -10,7 +10,7 @@
     "start": "node server.js",
     "test": "mocha --exit",
     "deploy": "npm run build && cd resources && ./prep-deploy.sh",
-    "windows-deploy": "npm run build && cd resources && ./prep-deploy.ps1"
+    "deploy-windows": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command npm run build; cd resources; ./prep-deploy.ps1"
   },
   "main": "server.js",
   "repository": {
