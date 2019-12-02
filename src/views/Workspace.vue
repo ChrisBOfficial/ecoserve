@@ -73,6 +73,7 @@ export default {
           if (error) throw new Error(error);
           var res = JSON.parse(body);
           this.$store.state.surveys = res.result.elements;
+          console.log(this.$store.state.surveys);
       }.bind(this));
     },
     saveSurvey: function(surveyName, selectedID) {
