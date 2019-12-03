@@ -10,6 +10,7 @@
           </div>
           <button v-on:click="getSurveys">Refresh surveys</button>
           <button v-on:click="deleteSurvey('Scenario planning')">Delete Project "Scenario planning"</button>
+          <button v-on:click="getResponses('SV_b78ghjEDgpEZU3j')">Get responses for SV_b78ghjEDgpEZU3j</button>
       </div>
     </div>
     <Footer/>
@@ -74,17 +75,25 @@ export default {
           if (error) throw new Error(error);
           var res = JSON.parse(body);
           this.$store.state.surveys = res.result.elements;
-          console.log(this.$store.state.surveys);
       }.bind(this));
     },
     saveSurvey: function(surveyName, selectedID) {
       var options = {
         method: 'POST',
         url: window.location.origin + '/api/projects',
-        json: {name: surveyName, 
-               data: {description: "A new project", 
-                      surveyID: selectedID, 
-                      blocks: { block1: ["barChart", "sorted"] }}},
+        json: {
+          name: surveyName, 
+          data: {
+            description: "A new project", 
+            surveyID: selectedID, 
+            blocks: { 
+              block1: [
+                { visual: "barChart", options: ["sorted", "colorBlind"] },
+                { visual: "circleChart", options: ["sorted"] }
+              ]
+            }
+          }
+        },
         headers: {
           'content-type': 'application/json',
           'accept': 'application/json'
@@ -108,6 +117,19 @@ export default {
       request(options, function(error, response, body) {
         if (error) throw new Error(error);
         console.log(body);
+      }.bind(this));
+    },
+    getResponses: function(selectedID) {
+      var options = {
+        method: 'GET',
+        url: window.location.origin + '/api/surveys/responses?surveyId=' + selectedID,
+        headers: {
+          'accept': 'application/json',
+          'x-api-token': process.env.VUE_APP_Q_API_TOKEN
+        }
+      };
+      request(options, function(error, response, body) {
+        if (error) throw new Error(error);
       }.bind(this));
     }
   }
