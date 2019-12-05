@@ -2,7 +2,7 @@
     <div id="nav">
       <nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top" style="background-color:darkslategray;">
         <div class="container">
-          <router-link class="navbar-brand" to="/">EnviConser</router-link>
+          <router-link class="navbar-brand" to="/">IESAT</router-link>
             <div class="collapse navbar-collapse" id="navbarResponsive">
               <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
@@ -22,11 +22,11 @@
                 </li>
 
                 <li class="nav-item">
-                  <router-link class="nav-link" to="/workspace">Workspace</router-link>
+                  <router-link class="nav-link" to="/workspace">WORKSPACE</router-link>
                 </li>
 
                 <li class="nav-item">
-                  <button style="width:auto;">LOGIN</button>
+                  <router-link class="nav-link" to="/">LOGIN</router-link>
                 </li>
               </ul>
             </div>
