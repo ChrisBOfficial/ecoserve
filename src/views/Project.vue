@@ -2,19 +2,18 @@
     <div>
         <Header/>
         <section class="masthead-2">
-            <div class="container h-100">
-                <div class="row h-100 align-items-center">
-                    <div class="col-6 text-center align-items-center" id="ProjectList">
+            <b-container>
+                <b-row class="h-100 align-items-center">
+                    <b-col class="text-center align-items-center" id="ProjectList">
                         <h3>ALL PROJECTS</h3>
                         <ul>
-                            <li v-for="project in projects"></li>
                         </ul>
-                    </div>
-                    <div class="col-6 text-center align-items-center">
+                    </b-col>
+                    <b-col class="text-center align-items-center">
                         <img src="@/assets/jon.jpg" alt="Project image" class="thumb">
-                    </div>
-                </div>    
-            </div>
+                    </b-col>
+                </b-row>    
+            </b-container>
         </section>
         <Footer/>
     </div>

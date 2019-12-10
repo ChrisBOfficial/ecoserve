@@ -3,7 +3,7 @@
         <b-row>
             <b-col>
                 <select v-model="blockSelected">
-                    <option v-for="block in blocks" v-bind:value="block.value">
+                    <option v-for="block in blocks" v-bind:value="block.value" v-bind:key="block.value">
                         {{block.text}}
                     </option>
                 </select>
@@ -11,7 +11,7 @@
                 <span>Selected: {{ blockSelected }}</span>
             </b-col>
                 <select v-model="graphSelected">
-                    <option v-for="graph in graphs" v-bind:value="graph.value">
+                    <option v-for="graph in graphs" v-bind:value="graph.value" v-bind:key="graph.value">
                         {{graph.text}}
                     </option>
                 </select>
@@ -37,7 +37,6 @@ new Vue({
     graphSelected: 'A',
     graphs: [
         {text: 'Bullseyes', value:'bullseyes'},
-        {text: 'Histogram', value: 'hist'},
         {text: 'Bar Chart', value: 'bar'}
     ]
   }

@@ -29,6 +29,16 @@ const routes = [
     path: '/workspace',
     name: 'workspace',
     component: () => import('@/views/Workspace.vue')
+  },
+  {
+    path: '/newproject',
+    name: 'newproject',
+    component: () => import('@/views/NewProject.vue')
+  },
+  {
+    path: '/existingproject',
+    name: 'existingproject',
+    component: () => import('@/views/ExistingProject.vue')
   }
 ]
 
