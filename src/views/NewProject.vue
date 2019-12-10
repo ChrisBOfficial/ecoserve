@@ -6,7 +6,7 @@
                     <h1> CREATE NEW PROJECT </h1>
                     <project-form/>
                 </b-row>
-                <b-row>
+                <b-row class="align-items-center">
                     <b-button href="https://login.qualtrics.com/login">Link to Qualtrics</b-button>
                 </b-row>
                 <b-row>
