@@ -1,13 +1,18 @@
 <template>
     <div class='new-project-container'>
         <Header/>
-        <ProjectForm
-        />
-        <button onclick="https://login.qualtrics.com/login">Link to Qualtrics</button>
+            <b-container>
+                <b-row class="h-100">
+                    <h1> CREATE NEW PROJECT </h1>
+                    <project-form/>
+                    <b-button href="https://login.qualtrics.com/login">Link to Qualtrics</b-button>
+                </b-row>
+                <b-row>
+                    <h1> Add code for existing Qualtrics surveys </h1>
 
-        <h1> Add code for existing Qualtrics surveys </h1>
-
-        <VisualizationDashboard/>
+                    <visualization-dashboard/>
+                </b-row>
+            </b-container>
 
 
         <Footer/>
@@ -16,14 +21,19 @@
 
 
 <script>
-import ProjectForm from '@/src/components/ProjectForm.vue'
-import VisualizationDashboard from '@/src/components/VisualizationDashboard.vue'
-import Header from '@/src/components/Header.vue'
-import Footer from '@/src/components/Footer.vue'
+import ProjectForm from '@/components/ProjectForm.vue'
+import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
+var request = require('request');
+
 
 export default{
     components:{
-        ProjectForm
+        ProjectForm,
+        VisualizationDashboard,
+        Header, 
+        Footer
     },
     data(){
         return{}

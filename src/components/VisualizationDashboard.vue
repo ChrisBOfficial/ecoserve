@@ -10,6 +10,7 @@
                 <br>
                 <span>Selected: {{ blockSelected }}</span>
             </b-col>
+            <b-col>
                 <select v-model="graphSelected">
                     <option v-for="graph in graphs" v-bind:value="graph.value" v-bind:key="graph.value">
                         {{graph.text}}
@@ -17,30 +18,31 @@
                 </select>
                 <br>
                 <span>Selected: {{ graphSelected }}</span>
-            <b-col>
             </b-col>
-        <b-row>
+        </b-row>
     </b-container>
 </template>
 
 <script>
 
-new Vue({
-  el: '...',
-  data: {
-    blockSelected: 'A',
-    blocks: [
-      { text: 'Block 1', value: 'B1' },
-      { text: 'Block 2', value: 'B2' },
-      { text: 'Block 3', value: 'B3' }
-    ],
-    graphSelected: 'A',
-    graphs: [
-        {text: 'Bullseyes', value:'bullseyes'},
-        {text: 'Bar Chart', value: 'bar'}
-    ]
+export default {
+  name: "VisualizationDashboard",
+  data() {
+      return{
+        blockSelected: 'A',
+        blocks: [
+            { text: 'Block 1', value: 'B1' },
+            { text: 'Block 2', value: 'B2' },
+            { text: 'Block 3', value: 'B3' }
+        ],
+        graphSelected: 'A',
+        graphs: [
+            {text: 'Bullseyes', value:'bullseyes'},
+            {text: 'Bar Chart', value: 'bar'}
+        ]
+      }
   }
-})
+}
 
 
 </script>

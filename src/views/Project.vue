@@ -4,12 +4,13 @@
         <section class="masthead-2">
             <b-container>
                 <b-row class="h-100 align-items-center">
-                    <b-col class="text-center align-items-center" id="ProjectList">
+                    <b-col class="col-6 text-center align-items-center" id="ProjectList">
                         <h3>ALL PROJECTS</h3>
-                        <ul>
-                        </ul>
+                        <router-link to="/newproject" tag="button">New Project</router-link>
+                        <router-link to="/existingproject" tag="button">Existing Project</router-link>
+
                     </b-col>
-                    <b-col class="text-center align-items-center">
+                    <b-col class="col-6 text-center align-items-center">
                         <img src="@/assets/jon.jpg" alt="Project image" class="thumb">
                     </b-col>
                 </b-row>    
