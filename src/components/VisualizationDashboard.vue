@@ -20,6 +20,10 @@
                 <span>Selected: {{ graphSelected }}</span>
             </b-col>
         </b-row>
+        <b-row class="align-items-center">
+                
+                <button>ADD VISUALIZATION</button>
+            </b-row>
     </b-container>
 </template>
 

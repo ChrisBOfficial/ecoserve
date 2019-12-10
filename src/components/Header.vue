@@ -1,6 +1,6 @@
 <template>
     <div id="nav">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light shadow fixed-top" style="background-color:darkslategray;">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light shadow sticky-top" style="background-color:darkslategray;">
         <div class="container">
           <router-link class="navbar-brand" to="/">IESAT</router-link>
             <div class="collapse navbar-collapse" id="navbarResponsive">
