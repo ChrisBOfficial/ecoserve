@@ -66,8 +66,8 @@ export default {
         ]
 
       }
-  },
-  methods: {
+    },
+    methods: {
         addVisualization: function(event){
             const{blockSelected, graphSelected} = this.newBlock
 
