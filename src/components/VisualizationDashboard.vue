@@ -21,12 +21,18 @@
             </b-col>
         </b-row>
         <b-row class="align-items-center">
-            <button v-on:click="addvisualization" style="background-color:DarkSeaGreen;">ADD VISUALIZATION</button>
+            <button v-on:click="addVisualization" style="background-color:DarkSeaGreen;">ADD VISUALIZATION</button>
         </b-row>
         <b-row class="align-items-center">
-            <b-form-select>
+            <b-form-select v-model="removeData" :select-size="4">
+                <option v-for="visualization in visualizations" v-bind:value="visualization" v-bind:key="visualization">
+                    {{visualization}}
+                </option>
             </b-form-select>
-            <button v-on:click="removevisualization" style="background-color:DarkSeaGreen;"> REMOVE VISUALIZATION </button>
+            <br>
+            <span>Selected: {{ removeData }}</span>
+
+            <button v-on:click="removeVisualization" style="background-color:DarkSeaGreen;"> REMOVE VISUALIZATION </button>
         </b-row>
     </b-container>
 </template>
@@ -53,11 +59,16 @@ export default {
         },
         allBlocks:{
 
-        }
+        },
+        removeData: '',
+        visualizations: [
+
+        ]
+
       }
   },
   methods: {
-        addvisualization: function(event){
+        addVisualization: function(event){
             const{blockSelected, graphSelected} = this.newBlock
 
             //do something with the new graph 
@@ -65,10 +76,12 @@ export default {
                 //not guarded for duplicates 
                 if(!(this.allBlocks[blockSelected].indexOf([graphSelected, "option"]) >= 0)){
                     this.allBlocks[blockSelected].push([graphSelected, "option"])
+                    this.visualizations.push(blockSelected + "-" + graphSelected)
                 }
             }else {
                 this.allBlocks[blockSelected] = []
                 this.allBlocks[blockSelected].push([graphSelected, "option"])
+                this.visualizations.push(blockSelected + "-" + graphSelected)
             }
             console.log(this.allBlocks)
 
@@ -78,8 +91,25 @@ export default {
             }
         },
 
-        removevisualization: function(event){
-
+        removeVisualization: function(event){
+            const blockSelected = this.removeData.split("-")[0]
+            const graphSelected = this.removeData.split("-")[1]
+            console.log(blockSelected)
+            for(var key in this.allBlocks){
+                console.log(key)
+                if(key == blockSelected){
+                    var i;
+                    for (i = 0; i < this.allBlocks[key].length; i++){
+                        console.log(this.allBlocks[key][i][0])
+                        if (this.allBlocks[blockSelected][i][0] == graphSelected){
+                            this.allBlocks[blockSelected].pop(this.allBlocks[blockSelected][i])
+                        }
+                    }
+                }
+            }
+            console.log(this.allBlocks)
+            this.visualizations.pop(this.removeData)
+            this.removeData = ''
         }
   }
 }
