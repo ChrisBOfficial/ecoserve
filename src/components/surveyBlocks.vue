@@ -1,5 +1,18 @@
 <template>
-    
+    <b-container>
+        <b-row>
+            <h3>Pick Survey From Qualtrics</h3>
+        </b-row>
+        <b-row class="align-items-center">
+            <b-form-select :select-size="4">
+                <option v-for="block in blocks" v-bind:value="block" v-bind:key="block" >
+                </option>
+            </b-form-select>
+        </b-row>
+        <b-row>
+            <button style="background-color:DarkSeaGreen;">CHOOSE SURVEY</button>
+        </b-row>
+    </b-container>
 </template>
 
 <script>

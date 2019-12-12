@@ -13,7 +13,7 @@
                     <b-button href="https://login.qualtrics.com/login">Link to Qualtrics</b-button>
                 </b-row>
                 <b-row>
-                    <h2> Add code for existing Qualtrics surveys </h2>
+                    <survey-blocks/>
                 </b-row>
                 <b-row>
                     <h2> Visualization Dashboard </h2>
@@ -42,6 +42,7 @@ import ProjectForm from '@/components/ProjectForm.vue'
 import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
+import surveyBlocks from '@/components/surveyBlocks.vue'
 var request = require('request');
 
 
@@ -50,7 +51,8 @@ export default{
         ProjectForm,
         VisualizationDashboard,
         Header, 
-        Footer
+        Footer,
+        surveyBlocks
     },
     data(){
         return{
