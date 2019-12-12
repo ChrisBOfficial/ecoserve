@@ -3,7 +3,7 @@
         <b-row>
             <b-col>
                 <b-form-select v-model="newBlock.blockSelected" :select-size="4">
-                    <option v-for="block in blocks" v-bind:value="block.value" v-bind:key="block.value">
+                    <option v-for="block in blocks" v-bind:value="block" v-bind:key="block">
                         {{block.text}}
                     </option>
                 </b-form-select>
