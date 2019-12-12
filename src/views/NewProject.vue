@@ -9,6 +9,9 @@
                     <b-form-input v-model="title" placeholder="Enter Project Title"></b-form-input>
                     <b-form-input v-model="description" placeholder="Enter Project Description"></b-form-input>
                 </b-row>
+                <b-row>
+                    <h3>Create New Survey</h3>
+                </b-row>
                 <b-row class="align-items-center">
                     <b-button href="https://login.qualtrics.com/login">Link to Qualtrics</b-button>
                 </b-row>
