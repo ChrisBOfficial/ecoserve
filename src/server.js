@@ -1,7 +1,9 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-var request = require('request');
+const request = require('request');
+const util = require('util');
+const requestPromise = util.promisify(request);
 require('dotenv').config();
 
 // Use AWS port if provided, 3000 otherwise
@@ -52,6 +54,72 @@ app.route('/api/surveys')
                 res.send(body);
             }
         });
+    })
+
+app.route('/api/surveys/responses')
+    .get((req, res) => {
+        async function respond(req, res) {
+            // Create data export
+            var surveyId = req.query.surveyId;
+            var requestCheckProgress = 0.0;
+            var progressStatus = "inProgress";
+            var baseUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/surveys/' + surveyId + '/export-responses/';
+            var options = {
+                method: 'POST',
+                url: baseUrl,
+                json: {"format": "json"},
+                headers: {
+                    'content-type': 'application/json',
+                    'X-API-TOKEN': req.headers['x-api-token']
+                }
+            };
+            var downloadRequestResponse = await requestPromise(options);
+            var progressId = downloadRequestResponse.body.result.progressId;
+            console.log(downloadRequestResponse.body);
+            
+            // Checking on data export progress and waiting until ready
+            while(progressStatus !== "complete" && progressStatus !== "failed") {
+                console.log("progressStatus=" + progressStatus);
+                var requestCheckUrl = baseUrl + progressId;
+                delete options.json;
+                options = {
+                    method: 'GET',
+                    url: requestCheckUrl,
+                    headers: {
+                        'content-type': 'application/json',
+                        'X-API-TOKEN': req.headers['x-api-token']
+                    }
+                };
+                var requestCheckResponse = await requestPromise(options);
+                var parsedResponse = JSON.parse(requestCheckResponse.body);
+                requestCheckProgress = parsedResponse.result.percentComplete;
+                console.log("Download is " + requestCheckProgress + " complete");
+                progressStatus = parsedResponse.result.status;
+            }
+
+            // Check for error
+            if (progressStatus === "failed") throw new Error("export failed");
+
+            var fileId = parsedResponse.result.fileId;
+
+            // Downloading file
+            var requestDownloadUrl = baseUrl + fileId + '/file';
+            options = {
+                method: 'GET',
+                url: requestDownloadUrl,
+                headers: {
+                    'content-type': 'application/json',
+                    'X-API-TOKEN': req.headers['x-api-token'],
+                }
+            };
+            // var requestDownload = await requestPromise(options);
+            request(options, function(err, response) {
+                console.log(response.body);
+                fs.writeFileSync('../responses.json', buf);
+            });
+        }
+
+        respond(req, res);
     })
 
 app.route('/api/projects')
