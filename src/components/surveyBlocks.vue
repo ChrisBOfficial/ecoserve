@@ -4,10 +4,12 @@
             <h3>Pick Survey From Qualtrics</h3>
         </b-row>
         <b-row class="align-items-center">
-            <b-form-select :select-size="4">
-                <option v-for="block in blocks" v-bind:value="block" v-bind:key="block" >
+            <b-form-select v-model="selectedSurvey" :select-size="4">
+                <option v-for="survey in surveys" v-bind:value="survey" v-bind:key="survey" >
                 </option>
             </b-form-select>
+            <br>
+            <span>Selected: {{selectedSurvey}}</span>
         </b-row>
         <b-row>
             <button style="background-color:DarkSeaGreen;">CHOOSE SURVEY</button>
@@ -21,6 +23,7 @@ export default {
     name: "surveyBlocks",
     data() {
         return {
+            selectedSurvey: '',
             surveys: [],
             blocks: []
         }

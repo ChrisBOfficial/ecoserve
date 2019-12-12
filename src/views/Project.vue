@@ -6,8 +6,8 @@
                 <b-row class="h-100 align-items-center">
                     <b-col class="col-6 text-center align-items-center" id="ProjectList">
                         <h3>ALL PROJECTS</h3>
-                        <router-link to="/newproject" tag="button">New Project</router-link>
-                        <router-link to="/existingproject" tag="button">Existing Project</router-link>
+                        <router-link to="/newproject" tag="button" style="background-color:DarkSeaGreen;">New Project</router-link>
+                        <router-link to="/existingproject" tag="button" style="background-color:DarkSeaGreen;">Existing Project</router-link>
 
                     </b-col>
                     <b-col class="col-6 text-center align-items-center">

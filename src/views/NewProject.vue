@@ -69,12 +69,11 @@ export default{
         createProject: function(event){
             const projectTitle = this.title
             console.log()
-            const payload = {
-                projectTitle :{
-                    "description": this.description,
-                    "surveyID" : '',
-                    "blocks" : this.$refs.allData.allBlocks
-                }
+            const payload = {}
+            payload[projectTitle] = {
+                "description": this.description,
+                "surveyID" : '',
+                "blocks" : this.$refs.allData.allBlocks      
             }
             console.log(payload)
         }
