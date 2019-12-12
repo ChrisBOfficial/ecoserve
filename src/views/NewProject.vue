@@ -13,9 +13,11 @@
                     <b-button href="https://login.qualtrics.com/login">Link to Qualtrics</b-button>
                 </b-row>
                 <b-row>
-                    <h1> Add code for existing Qualtrics surveys </h1>
-
-                    <visualization-dashboard/>
+                    <h2> Add code for existing Qualtrics surveys </h2>
+                </b-row>
+                <b-row>
+                    <h2> Visualization Dashboard </h2>
+                    <visualization-dashboard ref="allData"/>
                 </b-row>
 
 
@@ -54,16 +56,19 @@ export default{
         return{
             title: '',
             description:'',
+            blocks: {}
         }
     },
 
     methods:{
         createProject: function(event){
+            const projectTitle = this.title
+            console.log()
             const payload = {
-                title :{
+                projectTitle :{
                     "description": this.description,
                     "surveyID" : '',
-                    "blocks" : VisualizationDashboard.allBlocks
+                    "blocks" : this.$refs.allData.allBlocks
                 }
             }
             console.log(payload)

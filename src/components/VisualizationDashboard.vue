@@ -108,10 +108,13 @@ export default {
                 }
             }
             console.log(this.allBlocks)
+
+            this.$emit("allBlocks")
+
             this.visualizations.pop(this.removeData)
             this.removeData = ''
         }
-  }
+    }
 }
 
 </script>
