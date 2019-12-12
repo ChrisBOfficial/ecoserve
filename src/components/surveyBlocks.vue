@@ -5,12 +5,10 @@
         </b-row>
         <b-row class="align-items-center">
             <b-form-select v-model="selectedSurvey" :select-size="4">
-                <option v-for="survey in surveys" v-bind:value="survey" v-bind:key="survey" >
-                    {{survey.text}}
-                </option>
+                <option v-for="survey in surveys" v-bind:value="survey" v-bind:key="survey" >{{ survey.name }}</option>
             </b-form-select>
             <br>
-            <span>Selected: {{selectedSurvey}}</span>
+            <span>Selected: {{selectedSurvey}} </span>
         </b-row>
         <b-row>
             <button style="background-color:DarkSeaGreen;">CHOOSE SURVEY</button>
@@ -19,6 +17,8 @@
 </template>
 
 <script>
+
+var request = require('request');
 
 export default {
     name: "surveyBlocks",
