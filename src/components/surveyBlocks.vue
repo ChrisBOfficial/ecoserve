@@ -6,6 +6,7 @@
         <b-row class="align-items-center">
             <b-form-select v-model="selectedSurvey" :select-size="4">
                 <option v-for="survey in surveys" v-bind:value="survey" v-bind:key="survey" >
+                    {{survey.text}}
                 </option>
             </b-form-select>
             <br>

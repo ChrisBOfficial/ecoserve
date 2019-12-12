@@ -16,7 +16,7 @@
                     <b-button href="https://login.qualtrics.com/login">Link to Qualtrics</b-button>
                 </b-row>
                 <b-row>
-                    <survey-blocks/>
+                    <survey-blocks ref="surveyInfo" v-bind:questions="questions"/>
                 </b-row>
                 <b-row>
                     <h2> Visualization Dashboard </h2>
@@ -61,7 +61,8 @@ export default{
         return{
             title: '',
             description:'',
-            blocks: {}
+            blocks: {},
+            questions: []
         }
     },
 
@@ -69,14 +70,15 @@ export default{
         createProject: function(event){
             const projectTitle = this.title
             console.log()
-            const payload = {}
-            payload[projectTitle] = {
+            const payload = {
+                "projectTitle": this.title,
                 "description": this.description,
-                "surveyID" : '',
+                "surveyID" : this.$refs.surveyInfo.selectedSurvey,
                 "blocks" : this.$refs.allData.allBlocks      
             }
             console.log(payload)
         }
+        
 
     }
 }

@@ -41,13 +41,10 @@
 
 export default {
   name: "VisualizationDashboard",
+  props:['questions'],
   data() {
       return{
-        blocks: [
-            { text: 'Block 1', value: 'block1' },
-            { text: 'Block 2', value: 'block2' },
-            { text: 'Block 3', value: 'block3' }
-        ],
+        blocks: this.questions,
         graphs: [
             {text: 'Bullseyes', value:'bullseyes'},
             {text: 'Bar Chart', value: 'barChart'}
@@ -109,7 +106,6 @@ export default {
             }
             console.log(this.allBlocks)
 
-            this.$emit("allBlocks")
 
             this.visualizations.pop(this.removeData)
             this.removeData = ''
