@@ -6,7 +6,7 @@
           <button v-on:click="getSpecificSurvey('SV_b78ghjEDgpEZU3j', ...arguments)">Log survey SV_b78ghjEDgpEZU3j</button>
           <p>{{ getText }}</p>
           <div style="width: 50%; margin: 0 auto;">
-            <button v-for="survey in formattedSurveyName" :key="survey.displayName" v-on:click="saveSurvey(survey.name, survey.id)">{{ survey.displayName }}</button>
+            <button v-for="survey in formattedSurveys" :key="survey.name" v-on:click="saveSurvey(survey.name, survey.id)">{{ survey.name }}</button>
           </div>
           <button v-on:click="getSurveys">Refresh surveys</button>
           <button v-on:click="deleteSurvey('Scenario planning')">Delete Project "Scenario planning"</button>
@@ -30,7 +30,7 @@ export default {
     }
   },
   computed: {
-    formattedSurveyName: function() {
+    formattedSurveys: function() {
       var formattedList = [];
       this.$store.state.surveys.forEach(function(survey, index) {
         var surveyName = "Survey " + (index + 1) + " - " + survey.name;
@@ -73,8 +73,8 @@ export default {
       };
       request(options, function(error, response, body) {
           if (error) throw new Error(error);
-          var res = JSON.parse(body);
-          this.$store.state.surveys = res.result.elements;
+          var res = JSON.parse(body).result;
+          this.$store.state.surveys = res.elements;
       }.bind(this));
     },
     saveSurvey: function(surveyName, selectedID) {

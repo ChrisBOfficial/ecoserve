@@ -8,19 +8,28 @@ export default {
     name: "surveyBlocks",
     data() {
         return {
+            surveys: [],
             blocks: []
         }
     },
-    props: { surveyId: String },
-    watch: {
-        surveyId: function(newVal, oldVal) {
-            this.getBlocks(newVal);
-        }
-    },
     created: function() {
-        this.getBlocks(this.surveyId);
+        this.getSurveys();
     },
     methods: {
+        getSurveys: function() {
+            var options = {
+                method: 'GET',
+                url: window.location.origin + '/api/surveys',
+                headers: {
+                    'x-api-token': process.env.VUE_APP_Q_API_TOKEN
+                }
+            };
+            request(options, function(error, response, body) {
+                if (error) throw new Error(error);
+                var res = JSON.parse(body).result;
+                this.surveys = res.elements;
+            }.bind(this));
+        },
         getBlocks: function(surveyId) {
             this.blocks = [];
             var options = {
