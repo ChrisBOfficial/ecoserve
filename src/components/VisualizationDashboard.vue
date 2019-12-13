@@ -95,9 +95,6 @@ export default {
                 this.allBlocks[blockSelected.id] = [[graphSelected, "option"]];
                 this.visualizations.push(blockSelected.description + " - " + graphSelected);
             }
-
-            
-            console.log(this.allBlocks)
         },
 
         removeVisualization: function(event){

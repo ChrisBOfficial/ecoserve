@@ -1,22 +1,23 @@
 {
-    "test": {
-        "description": "A new project",
-        "surveyID": "SV_2aGW0ybxwsMfHQ9",
+    "Temp Project": {
+        "description": "A trial project",
+        "surveyID": "SV_1B9ENurxTz9rPXD",
         "blocks": {
-            "block1": [
-                {
-                    "visual": "barChart",
-                    "options": [
-                        "sorted",
-                        "colorBlind"
-                    ]
-                },
-                {
-                    "visual": "circleChart",
-                    "options": [
-                        "sorted"
-                    ]
-                }
+            "BL_25kHHDKSSbOiCep": [
+                [
+                    "bullseyes",
+                    "option"
+                ],
+                [
+                    "barChart",
+                    "option"
+                ]
+            ],
+            "BL_1zENK2BOjdE6qNf": [
+                [
+                    "bullseyes",
+                    "option"
+                ]
             ]
         }
     }

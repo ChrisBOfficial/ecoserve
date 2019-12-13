@@ -49,15 +49,15 @@ import surveyBlocks from '@/components/surveyBlocks.vue'
 var request = require('request');
 
 
-export default{
-    components:{
+export default {
+    components: {
         ProjectForm,
         VisualizationDashboard,
         Header, 
         Footer,
         surveyBlocks
     },
-    data(){
+    data() {
         return{
             title: '',
             description:'',
@@ -66,18 +66,27 @@ export default{
         }
     },
 
-    methods:{
-        createProject: function(event){
+    methods: {
+        createProject: function(event) {
             const payload = {
-                "projectTitle": this.title,
                 "description": this.description,
                 "surveyID" : this.$refs.surveyInfo.selectedSurvey.id,
                 "blocks" : this.$refs.allData.allBlocks      
-            }
-            console.log(payload)
+            };
+            var options = {
+                method: "POST",
+                url: window.location.origin + '/api/projects',
+                json: {name: this.title, data: payload},
+                headers: {
+                    'content-type': 'application/json',
+                    'accept': 'application/json'
+                }
+            };
+            request(options, function(err, response, body) {
+                if (err) throw new Error(err);
+                console.log(body);
+            }.bind(this));
         }
-        
-
     }
 }
 </script>

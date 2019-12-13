@@ -114,8 +114,9 @@ app.route('/api/surveys/responses')
             };
             // var requestDownload = await requestPromise(options);
             request(options, function(err, response) {
+                if (err) throw new Error(err);
                 console.log(response.body);
-                fs.writeFileSync('../responses.json', buf);
+                fs.writeFileSync('../responses.json');
             });
         }
 
