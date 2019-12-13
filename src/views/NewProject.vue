@@ -68,8 +68,6 @@ export default{
 
     methods:{
         createProject: function(event){
-            const projectTitle = this.title
-            console.log()
             const payload = {
                 "projectTitle": this.title,
                 "description": this.description,

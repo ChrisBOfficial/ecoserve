@@ -53,14 +53,9 @@ export default {
             blockSelected: '',
             graphSelected: ''
         },
-        allBlocks:{
-
-        },
+        allBlocks: {},
         removeData: '',
-        visualizations: [
-
-        ]
-
+        visualizations: []
       }
     },
     computed: {
@@ -70,26 +65,28 @@ export default {
     },
     methods: {
         addVisualization: function(event){
-            const{blockSelected, graphSelected} = this.newBlock
+            const {blockSelected, graphSelected} = this.newBlock
 
             //do something with the new graph 
-            if (this.allBlocks.hasOwnProperty(blockSelected)){
+            /* if (this.allBlocks.hasOwnProperty(blockSelected)){
                 //not guarded for duplicates 
                 if(!(this.allBlocks[blockSelected].indexOf([graphSelected, "option"]) >= 0)){
                     this.allBlocks[blockSelected].push([graphSelected, "option"])
                     this.visualizations.push(blockSelected + "-" + graphSelected)
                 }
-            }else {
+            } else {
                 this.allBlocks[blockSelected] = []
                 this.allBlocks[blockSelected].push([graphSelected, "option"])
-                this.visualizations.push(blockSelected + "-" + graphSelected)
+                this.visualizations.push(blockSelected + " - " + graphSelected)
+            } */
+
+            this.allBlocks[blockSelected.id] = [[graphSelected, "option"]];
+
+            const blockSummary = blockSelected.description + " - " + graphSelected;
+            if (!(this.visualizations.includes(blockSummary))) {
+                this.visualizations.push(blockSummary);
             }
             console.log(this.allBlocks)
-
-            this.newBlock = {
-                blockSelected: '',
-                graphSelected: ''
-            }
         },
 
         removeVisualization: function(event){
