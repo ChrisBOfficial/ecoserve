@@ -11,7 +11,7 @@
             <span>Selected: {{selectedSurvey}} </span>
         </b-row>
         <b-row>
-            <button style="background-color:DarkSeaGreen;">CHOOSE SURVEY</button>
+            <button @click="getBlocks(selectedSurvey.id)" style="background-color:DarkSeaGreen;">CHOOSE SURVEY</button>
         </b-row>
     </b-container>
 </template>
@@ -25,8 +25,7 @@ export default {
     data() {
         return {
             selectedSurvey: '',
-            surveys: [],
-            blocks: []
+            surveys: []
         }
     },
     created: function() {
@@ -48,7 +47,7 @@ export default {
             }.bind(this));
         },
         getBlocks: function(surveyId) {
-            this.blocks = [];
+            this.$store.state.blocks = [];
             var options = {
                 method: 'GET',
                 url: window.location.origin + '/api/surveys?surveyId=' + surveyId,
@@ -60,7 +59,9 @@ export default {
                 if (error) throw new Error(error);
                 var survey = JSON.parse(body).result;
                 for (const block of survey.flow) {
-                    this.blocks.push(survey.blocks[block.id].description);
+                    var blockData = survey.blocks[block.id];
+                    blockData.id = block.id;
+                    this.$store.state.blocks.push(blockData);
                 }
             }.bind(this));
         }

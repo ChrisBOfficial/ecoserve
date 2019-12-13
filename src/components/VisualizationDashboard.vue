@@ -4,7 +4,7 @@
             <b-col>
                 <b-form-select v-model="newBlock.blockSelected" :select-size="4">
                     <option v-for="block in blocks" v-bind:value="block" v-bind:key="block">
-                        {{block.text}}
+                        {{block.description}}
                     </option>
                 </b-form-select>
                 <br>
@@ -44,7 +44,6 @@ export default {
   props:['questions'],
   data() {
       return{
-        blocks: this.questions,
         graphs: [
             {text: 'Bullseyes', value:'bullseyes'},
             {text: 'Bar Chart', value: 'barChart'}
@@ -63,6 +62,11 @@ export default {
         ]
 
       }
+    },
+    computed: {
+        blocks: function() {
+            return this.$store.state.blocks;
+        }
     },
     methods: {
         addVisualization: function(event){

@@ -73,7 +73,7 @@ export default{
             const payload = {
                 "projectTitle": this.title,
                 "description": this.description,
-                "surveyID" : this.$refs.surveyInfo.selectedSurvey,
+                "surveyID" : this.$refs.surveyInfo.selectedSurvey.id,
                 "blocks" : this.$refs.allData.allBlocks      
             }
             console.log(payload)
