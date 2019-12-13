@@ -80,12 +80,23 @@ export default {
                 this.visualizations.push(blockSelected + " - " + graphSelected)
             } */
 
-            this.allBlocks[blockSelected.id] = [[graphSelected, "option"]];
-
-            const blockSummary = blockSelected.description + " - " + graphSelected;
-            if (!(this.visualizations.includes(blockSummary))) {
-                this.visualizations.push(blockSummary);
+            if (this.allBlocks.hasOwnProperty(blockSelected.id)) {
+                var contained = false;
+                for (let item of this.allBlocks[blockSelected.id]) {
+                    if (item[0] == graphSelected && item[1] == "option") {
+                        contained = true;
+                    }
+                }
+                if (!contained) {
+                    this.allBlocks[blockSelected.id].push([graphSelected, "option"]);
+                    this.visualizations.push(blockSelected.description + " - " + graphSelected);
+                }
+            } else {
+                this.allBlocks[blockSelected.id] = [[graphSelected, "option"]];
+                this.visualizations.push(blockSelected.description + " - " + graphSelected);
             }
+
+            
             console.log(this.allBlocks)
         },
 
