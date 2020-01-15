@@ -10,7 +10,8 @@
     "start": "node src/server.js",
     "test": "mocha --exit",
     "deploy": "npm run build && cd resources && ./prep-deploy.sh",
-    "deploy-windows": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command npm run build; cd resources; ./prep-deploy.ps1"
+    "deploy-windows": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command npm run build; cd resources; ./prep-deploy.ps1",
+    "devstart": "NODE_ENV=development nodemon src/server.js"
   },
   "main": "server.js",
   "repository": {
@@ -25,6 +26,7 @@
     "babel-eslint": "^10.0.3",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.1.0",
+    "cors": "^2.8.5",
     "d3": "^5.12.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",

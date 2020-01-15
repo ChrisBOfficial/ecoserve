@@ -52,7 +52,7 @@ export default {
       this.getText = "Pulling survey...";
       var options = {
           method: 'GET',
-          url: window.location.origin + '/api/surveys?surveyId=' + surveyId,
+          url: this.$store.state.apiUrl + '/api/surveys?surveyId=' + surveyId,
           headers: {
               'x-api-token': process.env.VUE_APP_Q_API_TOKEN
           }
@@ -67,7 +67,7 @@ export default {
     getSurveys: function() {
       var options = {
           method: 'GET',
-          url: window.location.origin + '/api/surveys',
+          url: this.$store.state.apiUrl + '/api/surveys',
           headers: {
               'x-api-token': process.env.VUE_APP_Q_API_TOKEN
           }
@@ -110,6 +110,10 @@ export default {
         method: 'DELETE',
         url: window.location.origin + '/api/projects',
         json: { name: surveyName },
+        url: this.$store.state.apiUrl + '/api/projects',
+        json: { name: surveyName, data: { description: "A new project", 
+                                          surveyID: selectedID, 
+                                          blocks: { block1: ["barChart", "sorted"] } } },
         headers: {
           'content-type': 'application/json',
           'accept': 'application/json'
@@ -123,7 +127,7 @@ export default {
     getResponses: function(selectedID) {
       var options = {
         method: 'GET',
-        url: window.location.origin + '/api/surveys/responses?surveyId=' + selectedID,
+        url: this.$store.state.apiUrl + '/api/surveys/responses?surveyId=' + selectedID,
         headers: {
           'accept': 'application/json',
           'x-api-token': process.env.VUE_APP_Q_API_TOKEN

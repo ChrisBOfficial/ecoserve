@@ -35,7 +35,7 @@ export default {
         getSurveys: function() {
             var options = {
                 method: 'GET',
-                url: window.location.origin + '/api/surveys',
+                url: this.$store.state.apiUrl + '/api/surveys',
                 headers: {
                     'x-api-token': process.env.VUE_APP_Q_API_TOKEN
                 }
@@ -51,7 +51,7 @@ export default {
             this.$store.state.blocks = [];
             var options = {
                 method: 'GET',
-                url: window.location.origin + '/api/surveys?surveyId=' + surveyId,
+                url: this.$store.state.apiUrl + '/api/surveys?surveyId=' + surveyId,
                 headers: {
                     'x-api-token': process.env.VUE_APP_Q_API_TOKEN
                 }

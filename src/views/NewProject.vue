@@ -75,7 +75,7 @@ export default {
             };
             var options = {
                 method: "POST",
-                url: window.location.origin + '/api/projects',
+                url: this.$store.state.apiUrl + '/api/projects',
                 json: {name: this.title, data: payload},
                 headers: {
                     'content-type': 'application/json',

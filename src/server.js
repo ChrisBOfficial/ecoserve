@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const request = require('request');
@@ -20,6 +21,14 @@ if (port == 3000) {
     projectsDir = path.join(__dirname, 'projects.json');
 }
 
+if (process.env.NODE_ENV == 'development') {
+    console.log("IN DEV MODE");
+}
+
+// Enables requests from Vue serve 
+if (process.env.NODE_ENV == 'development') {
+    app.use(cors());
+}
 // Support JSON payloads in POST requests
 app.use(express.json());
 // Serve files in dist folder for all HTTP requests
