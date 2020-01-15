@@ -116,7 +116,8 @@ app.route('/api/surveys/responses')
             request(options, function(err, response) {
                 if (err) throw new Error(err);
                 console.log(response.body);
-                fs.writeFileSync('../responses.json');
+                const file = fs.createWriteStream('responses.json');
+                response.pipe(file);
             });
         }
 

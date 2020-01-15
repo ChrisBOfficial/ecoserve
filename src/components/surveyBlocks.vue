@@ -43,6 +43,7 @@ export default {
             request(options, function(error, response, body) {
                 if (error) throw new Error(error);
                 var res = JSON.parse(body).result;
+                console.log(body);
                 this.surveys = res.elements;
             }.bind(this));
         },
@@ -64,6 +65,8 @@ export default {
                     this.$store.state.blocks.push(blockData);
                 }
             }.bind(this));
+
+            this.selectedSurvey = '';
         }
     }
 }

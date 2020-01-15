@@ -49,7 +49,7 @@ export default {
             {text: 'Bar Chart', value: 'barChart'}
         ],
         //this will return as json for each project
-        newBlock:{
+        newBlock: {
             blockSelected: '',
             graphSelected: ''
         },
@@ -64,7 +64,7 @@ export default {
         }
     },
     methods: {
-        addVisualization: function(event){
+        addVisualization: function(event) {
             const {blockSelected, graphSelected} = this.newBlock
 
             //do something with the new graph 
@@ -80,44 +80,47 @@ export default {
                 this.visualizations.push(blockSelected + " - " + graphSelected)
             } */
 
-            if (this.allBlocks.hasOwnProperty(blockSelected.id)) {
+            if (this.allBlocks.hasOwnProperty(blockSelected.description)) {
                 var contained = false;
-                for (let item of this.allBlocks[blockSelected.id]) {
+                for (let item of this.allBlocks[blockSelected.description]) {
                     if (item[0] == graphSelected && item[1] == "option") {
                         contained = true;
                     }
                 }
                 if (!contained) {
-                    this.allBlocks[blockSelected.id].push([graphSelected, "option"]);
+                    this.allBlocks[blockSelected.description].push([graphSelected, "option"]);
                     this.visualizations.push(blockSelected.description + " - " + graphSelected);
                 }
             } else {
-                this.allBlocks[blockSelected.id] = [[graphSelected, "option"]];
+                this.allBlocks[blockSelected.description] = [[graphSelected, "option"]];
                 this.visualizations.push(blockSelected.description + " - " + graphSelected);
             }
+
+            this.newBlock = {blockSelected: '', graphSelected: ''};
         },
 
-        removeVisualization: function(event){
-            const blockSelected = this.removeData.split("-")[0]
-            const graphSelected = this.removeData.split("-")[1]
-            console.log(blockSelected)
-            for(var key in this.allBlocks){
-                console.log(key)
-                if(key == blockSelected){
+        removeVisualization: function(event) {
+            const blockSelected = this.removeData.split("-")[0].trimEnd();
+            const graphSelected = this.removeData.split("-")[1].trimStart();
+            /* for(var key in this.allBlocks) {
+                if(key == blockSelected.id) {
                     var i;
-                    for (i = 0; i < this.allBlocks[key].length; i++){
-                        console.log(this.allBlocks[key][i][0])
-                        if (this.allBlocks[blockSelected][i][0] == graphSelected){
-                            this.allBlocks[blockSelected].pop(this.allBlocks[blockSelected][i])
+                    for (i = 0; i < this.allBlocks[key].length; i++) {
+                        if (this.allBlocks[blockSelected.id][i][0] == graphSelected) {
+                            this.allBlocks[blockSelected.id].pop(this.allBlocks[blockSelected.id][i])
                         }
                     }
                 }
-            }
+            }*/
+
+            console.log(this.allBlocks);
+            this.allBlocks[blockSelected] = this.allBlocks[blockSelected].filter(item => item[0] != graphSelected);
             console.log(this.allBlocks)
 
+            /* this.visualizations.pop(this.removeData)
+            this.removeData = ''*/
 
-            this.visualizations.pop(this.removeData)
-            this.removeData = ''
+
         }
     }
 }

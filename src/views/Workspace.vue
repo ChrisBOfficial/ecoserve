@@ -45,6 +45,7 @@ export default {
   },
   created: function() {
     this.getSurveys();
+    this.getResponses('SV_b78ghjEDgpEZU3j');
   },
   methods: {
     getSpecificSurvey: function(surveyId) {

@@ -1,9 +1,8 @@
 {
-    "Temp Project": {
-        "description": "A trial project",
-        "surveyID": "SV_1B9ENurxTz9rPXD",
+    "Test project": {
+        "description": "Project to visualize scenarios",
         "blocks": {
-            "BL_25kHHDKSSbOiCep": [
+            "Familiarity": [
                 [
                     "bullseyes",
                     "option"
@@ -13,7 +12,7 @@
                     "option"
                 ]
             ],
-            "BL_1zENK2BOjdE6qNf": [
+            "Forage": [
                 [
                     "bullseyes",
                     "option"
