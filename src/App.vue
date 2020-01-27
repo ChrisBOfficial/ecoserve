@@ -15,13 +15,6 @@ export default {
   components: {
     Header,
     Footer
-  },
-  created: function() {
-    if (process.env.NODE_ENV == "development") {
-      this.$store.state.apiUrl = "http://localhost:3000";
-    } else if (process.env.NODE_ENV == "production") {
-      this.$store.state.apiUrl = window.location.origin;
-    }
   }
 }
 </script>

@@ -124,9 +124,10 @@ app.route('/api/surveys/responses')
             // var requestDownload = await requestPromise(options);
             request(options, function(err, response) {
                 if (err) throw new Error(err);
-                console.log(response.body);
-                const file = fs.createWriteStream('responses.json');
-                response.pipe(file);
+                var data = Buffer.from(response.body);
+                const file = fs.createWriteStream('responses.zip');
+                file.write(data, "base64");
+                res.send(response.body);
             });
         }
 

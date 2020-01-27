@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/cseseniordesign/invasive-species#readme",
   "dependencies": {
+    "axios": "^0.19.1",
     "babel-eslint": "^10.0.3",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.1.0",

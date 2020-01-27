@@ -8,9 +8,7 @@
           <div style="width: 50%; margin: 0 auto;">
             <button v-for="survey in formattedSurveys" :key="survey.name" v-on:click="saveSurvey(survey.name, survey.id)">{{ survey.name }}</button>
           </div>
-          <button v-on:click="getSurveys">Refresh surveys</button>
-          <button v-on:click="deleteSurvey('Scenario planning')">Delete Project "Scenario planning"</button>
-          <button v-on:click="getResponses('SV_b78ghjEDgpEZU3j')">Get responses for SV_b78ghjEDgpEZU3j</button>
+          <button v-on:click="loadSurveys">Refresh surveys</button>
       </div>
     </div>
     <Footer/>
@@ -18,8 +16,9 @@
 </template>
 
 <script>
-import Header from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue'
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
+import {mapActions, mapState} from 'vuex';
 var request = require('request');
 
 export default {
@@ -30,9 +29,13 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      surveys: state => state.surveys.surveys,
+      survey: state => state.surveys.survey
+    }),
     formattedSurveys: function() {
       var formattedList = [];
-      this.$store.state.surveys.forEach(function(survey, index) {
+      this.surveys.forEach(function(survey, index) {
         var surveyName = "Survey " + (index + 1) + " - " + survey.name;
         formattedList.push({ displayName: surveyName, id: survey.id, name: survey.name });
       });
@@ -43,26 +46,17 @@ export default {
     Header,
     Footer
   },
-  created: function() {
-    this.getSurveys();
-    this.getResponses('SV_b78ghjEDgpEZU3j');
+  created: async function() {
+    this.loadSurveys();
+    // this.getResponses('SV_b78ghjEDgpEZU3j');
   },
   methods: {
+    ...mapActions({
+      loadSurveys: 'surveys/loadSurveys',
+      loadSurvey: 'surveys/loadSurvey'
+    }),
     getSpecificSurvey: function(surveyId) {
-      this.getText = "Pulling survey...";
-      var options = {
-          method: 'GET',
-          url: this.$store.state.apiUrl + '/api/surveys?surveyId=' + surveyId,
-          headers: {
-              'x-api-token': process.env.VUE_APP_Q_API_TOKEN
-          }
-      };
-      request(options, function(error, response, body) {
-          if (error) throw new Error(error);
-          var survey = JSON.parse(body).result;
-          console.log(survey);
-          this.getText = "...survey pulled and logged!";
-      }.bind(this));
+      this.loadSurvey(surveyId);
     },
     getSurveys: function() {
       var options = {
