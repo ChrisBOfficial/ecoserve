@@ -15,7 +15,9 @@ export default {
             // Calls the API to load the responses
             ResponsesAPI.getResponses(data)
                     .then(response => {
+                        console.log(response.data);
                         console.log("Response call returned");
+                        commit('setResponsesLoadStatus', 2);
                     })
                     .catch(error => {
                         console.log(error);

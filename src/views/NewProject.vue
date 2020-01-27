@@ -13,7 +13,7 @@
                     <h3>Create New Survey</h3>
                 </b-row>
                 <b-row class="align-items-center">
-                    <b-button href="https://login.qualtrics.com/login">Link to Qualtrics</b-button>
+                    <b-button href="https://login.qualtrics.com/login" target="_blank">Link to Qualtrics</b-button>
                 </b-row>
                 <b-row>
                     <survey-blocks ref="surveyInfo" v-bind:questions="questions"/>
@@ -22,7 +22,6 @@
                     <h2> Visualization Dashboard </h2>
                     <visualization-dashboard ref="allData"/>
                 </b-row>
-
 
                 <b-row>
                     <b-col>
@@ -33,8 +32,6 @@
                     </b-col>
                 </b-row>
             </b-container>
-
-
         <Footer/>
     </div>
 </template>
@@ -52,9 +49,9 @@ var request = require('request');
 export default {
     components: {
         ProjectForm,
-        VisualizationDashboard,
         Header, 
         Footer,
+        VisualizationDashboard,
         surveyBlocks
     },
     data() {
