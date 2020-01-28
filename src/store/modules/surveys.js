@@ -8,7 +8,9 @@ export default {
         surveysLoadStatus: 0,
 
         survey: {},
-        surveyLoadStatus: 0
+        surveyLoadStatus: 0,
+
+        blocks: []
     },
 
     actions: {
@@ -19,7 +21,7 @@ export default {
             SurveysAPI.getSurveys()
                     .then(response => {
                         if (response.data.result && response.data.result.elements) {
-                            console.log(response.data);
+                            console.log(response.data.result);
                             commit('setSurveys', response.data.result.elements);
                             commit('setSurveysLoadStatus', 2);
                         }
@@ -40,6 +42,14 @@ export default {
                         console.log(response.data);
                         commit('setSurvey', response.data.result);
                         commit('setSurveyLoadStatus', 2);
+                        var blocks = [];
+                        var survey = response.data.result;
+                        for (const block of survey.flow) {
+                            var blockData = survey.blocks[block.id];
+                            blockData.id = block.id;
+                            blocks.push(blockData);
+                        }
+                        commit('setSurveyBlocks', blocks);
                     })
                     .catch(error => {
                         console.log(error);
@@ -65,6 +75,10 @@ export default {
         // Sets the survey load status
         setSurveyLoadStatus(state, status) {
             state.surveyLoadStatus = status;
+        },
+        // Sets the selected survey blocks
+        setSurveyBlocks(state, blocks) {
+            state.blocks = blocks;
         }
     }
 }

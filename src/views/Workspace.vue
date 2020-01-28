@@ -48,12 +48,13 @@ export default {
   },
   created: async function() {
     this.loadSurveys();
-    // this.getResponses('SV_b78ghjEDgpEZU3j');
+    this.getResponses('SV_b78ghjEDgpEZU3j');
   },
   methods: {
     ...mapActions({
       loadSurveys: 'surveys/loadSurveys',
-      loadSurvey: 'surveys/loadSurvey'
+      loadSurvey: 'surveys/loadSurvey',
+      getResponses: 'responses/loadResponses'
     }),
     getSpecificSurvey: function(surveyId) {
       this.loadSurvey(surveyId);
@@ -116,19 +117,6 @@ export default {
       request(options, function(error, response, body) {
         if (error) throw new Error(error);
         console.log(body);
-      }.bind(this));
-    },
-    getResponses: function(selectedID) {
-      var options = {
-        method: 'GET',
-        url: this.$store.state.apiUrl + '/api/surveys/responses?surveyId=' + selectedID,
-        headers: {
-          'accept': 'application/json',
-          'x-api-token': process.env.VUE_APP_Q_API_TOKEN
-        }
-      };
-      request(options, function(error, response, body) {
-        if (error) throw new Error(error);
       }.bind(this));
     }
   }
