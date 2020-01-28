@@ -52,7 +52,7 @@ export default {
         surveyBlocks
     },
     data() {
-        return{
+        return {
             title: '',
             description:'',
             questions: []
