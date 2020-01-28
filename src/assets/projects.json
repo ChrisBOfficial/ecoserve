@@ -1,20 +1,23 @@
 {
-    "Test project": {
-        "description": "Project to visualize scenarios",
+    "Scenario Planning": {
+        "description": "Project for visualization scenario plans",
+        "surveyID": "SV_0N86PO2zWpbTtmR",
         "blocks": {
-            "Familiarity": [
+            "Consent": [
                 [
                     "bullseyes",
-                    "option"
-                ],
-                [
-                    "barChart",
                     "option"
                 ]
             ],
             "Forage": [
                 [
-                    "bullseyes",
+                    "barChart",
+                    "option"
+                ]
+            ],
+            "Email": [
+                [
+                    "barChart",
                     "option"
                 ]
             ]

@@ -68,8 +68,8 @@ app.route('/api/surveys')
 	});
 
 app.route('/api/surveys/responses')
-	.get((req, res) => {
-		async function respond(req, res) {
+	.get((req) => {
+		async function respond(req) {
 			// Create data export
 			var surveyId = req.query.surveyId;
 			var requestCheckProgress = 0.0;
@@ -146,7 +146,7 @@ app.route('/api/surveys/responses')
 				});
 		}
 
-		respond(req, res);
+		respond(req);
 	});
 
 app.route('/api/projects')

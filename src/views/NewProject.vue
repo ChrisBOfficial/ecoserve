@@ -16,7 +16,7 @@
                     <b-button href="https://login.qualtrics.com/login" target="_blank">Link to Qualtrics</b-button>
                 </b-row>
                 <b-row>
-                    <survey-blocks ref="surveyInfo" v-bind:questions="questions"/>
+                    <survey-blocks/>
                 </b-row>
                 <b-row>
                     <h2> Visualization Dashboard </h2>
@@ -38,17 +38,14 @@
 
 
 <script>
-import ProjectForm from '@/components/ProjectForm.vue'
 import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import surveyBlocks from '@/components/surveyBlocks.vue'
-var request = require('request');
-
+import {mapActions, mapState} from 'vuex';
 
 export default {
     components: {
-        ProjectForm,
         Header, 
         Footer,
         VisualizationDashboard,
@@ -58,31 +55,33 @@ export default {
         return{
             title: '',
             description:'',
-            blocks: {},
             questions: []
         }
     },
-
+    computed: {
+        ...mapState({
+            surveys: state => state.surveys.surveys,
+            survey: state => state.surveys.survey,
+            blocks: state => state.surveys.blocks,
+            projectBlocks: state => state.surveys.projectBlocks
+        })
+    },
     methods: {
-        createProject: function(event) {
+        ...mapActions({
+            loadSurveys: 'surveys/loadSurveys',
+            loadSurvey: 'surveys/loadSurvey',
+            saveProject: 'projects/saveProject'
+        }),
+        createProject: function() {
             const payload = {
-                "description": this.description,
-                "surveyID" : this.$refs.surveyInfo.selectedSurvey.id,
-                "blocks" : this.$refs.allData.allBlocks      
+                name: this.title,
+                data: {
+                    "description": this.description,
+                    "surveyID" : this.survey.id,
+                    "blocks" : this.projectBlocks 
+                }     
             };
-            var options = {
-                method: "POST",
-                url: this.$store.state.apiUrl + '/api/projects',
-                json: {name: this.title, data: payload},
-                headers: {
-                    'content-type': 'application/json',
-                    'accept': 'application/json'
-                }
-            };
-            request(options, function(err, response, body) {
-                if (err) throw new Error(err);
-                console.log(body);
-            }.bind(this));
+            this.saveProject(payload);
         }
     }
 }

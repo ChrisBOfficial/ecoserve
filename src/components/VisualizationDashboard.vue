@@ -2,22 +2,22 @@
     <b-container>
         <b-row>
             <b-col>
-                <b-form-select v-model="newBlock.blockSelected" :select-size="4">
-                    <option v-for="block in blocks" v-bind:value="block" v-bind:key="block">
+                <b-form-select v-model="blockSelected" :select-size="4">
+                    <option v-for="block in blocks" v-bind:value="block" v-bind:key="block.id">
                         {{block.description}}
                     </option>
                 </b-form-select>
                 <br>
-                <span>Selected: {{ newBlock.blockSelected }}</span>
+                <span>Selected: {{ blockSelected }}</span>
             </b-col>
             <b-col>
-                <b-form-select v-model="newBlock.graphSelected" :select-size="4">
+                <b-form-select v-model="graphSelected" :select-size="4">
                     <option v-for="graph in graphs" v-bind:value="graph.value" v-bind:key="graph.value">
                         {{graph.text}}
                     </option>
                 </b-form-select>
                 <br>
-                <span>Selected: {{ newBlock.graphSelected }}</span>
+                <span>Selected: {{ graphSelected }}</span>
             </b-col>
         </b-row>
         <b-row class="align-items-center">
@@ -38,34 +38,41 @@
 </template>
 
 <script>
+import {mapActions, mapState} from 'vuex';
 
 export default {
   name: "VisualizationDashboard",
   props:['questions'],
   data() {
-      return{
+      return {
+        allBlocks: {},
         graphs: [
             {text: 'Bullseyes', value:'bullseyes'},
             {text: 'Bar Chart', value: 'barChart'}
         ],
-        //this will return as json for each project
-        newBlock: {
-            blockSelected: '',
-            graphSelected: ''
-        },
-        allBlocks: {},
-        removeData: '',
-        visualizations: []
+        blockSelected: '',
+        graphSelected: '',
+        visualizations: [],
+        removeData: ''
       }
     },
     computed: {
-        blocks: function() {
-            return this.$store.state.blocks;
-        }
+        ...mapState({
+            surveys: state => state.surveys.surveys,
+            survey: state => state.surveys.survey,
+            blocks: state => state.surveys.blocks,
+            projectBlocks: state => state.surveys.projectBlocks
+        })
     },
     methods: {
-        addVisualization: function(event) {
-            const {blockSelected, graphSelected} = this.newBlock
+        ...mapActions({
+            loadSurveys: 'surveys/loadSurveys',
+            loadSurvey: 'surveys/loadSurvey',
+            saveProjectBlocks: 'surveys/saveProjectBlocks'
+        }),
+        addVisualization: function() {
+            const blockSelected = this.blockSelected;
+            const graphSelected = this.graphSelected;
 
             //do something with the new graph 
             /* if (this.allBlocks.hasOwnProperty(blockSelected)){
@@ -80,6 +87,7 @@ export default {
                 this.visualizations.push(blockSelected + " - " + graphSelected)
             } */
 
+            // eslint-disable-next-line no-prototype-builtins
             if (this.allBlocks.hasOwnProperty(blockSelected.description)) {
                 var contained = false;
                 for (let item of this.allBlocks[blockSelected.description]) {
@@ -96,10 +104,11 @@ export default {
                 this.visualizations.push(blockSelected.description + " - " + graphSelected);
             }
 
-            this.newBlock = {blockSelected: '', graphSelected: ''};
+            this.saveProjectBlocks(this.allBlocks);
+            this.blockSelected = '';
+            this.graphSelected = '';
         },
-
-        removeVisualization: function(event) {
+        removeVisualization: function() {
             const blockSelected = this.removeData.split("-")[0].trimEnd();
             const graphSelected = this.removeData.split("-")[1].trimStart();
             /* for(var key in this.allBlocks) {
@@ -113,14 +122,12 @@ export default {
                 }
             }*/
 
-            console.log(this.allBlocks);
+            
             this.allBlocks[blockSelected] = this.allBlocks[blockSelected].filter(item => item[0] != graphSelected);
-            console.log(this.allBlocks)
 
+            this.saveProjectBlocks(this.allBlocks);
             /* this.visualizations.pop(this.removeData)
             this.removeData = ''*/
-
-
         }
     }
 }
