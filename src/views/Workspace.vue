@@ -4,7 +4,6 @@
     <div class="container" style="padding:10px 10px;">
       <div class="well" style="padding-top: 136px;">
           <button v-on:click="getSpecificSurvey('SV_b78ghjEDgpEZU3j', ...arguments)">Log survey SV_b78ghjEDgpEZU3j</button>
-          <p>{{ getText }}</p>
           <div style="width: 50%; margin: 0 auto;">
             <button v-for="survey in formattedSurveys" :key="survey.name">{{ survey.name }}</button>
           </div>
@@ -22,11 +21,6 @@ import {mapActions, mapState} from 'vuex';
 
 export default {
   name: 'workspace',
-  data() {
-    return {
-      getText: ""
-    }
-  },
   computed: {
     ...mapState({
       surveys: state => state.surveys.surveys,

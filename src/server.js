@@ -25,12 +25,9 @@ if (port === 3000) {
 
 if (process.env.NODE_ENV === 'development') {
 	console.log("IN DEV MODE");
-}
-
-// Enables requests from Vue serve 
-if (process.env.NODE_ENV === 'development') {
 	app.use(cors());
 }
+
 // Support JSON payloads in POST requests
 app.use(express.json());
 // Serve files in dist folder for all HTTP requests
@@ -68,7 +65,7 @@ app.route('/api/surveys')
 	});
 
 app.route('/api/surveys/responses')
-	.get((req) => {
+	.get((req, res) => {
 		async function respond(req) {
 			// Create data export
 			var surveyId = req.query.surveyId;
@@ -137,8 +134,8 @@ app.route('/api/surveys/responses')
 					entry.on('data', function (chunk) {
 						chunks.push(chunk);
 					}).on('end', function () {
-						const results = Buffer.concat(chunks).toString('utf8');
-						console.log(results);
+						const results = JSON.parse(Buffer.concat(chunks).toString('utf8')).responses;
+						res.send(results);
 					});
 
 					// Save the file to disk
@@ -146,7 +143,7 @@ app.route('/api/surveys/responses')
 				});
 		}
 
-		respond(req);
+		respond(req, res);
 	});
 
 app.route('/api/projects')
