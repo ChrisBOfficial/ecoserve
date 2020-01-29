@@ -16,6 +16,7 @@ export default {
             ResponsesAPI.getResponses(data)
                     .then(response => {
                         console.log(response.data);
+                        commit('setResponses', response.data);
                         commit('setResponsesLoadStatus', 2);
                     })
                     .catch(error => {

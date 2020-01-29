@@ -139,7 +139,7 @@ app.route('/api/surveys/responses')
 					});
 
 					// Save the file to disk
-					entry.pipe(fs.createWriteStream(entry.path));
+					// entry.pipe(fs.createWriteStream(entry.path));
 				});
 		}
 
