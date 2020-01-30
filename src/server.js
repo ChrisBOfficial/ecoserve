@@ -28,7 +28,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Middleware for handling raw POST data
-app.use(express.urlencoded());
+app.use(express.urlencoded({extended: true}));
 // Allow interaction with Vue serve and Qualtrics Web Listeners
 app.use(cors());
 // Support JSON payloads in POST requests
@@ -165,10 +165,11 @@ app.route('/api/surveys/responses')
 				'X-API-TOKEN': req.headers['x-api-token']
 			}
 		};
-		request(options, function (error, response, body) {
+		/* request(options, function (error, response, body) {
 			if (error) throw new Error(error);
 			res.send(body);
-		});
+		}); */
+		io.emit('realtime', "testing....");
 	});
 
 app.route('/api/listener')
@@ -196,8 +197,9 @@ app.route('/api/projects')
 	});
 
 //Starting server on the port
-app.listen(port, () => {
+var server = app.listen(port, () => {
 	console.log("Server started on port " + port);
 });
+var io = require('socket.io')(server);
 
 exports.app = app;
