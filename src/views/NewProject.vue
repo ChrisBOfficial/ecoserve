@@ -54,21 +54,21 @@ export default {
     },
     data() {
         return {
-            socket: io('localhost:3000'),
+            socket: {},
             title: '',
-            description:'',
+            description: '',
             questions: []
         }
     },
     computed: {
         ...mapState({
-            surveys: state => state.surveys.surveys,
             survey: state => state.surveys.survey,
-            blocks: state => state.surveys.blocks,
-            projectBlocks: state => state.surveys.projectBlocks
+            projectBlocks: state => state.surveys.projectBlocks,
+            socketUrl: state => state.proxy.url
         })
     },
     mounted() {
+        this.socket = io(this.socketUrl);
         this.socket.on('realtime', function(msg) {
             console.log('message: ' + msg);
         });

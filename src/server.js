@@ -27,14 +27,10 @@ if (process.env.NODE_ENV === 'development') {
 	console.log("IN DEV MODE");
 }
 
-// Middleware for handling raw POST data
-app.use(express.urlencoded({extended: true}));
-// Allow interaction with Vue serve and Qualtrics Web Listeners
-app.use(cors());
-// Support JSON payloads in POST requests
-app.use(express.json());
-// Serve files in dist folder for all HTTP requests
-app.use(express.static(path.join(__dirname, distDirectory)));
+app.use(express.urlencoded({extended: true})); // Middleware for handling raw POST data
+app.use(cors()); // Allow interaction with Vue serve and Qualtrics Web Listeners
+app.use(express.json()); // Support JSON payloads in POST requests
+app.use(express.static(path.join(__dirname, distDirectory))); // Serve files in dist folder for all HTTP requests
 // Any routes will be redirected to the vue app, using index.html as homepage
 app.get('/', (_, res) => {
 	res.sendFile(path.join(__dirname, distDirectory, '/index.html'));
@@ -170,6 +166,7 @@ app.route('/api/surveys/responses')
 			res.send(body);
 		}); */
 		io.emit('realtime', "testing....");
+		res.sendStatus(200);
 	});
 
 app.route('/api/listener')
@@ -196,7 +193,7 @@ app.route('/api/projects')
 		res.send(projects);
 	});
 
-//Starting server on the port
+// Starting server and socket.io instance on the port
 var server = app.listen(port, () => {
 	console.log("Server started on port " + port);
 });
