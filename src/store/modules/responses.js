@@ -5,7 +5,9 @@ export default {
 
     state: {
         responses: {},
-        responsesLoadStatus: 0
+        responsesLoadStatus: 0,
+
+        hookLoadStatus: 0
     },
 
     actions: {
@@ -23,6 +25,20 @@ export default {
                         console.log(error);
                         commit('setResponsesLoadStatus', 3);
                     });
+        },
+
+        // Subscribes to survey updates for a given surveyId
+        createHook({commit}, data) {
+            commit('setHookLoadStatus', 1);
+            ResponsesAPI.registerHook(data)
+                    .then(() => {
+                        console.log("Survey hook registered");
+                        commit('setHookLoadStatus', 2);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                        commit('setHookLoadStatus', 3);
+                    });
         }
     },
 
@@ -34,6 +50,9 @@ export default {
         // Sets the responses load status
         setResponsesLoadStatus(state, status) {
             state.responsesLoadStatus = status;
+        },
+        setHookLoadStatus(state, status) {
+            state.hookLoadStatus = status;
         }
     }
 }

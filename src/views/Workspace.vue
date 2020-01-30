@@ -18,13 +18,19 @@
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import {mapActions, mapState} from 'vuex';
+import io from 'socket.io-client';
 
 export default {
-  name: 'workspace',
+  data() {
+    return {
+      socket: {}
+    }
+  },
   computed: {
     ...mapState({
       surveys: state => state.surveys.surveys,
-      survey: state => state.surveys.survey
+      survey: state => state.surveys.survey,
+      socketUrl: state => state.proxy.url
     }),
     formattedSurveys: function() {
       var formattedList = [];
@@ -42,12 +48,21 @@ export default {
   created: async function() {
     this.loadSurveys();
     this.getResponses('SV_b78ghjEDgpEZU3j');
+
+    this.socket = io(this.socketUrl, {transports: ['polling']});
+    this.socket.on('SV_3yOO65TG4UFqw6N', function(msg) {
+        console.log(msg);
+    });
+
+    this.createHook('SV_3yOO65TG4UFqw6N');
+    // https://ssp.qualtrics.com/jfe/form/SV_3yOO65TG4UFqw6N
   },
   methods: {
     ...mapActions({
       loadSurveys: 'surveys/loadSurveys',
       loadSurvey: 'surveys/loadSurvey',
-      getResponses: 'responses/loadResponses'
+      getResponses: 'responses/loadResponses',
+      createHook: 'responses/createHook'
     }),
     getSpecificSurvey: function(surveyId) {
       this.loadSurvey(surveyId);

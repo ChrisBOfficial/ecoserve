@@ -43,7 +43,6 @@ import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import surveyBlocks from '@/components/surveyBlocks.vue'
 import {mapActions, mapState} from 'vuex';
-import io from 'socket.io-client';
 
 export default {
     components: {
@@ -54,7 +53,6 @@ export default {
     },
     data() {
         return {
-            socket: {},
             title: '',
             description: '',
             questions: []
@@ -64,14 +62,7 @@ export default {
         ...mapState({
             survey: state => state.surveys.survey,
             projectBlocks: state => state.surveys.projectBlocks,
-            socketUrl: state => state.proxy.url
         })
-    },
-    mounted() {
-        this.socket = io(this.socketUrl);
-        this.socket.on('realtime', function(msg) {
-            console.log('message: ' + msg);
-        });
     },
     methods: {
         ...mapActions({

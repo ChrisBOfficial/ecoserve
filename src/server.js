@@ -161,18 +161,18 @@ app.route('/api/surveys/responses')
 				'X-API-TOKEN': req.headers['x-api-token']
 			}
 		};
-		/* request(options, function (error, response, body) {
+		request(options, function (error, response, body) {
 			if (error) throw new Error(error);
 			res.send(body);
-		}); */
-		io.emit('realtime', "testing....");
-		res.sendStatus(200);
+		});
 	});
 
 app.route('/api/listener')
 	.post((req, res) => {
 		var surveyId = req.query.surveyId;
-		console.log("STATUS -> ", req.body.Status);
+		if (req.body.Status == "Complete") {
+			io.emit('SV_3yOO65TG4UFqw6N', "Survey completed!");
+		}
 	})
 
 app.route('/api/projects')
