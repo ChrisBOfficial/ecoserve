@@ -109,6 +109,7 @@ export default {
             this.graphSelected = '';
         },
         removeVisualization: function() {
+            this.visualizations.splice(this.visualizations.indexOf(this.removeData), 1);
             const blockSelected = this.removeData.split("-")[0].trimEnd();
             const graphSelected = this.removeData.split("-")[1].trimStart();
             /* for(var key in this.allBlocks) {

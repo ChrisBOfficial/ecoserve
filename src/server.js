@@ -25,9 +25,12 @@ if (port === 3000) {
 
 if (process.env.NODE_ENV === 'development') {
 	console.log("IN DEV MODE");
-	app.use(cors());
 }
 
+// Middleware for handling raw POST data
+app.use(express.urlencoded());
+// Allow interaction with Vue serve and Qualtrics Web Listeners
+app.use(cors());
 // Support JSON payloads in POST requests
 app.use(express.json());
 // Serve files in dist folder for all HTTP requests
@@ -66,7 +69,7 @@ app.route('/api/surveys')
 
 app.route('/api/surveys/responses')
 	.get((req, res) => {
-		async function respond(req) {
+		async function respond(req, res) {
 			// Create data export
 			var surveyId = req.query.surveyId;
 			var requestCheckProgress = 0.0;
@@ -144,7 +147,35 @@ app.route('/api/surveys/responses')
 		}
 
 		respond(req, res);
+	})
+	.post((req, res) => {
+		var surveyId = req.query.surveyId;
+		var baseUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/eventsubscriptions/';
+		var dataString = {
+			'topics': 'surveyengine.completedResponse.' + surveyId,
+			'publicationUrl': req.protocol + '://' + req.get('HOST') + '/api/listener?surveyId=' + surveyId,
+			'encrypt': false
+		}
+		var options = {
+			method: 'POST',
+			url: baseUrl,
+			body: JSON.stringify(dataString),
+			headers: {
+				'content-type': 'application/json',
+				'X-API-TOKEN': req.headers['x-api-token']
+			}
+		};
+		request(options, function (error, response, body) {
+			if (error) throw new Error(error);
+			res.send(body);
+		});
 	});
+
+app.route('/api/listener')
+	.post((req, res) => {
+		var surveyId = req.query.surveyId;
+		console.log("STATUS -> ", req.body.Status);
+	})
 
 app.route('/api/projects')
 	.get((_, res) => {

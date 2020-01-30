@@ -8,7 +8,7 @@ var apiUrl;
 if (process.env.NODE_ENV == 'development') {
   apiUrl = 'http://localhost:3000/api';
 } else if (process.env.NODE_ENV == 'production') {
-  apiUrl = window.location.origin;
+  apiUrl = window.location.origin + '/api';
 }
 
 const instance = axios.create({
