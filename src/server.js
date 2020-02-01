@@ -22,9 +22,9 @@ if (port === 3000 || process.env.NODE_ENV === 'development') {
 	projectsDir = path.join(__dirname, 'projects.json');
 }
 
-// Initialize MongoDB
+// Initialize MongoDB connection using Admin user if provided, TestUser otherwise
 const MongoClient = require('mongodb').MongoClient;
-const uri = process.env.MONGO_URI;
+const uri = process.env.MONGO_URI || "mongodb+srv://TestUser:mochatest@invasive-species-toriy.mongodb.net/test?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
 	if (err) throw new Error(err);
