@@ -23,14 +23,14 @@ import io from 'socket.io-client';
 export default {
   data() {
     return {
-      socket: {}
+      socket: {},
+      lastUpdate: 0
     }
   },
   computed: {
     ...mapState({
       surveys: state => state.surveys.surveys,
-      survey: state => state.surveys.survey,
-      socketUrl: state => state.proxy.url
+      survey: state => state.surveys.survey
     }),
     formattedSurveys: function() {
       var formattedList = [];
@@ -45,17 +45,23 @@ export default {
     Header,
     Footer
   },
-  created: async function() {
+  created: function() {
+    this.lastUpdate = Date.now();
     this.loadSurveys();
     this.getResponses('SV_b78ghjEDgpEZU3j');
 
-    this.socket = io(this.socketUrl, {transports: ['polling']});
-    this.socket.on('SV_3yOO65TG4UFqw6N', function(msg) {
+    this.socket = io('/SV_3yOO65TG4UFqw6N', {transport: 'polling'});
+    this.socket.on('surveyComplete', function(msg) {
+      if (Date.now() - this.lastUpdate >= 5000) {
+        this.lastUpdate = Date.now();
         console.log(msg);
-    });
-
+      }
+    }.bind(this));
     this.createHook('SV_3yOO65TG4UFqw6N');
     // https://ssp.qualtrics.com/jfe/form/SV_3yOO65TG4UFqw6N
+  },
+  destroyed: function() {
+    this.socket.close();
   },
   methods: {
     ...mapActions({

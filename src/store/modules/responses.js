@@ -31,8 +31,8 @@ export default {
         createHook({commit}, data) {
             commit('setHookLoadStatus', 1);
             ResponsesAPI.registerHook(data)
-                    .then(() => {
-                        console.log("Survey hook registered");
+                    .then(response => {
+                        console.log(response.data);
                         commit('setHookLoadStatus', 2);
                     })
                     .catch(error => {

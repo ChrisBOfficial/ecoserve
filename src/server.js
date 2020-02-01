@@ -171,8 +171,10 @@ app.route('/api/listener')
 	.post((req, res) => {
 		var surveyId = req.query.surveyId;
 		if (req.body.Status == "Complete") {
-			io.emit('SV_3yOO65TG4UFqw6N', "Survey completed!");
+			var nsp = io.of('/' + surveyId);
+			nsp.emit('surveyComplete', req.body.ResponseID);
 		}
+		res.sendStatus(200);
 	})
 
 app.route('/api/projects')
