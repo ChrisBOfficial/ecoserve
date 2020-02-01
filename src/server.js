@@ -5,32 +5,35 @@ const path = require('path');
 const request = require('request');
 const unzip = require('unzip-stream');
 const util = require('util');
-
 const requestPromise = util.promisify(request);
-require('dotenv').config();
 
+require('dotenv').config(); // Loads .env file
 // Use AWS port if provided, 3000 otherwise
-var port = process.env.PORT || 3000,
-	app = express();
+var port = process.env.PORT || 3000
 
 var distDirectory;
 var projectsDir;
-if (port === 3000) {
+if (process.env.NODE_ENV === 'development') {
+	console.log("IN DEV MODE");
 	distDirectory = '../dist';
 	projectsDir = path.join(__dirname, '/assets/projects.json');
-} else {
+} else if (process.env.NODE_ENV === 'production') {
 	distDirectory = 'dist';
 	projectsDir = path.join(__dirname, 'projects.json');
 }
 
-if (process.env.NODE_ENV === 'development') {
-	console.log("IN DEV MODE");
-}
-
+var app = express();
 app.use(express.urlencoded({extended: true})); // Middleware for handling raw POST data
 app.use(cors()); // Allow interaction with Vue serve and Qualtrics Web Listeners
 app.use(express.json()); // Support JSON payloads in POST requests
 app.use(express.static(path.join(__dirname, distDirectory))); // Serve files in dist folder for all HTTP requests
+
+// Start server and socket.io instance on the port
+var server = app.listen(port, () => {
+	console.log("Server started on port " + port);
+});
+var io = require('socket.io')(server);
+
 // Any routes will be redirected to the vue app, using index.html as homepage
 app.get('/', (_, res) => {
 	res.sendFile(path.join(__dirname, distDirectory, '/index.html'));
@@ -194,11 +197,5 @@ app.route('/api/projects')
 		fs.writeFileSync(projectsDir, JSON.stringify(projects, null, 4));
 		res.send(projects);
 	});
-
-// Starting server and socket.io instance on the port
-var server = app.listen(port, () => {
-	console.log("Server started on port " + port);
-});
-var io = require('socket.io')(server);
 
 exports.app = app;

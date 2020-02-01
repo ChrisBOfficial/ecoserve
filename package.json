@@ -4,14 +4,14 @@
   "description": "A platform for the integration of traditional and local knowledge with ecosystem service assessments and environmental decision making.",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "deploy": "npm run build && cd resources && ./prep-deploy.sh",
+    "deploy-windows": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command npm run build; cd resources; ./prep-deploy.ps1",
+    "serve": "vue-cli-service serve",
     "prestart": "npm install",
     "start": "node src/server.js",
     "devstart": "NODE_ENV=development nodemon src/server.js",
-    "test": "mocha --exit",
-    "deploy": "npm run build && cd resources && ./prep-deploy.sh",
-    "deploy-windows": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command npm run build; cd resources; ./prep-deploy.ps1"
+    "test": "mocha --exit"
   },
   "main": "server.js",
   "repository": {
@@ -24,13 +24,13 @@
   "homepage": "https://github.com/cseseniordesign/invasive-species#readme",
   "dependencies": {
     "axios": "^0.19.1",
-    "body-parser": "^1.19.0",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.1.0",
     "cors": "^2.8.5",
     "d3": "^5.12.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "mongodb": "^3.5.2",
     "request": "^2.88.0",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
