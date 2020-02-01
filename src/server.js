@@ -8,9 +8,9 @@ const util = require('util');
 const requestPromise = util.promisify(request);
 
 require('dotenv').config(); // Loads .env file
+
 // Use AWS port if provided, 3000 otherwise
 var port = process.env.PORT || 3000
-
 var distDirectory;
 var projectsDir;
 if (port === 3000 || process.env.NODE_ENV === 'development') {
@@ -22,9 +22,21 @@ if (port === 3000 || process.env.NODE_ENV === 'development') {
 	projectsDir = path.join(__dirname, 'projects.json');
 }
 
+// Initialize MongoDB
+const MongoClient = require('mongodb').MongoClient;
+const uri = process.env.MONGO_URI;
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+client.connect(err => {
+	if (err) throw new Error(err);
+	// const collection = client.db("test").collection("devices");
+	console.log("Database connected");
+	client.close();
+});
+
 var app = express();
-app.use(express.urlencoded({extended: true})); // Middleware for handling raw POST data
+// Add express configurations
 app.use(cors()); // Allow interaction with Vue serve and Qualtrics Web Listeners
+app.use(express.urlencoded({ extended: true })); // Middleware for handling raw POST data
 app.use(express.json()); // Support JSON payloads in POST requests
 app.use(express.static(path.join(__dirname, distDirectory))); // Serve files in dist folder for all HTTP requests
 
