@@ -13,11 +13,11 @@ var port = process.env.PORT || 3000
 
 var distDirectory;
 var projectsDir;
-if (process.env.NODE_ENV === 'development') {
+if (port === 3000 || process.env.NODE_ENV === 'development') {
 	console.log("IN DEV MODE");
 	distDirectory = '../dist';
 	projectsDir = path.join(__dirname, '/assets/projects.json');
-} else if (process.env.NODE_ENV === 'production') {
+} else {
 	distDirectory = 'dist';
 	projectsDir = path.join(__dirname, 'projects.json');
 }
