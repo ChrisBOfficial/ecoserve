@@ -73,12 +73,10 @@ export default {
         createProject: function() {
             const payload = {
                 name: this.title,
-                data: {
-                    "description": this.description,
-                    "surveyID" : this.survey.id,
-                    "blocks" : this.projectBlocks,
-                    "hooked": false
-                }     
+                "description": this.description,
+                "surveyID" : this.survey.id,
+                "blocks" : this.projectBlocks,
+                "hooked": false
             };
             this.saveProject(payload);
         }

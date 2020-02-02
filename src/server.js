@@ -1,6 +1,5 @@
 const cors = require('cors');
 const express = require('express');
-const fs = require('fs');
 const path = require('path');
 const request = require('request');
 const unzip = require('unzip-stream');
@@ -12,14 +11,11 @@ require('dotenv').config(); // Loads .env file
 // Use AWS port if provided, 3000 otherwise
 var port = process.env.PORT || 3000
 var distDirectory;
-var projectsDir;
 if (port === 3000 || process.env.NODE_ENV === 'development') {
 	console.log("IN DEV MODE");
 	distDirectory = '../dist';
-	projectsDir = path.join(__dirname, '/assets/projects.json');
 } else {
 	distDirectory = 'dist';
-	projectsDir = path.join(__dirname, 'projects.json');
 }
 
 // Initialize MongoDB connection using Admin user if provided, TestUser otherwise
@@ -201,10 +197,17 @@ app.route('/api/projects')
 		});
 	})
 	.post((req, res) => {
-		var projects = JSON.parse(fs.readFileSync(projectsDir));
-		projects[req.body.name] = req.body.data;
-		fs.writeFileSync(projectsDir, JSON.stringify(projects, null, 4));
-		res.send(projects);
+		dbClient.connect(err => {
+			if (err) throw new Error(err);
+			const collection = dbClient.db("DB1").collection("Projects");
+
+			collection.insertOne(req.body, function(err, result) {
+				if (err) throw new Error(err);
+				res.send(result.ops);
+
+				dbClient.close();
+			});
+		});
 	})
 	.delete((req, res) => {
 		dbClient.connect(err => {
@@ -213,7 +216,7 @@ app.route('/api/projects')
 
 			collection.deleteOne({ name: req.body.name }, function(err, result) {
 				if (err) throw new Error(err);
-				res.send(result.deletedCount);
+				res.send({ deletedCount: result.deletedCount });
 
 				dbClient.close();
 			});
