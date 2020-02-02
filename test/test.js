@@ -40,23 +40,6 @@ describe('API endpoints', function() {
                 });
         });
     });
-
-    describe('GET \'/api/projects\'', function() {
-        it('should return projects.json', function(done) {
-            request(app)
-                .get('/api/projects')
-                .set('accept', 'application/json')
-                .expect('content-type', /json/)
-                .expect(200)
-                .end(function(err, res) {
-                    if (err) {
-                        console.log(res);
-                        return done(err);
-                    }
-                    done();
-                });
-        });
-    });
 });
 
 describe('Vue router endpoints', function() {
