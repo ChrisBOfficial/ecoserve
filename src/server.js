@@ -25,13 +25,7 @@ if (port === 3000 || process.env.NODE_ENV === 'development') {
 // Initialize MongoDB connection using Admin user if provided, TestUser otherwise
 const MongoClient = require('mongodb').MongoClient;
 const uri = process.env.MONGO_URI || "mongodb+srv://TestUser:mochatest@invasive-species-toriy.mongodb.net/test?retryWrites=true&w=majority";
-const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-client.connect(err => {
-	if (err) throw new Error(err);
-	// const collection = client.db("test").collection("devices");
-	console.log("Database connected");
-	client.close();
-});
+const dbClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 var app = express();
 // Add express configurations
@@ -194,8 +188,16 @@ app.route('/api/listener')
 
 app.route('/api/projects')
 	.get((_, res) => {
-		var projects = JSON.parse(fs.readFileSync(projectsDir));
-		res.send(projects);
+		dbClient.connect(err => {
+			if (err) throw new Error(err);
+			const collection = dbClient.db("DB1").collection("Projects");
+			
+			collection.find({}).toArray(function(err, docs) {
+				if (err) throw new Error(err);
+				res.send(docs);
+				dbClient.close();
+			});
+		});
 	})
 	.post((req, res) => {
 		var projects = JSON.parse(fs.readFileSync(projectsDir));

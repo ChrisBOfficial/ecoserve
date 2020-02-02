@@ -76,7 +76,8 @@ export default {
                 data: {
                     "description": this.description,
                     "surveyID" : this.survey.id,
-                    "blocks" : this.projectBlocks 
+                    "blocks" : this.projectBlocks,
+                    "hooked": false
                 }     
             };
             this.saveProject(payload);
