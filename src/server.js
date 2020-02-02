@@ -151,24 +151,46 @@ app.route('/api/surveys/responses')
 	})
 	.post((req, res) => {
 		var surveyId = req.query.surveyId;
-		var baseUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/eventsubscriptions/';
-		var dataString = {
-			'topics': 'surveyengine.completedResponse.' + surveyId,
-			'publicationUrl': req.protocol + '://' + req.get('HOST') + '/api/listener?surveyId=' + surveyId,
-			'encrypt': false
-		}
-		var options = {
-			method: 'POST',
-			url: baseUrl,
-			body: JSON.stringify(dataString),
-			headers: {
-				'content-type': 'application/json',
-				'X-API-TOKEN': req.headers['x-api-token']
-			}
-		};
-		request(options, function (error, response, body) {
-			if (error) throw new Error(error);
-			res.send(body);
+		var hooked;
+
+		// Check if webhook exists, update if it doesn't
+		dbClient.connect(err => {
+			if (err) throw new Error(err);
+			const collection = dbClient.db("DB1").collection("Projects");
+
+			collection.findOne({ surveyId: surveyId }, function(err, result) {
+				if (err) throw new Error(err);
+				hooked = result.hooked;
+				if (!hooked) {
+					collection.updateOne({ surveyId: surveyId }, { $set: { hooked: true } }, function(err) {
+						if (err) throw new Error(err);
+						dbClient.close();
+
+						var baseUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/eventsubscriptions/';
+						var dataString = {
+							'topics': 'surveyengine.completedResponse.' + surveyId,
+							'publicationUrl': req.protocol + '://' + req.get('HOST') + '/api/listener?surveyId=' + surveyId,
+							'encrypt': false
+						}
+						var options = {
+							method: 'POST',
+							url: baseUrl,
+							body: JSON.stringify(dataString),
+							headers: {
+								'content-type': 'application/json',
+								'X-API-TOKEN': req.headers['x-api-token']
+							}
+						};
+						request(options, function (error, _, body) {
+							if (error) throw new Error(error);
+							res.send(body);
+						});
+					});
+				} else {
+					dbClient.close();
+					res.send("Webhook already exists for " + surveyId).status(200);
+				}
+			});
 		});
 	});
 
