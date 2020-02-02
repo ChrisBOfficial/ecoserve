@@ -191,10 +191,11 @@ app.route('/api/projects')
 		dbClient.connect(err => {
 			if (err) throw new Error(err);
 			const collection = dbClient.db("DB1").collection("Projects");
-			
+
 			collection.find({}).toArray(function(err, docs) {
 				if (err) throw new Error(err);
 				res.send(docs);
+
 				dbClient.close();
 			});
 		});
@@ -206,10 +207,17 @@ app.route('/api/projects')
 		res.send(projects);
 	})
 	.delete((req, res) => {
-		var projects = JSON.parse(fs.readFileSync(projectsDir));
-		delete projects[req.body.name];
-		fs.writeFileSync(projectsDir, JSON.stringify(projects, null, 4));
-		res.send(projects);
+		dbClient.connect(err => {
+			if (err) throw new Error(err);
+			const collection = dbClient.db("DB1").collection("Projects");
+
+			collection.deleteOne({ name: req.body.name }, function(err, result) {
+				if (err) throw new Error(err);
+				res.send(result.deletedCount);
+
+				dbClient.close();
+			});
+		});
 	});
 
 exports.app = app;
