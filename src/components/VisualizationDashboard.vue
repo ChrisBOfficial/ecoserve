@@ -129,6 +129,7 @@ export default {
             this.saveProjectBlocks(this.allBlocks);
             /* this.visualizations.pop(this.removeData)
             this.removeData = ''*/
+            console.log(this.graphs);
         }
     }
 }
