@@ -1,6 +1,7 @@
 const cors = require('cors');
 const express = require('express');
 const path = require('path');
+// const fs = require('fs');
 const request = require('request');
 const unzip = require('unzip-stream');
 const util = require('util');
@@ -54,7 +55,6 @@ app.route('/api/surveys')
 			method: 'GET',
 			url: targetUrl,
 			headers: {
-				'content-type': 'application/json',
 				'X-API-TOKEN': req.headers['x-api-token']
 			}
 		};
@@ -105,7 +105,7 @@ app.route('/api/surveys/responses')
 				var requestCheckResponse = await requestPromise(options);
 				var parsedResponse = JSON.parse(requestCheckResponse.body);
 				requestCheckProgress = parsedResponse.result.percentComplete;
-				console.log("Download is " + requestCheckProgress + " complete");
+				console.log("Download is " + requestCheckProgress + "% complete");
 				progressStatus = parsedResponse.result.status;
 			}
 
@@ -121,11 +121,9 @@ app.route('/api/surveys/responses')
 				url: requestDownloadUrl,
 				encoding: null,
 				headers: {
-					'content-type': 'application/json',
 					'X-API-TOKEN': req.headers['x-api-token'],
 				}
 			};
-			// var requestDownload = await requestPromise(options);
 			request(options)
 			// Parse the zipfile
 				.pipe(unzip.Parse())
@@ -177,7 +175,6 @@ app.route('/api/surveys/responses')
 							url: baseUrl,
 							body: JSON.stringify(dataString),
 							headers: {
-								'content-type': 'application/json',
 								'X-API-TOKEN': req.headers['x-api-token']
 							}
 						};
@@ -202,7 +199,7 @@ app.route('/api/listener')
 			nsp.emit('surveyComplete', req.body.ResponseID);
 		}
 		res.sendStatus(200);
-	})
+	});
 
 app.route('/api/projects')
 	.get((_, res) => {

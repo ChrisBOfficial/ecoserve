@@ -74,7 +74,7 @@ export default {
             const payload = {
                 name: this.title,
                 "description": this.description,
-                "surveyID" : this.survey.id,
+                "surveyId" : this.survey.id,
                 "blocks" : this.projectBlocks,
                 "hooked": false
             };

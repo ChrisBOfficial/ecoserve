@@ -57,7 +57,7 @@ export default {
         console.log(msg);
       }
     }.bind(this));
-    this.createHook('SV_3yOO65TG4UFqw6N');
+    // this.createHook('SV_3yOO65TG4UFqw6N');
     // https://ssp.qualtrics.com/jfe/form/SV_3yOO65TG4UFqw6N
   },
   destroyed: function() {
