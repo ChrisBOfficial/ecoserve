@@ -37,7 +37,7 @@ export default {
         // Loads a specific survey
         loadSurvey({commit}, data) {
             commit('setSurveyLoadStatus', 1);
-            // Calls the API to load a survey by surveyId
+            // Calls the API to load a survey by surveyId and save the blocks
             SurveysAPI.getSurvey(data)
                     .then(response => {
                         console.log(response.data);

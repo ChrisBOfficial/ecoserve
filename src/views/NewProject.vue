@@ -54,8 +54,7 @@ export default {
     data() {
         return {
             title: '',
-            description: '',
-            questions: []
+            description: ''
         }
     },
     computed: {

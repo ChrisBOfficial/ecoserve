@@ -27,20 +27,31 @@ export default {
                         commit('setProjectsLoadStatus', 3);
                     });
         },
-        saveProject({commit}, data) {
+        saveProject({commit, dispatch}, data) {
             commit('setProjectsLoadStatus', 1);
             // Calls the API to save a project
             ProjectsAPI.postProject(data)
                     .then(response => {
                         if (response.data) {
                             console.log(response.data);
-                            commit('setProjects', response.data);
-                            commit('setProjectsLoadStatus', 2);
+                            dispatch('loadProjects');
                         }
                     })
                     .catch(error => {
                         console.log(error);
                         commit('setProjectsLoadStatus', 3);
+                    });
+        },
+        updateProject({dispatch}, data) {
+            ProjectsAPI.patchProject(data)
+                    .then(response => {
+                        if (response.data) {
+                            console.log(response.data);
+                            dispatch('loadProjects');
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
                     });
         },
         deleteProject({commit}, data) {

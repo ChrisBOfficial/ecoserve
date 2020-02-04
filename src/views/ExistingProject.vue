@@ -1,7 +1,6 @@
 <template>
     <div class='existing-project-container'>
         <Header/>
-
         <b-container v-show="seen">
             <b-row>
                 <b-form-select v-model="selected" :select-size="4">
@@ -11,7 +10,9 @@
                 </b-form-select>
             </b-row>
             <b-row>
-                <button v-on:click="projectPicked = !projectPicked; seen = !seen">Choose project</button>
+                <button v-on:click="selectProject" style="background-color:DarkSeaGreen;">
+                    Choose project
+                </button>
             </b-row>
         </b-container>
 
@@ -25,7 +26,7 @@
             </b-row>
             <b-row>
                 <h3>Survey: insert survey name</h3>
-                <button> Link to Survey </button>
+                <button style="background-color:DarkSeaGreen;"> Link to Survey </button>
             </b-row>
             <b-row>
                 <h2> Visualization Dashboard </h2>
@@ -43,11 +44,10 @@
                     </b-modal>
                 </b-col>
                 <b-col>
-                    <router-link to="/visualizationpage" tag="button" style="background-color:DarkSeaGreen;">Go To Visualization</router-link>
+                    <router-link to="/visualizationpage" tag="b-button" style="background-color:DarkSeaGreen;">Go To Visualization</router-link>
                 </b-col>
             </b-row>
         </b-container>
-
         <Footer/>
     </div>
 </template>
@@ -73,10 +73,8 @@ export default {
         return {
             title: '',
             description: '',
-            selected: '',
+            selected: {},
             projectPicked: false,
-            //json: require('../data/projects.json') 
-            //projects: getAllProjects()
             seen: true
         }
     },
@@ -97,23 +95,21 @@ export default {
     },
     methods: {
         ...mapActions({
-            //getAllProjects: 'projects/getAllProjects'
-            loadProjects: 'projects/loadProjects'
+            loadProjects: 'projects/loadProjects',
+            updateProject: 'projects/updateProject',
+            loadSurvey: 'surveys/loadSurvey'
         }),
+        selectProject: function() {
+            this.projectPicked = !this.projectPicked; 
+            this.seen = !this.seen;
+            this.loadSurvey(this.selected.surveyId);
+        },
         createProject: function() {
-            return;
+            const payload = {
+                // TODO
+            };
+            this.updateProject(payload);
         }
     }
-    //computed :{
-    //    ...mapGetters([
-    //        'getAllProjects'
-    //    ])
-    //}
-
-    //created(){
-    //    const vm = this;
-    //    vm.getAllProjects();
-    //}
-
 }
 </script>

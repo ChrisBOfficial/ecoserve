@@ -9,6 +9,11 @@ export default {
         return window.axios.post('/projects', project);
     },
 
+    // Update a project
+    patchProject(project) {
+        return window.axios.patch('/projects', project);
+    },
+
     // Delete a project
     deleteProject(project) {
         return window.axios.delete('/projects', project);

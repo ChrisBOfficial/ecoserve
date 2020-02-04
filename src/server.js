@@ -217,6 +217,14 @@ app.route('/api/projects')
 			res.send(result.ops);
 		});
 	})
+	.patch((req, res) => {
+		const collection = dbClient.db("DB1").collection("Projects");
+
+		collection.updateOne({ surveyId: req.body.surveyId }, { $set: req.body }, function(err) {
+			if (err) throw new Error(err);
+			res.sendStatus(200);
+		});
+	})
 	.delete((req, res) => {
 		const collection = dbClient.db("DB1").collection("Projects");
 
