@@ -70,9 +70,15 @@ export default {
             loadSurvey: 'surveys/loadSurvey',
             saveProjectBlocks: 'surveys/saveProjectBlocks'
         }),
+        //add functionality to make sure that there is both information 
+        //on both column before we can add new visualization. No 
+        //undefined data.
         addVisualization: function() {
             const blockSelected = this.blockSelected;
             const graphSelected = this.graphSelected;
+            if(blockSelected == 'undefined' || graphSelected == 'undefined'){
+                return;
+            }
 
             //do something with the new graph 
             /* if (this.allBlocks.hasOwnProperty(blockSelected)){

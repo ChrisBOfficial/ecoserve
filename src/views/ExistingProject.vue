@@ -6,6 +6,7 @@
 
         <b-container v-show="seen">
             <b-row>
+                <h3>Choose a project: </h3> 
                 <b-form-select v-model="selected" :select-size="4">
                     <option v-for="project in projects" :value="project" :key="project">
                         {{project.name}}
@@ -68,6 +69,7 @@
     import SurveyBlocks from '@/components/surveyBlocks.vue'
     
     export default{
+        name: "existingProject",
         components: {
 			ProjectForm,
 			VisualizationDashboard,
@@ -86,14 +88,17 @@
 
         computed: {
 			...mapState({
-				projectNames: state => state.projects.projectNames,
 				projects: state => state.projects.projects
 			})
+        },
+        created: function() {
+            this.loadProjects();
         },
         
         methods: {
 			...mapActions({
-				//getAllProjects: 'projects/getAllProjects'
+                loadProjects: 'projects/loadProjects',
+                saveProject: 'projects/saveProject'
 			})
 		}
         //computed :{

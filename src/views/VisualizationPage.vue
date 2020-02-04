@@ -3,10 +3,21 @@
     <Header/>
     <div>
         <b-tabs content-class="mt-2">
-        <b-tab title="Bar Graphs" active><p>I'm the first tab</p></b-tab>
-        <b-tab title="Circular Charts"><p>I'm the second tab</p></b-tab>
-  </b-tabs>
-</div>
+          <b-tab title="Bar Graphs" active><p>I'm the first tab</p></b-tab>
+          <b-tab title="Circular Charts">
+            <grid
+              :draggable="true"
+              :sortable="true"
+              :items="items"
+              :height="100"
+              :width="100">
+              <template slot="cell" scope="props">
+              <div>{{props.item}}</div>
+              </template>
+              </grid>
+          </b-tab>
+        </b-tabs>
+    </div>
     <Footer/>
   </div>
 </template>
@@ -14,6 +25,11 @@
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
+import Vue from 'vue'
+import Grid from 'vue-js-grid'
+
+Vue.use(Grid)
+
 var request = require('request');
 
 export default {
@@ -21,6 +37,15 @@ export default {
   components: {
     Header,
     Footer
+  },
+  data () {
+    return {
+      items: [
+        'a',
+        'b',
+        'c'
+      ]
+    }
   }
 }
 </script>

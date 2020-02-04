@@ -20,7 +20,7 @@
                 </b-row>
                 <b-row>
                     <h2> Visualization Dashboard </h2>
-                    <visualization-dashboard ref="allData"/>
+                    <visualization-dashboard/>
                 </b-row>
 
                 <b-row>

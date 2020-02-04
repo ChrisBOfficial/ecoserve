@@ -1,5 +1,3 @@
-
-
 <template>
     <div>
         <footer class="page-footer font-small blue pt-4 sticky-bottom" style="background-color: darkslategray;">
