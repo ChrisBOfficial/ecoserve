@@ -38,7 +38,7 @@ export default {
         var surveyName = "Survey " + (index + 1) + " - " + survey.name;
         formattedList.push({ displayName: surveyName, id: survey.id, name: survey.name });
       });
-      return formattedList
+      return formattedList;
     }
   },
   components: {

@@ -1,13 +1,11 @@
 <template>
-
     <div class='existing-project-container'>
         <Header/>
-        
 
         <b-container v-show="seen">
             <b-row>
                 <b-form-select v-model="selected" :select-size="4">
-                    <option v-for="project in projects" :value="project" :key="project">
+                    <option v-for="project in projects" :value="project" :key="project.name">
                         {{project.name}}
                     </option>
                 </b-form-select>
@@ -16,8 +14,6 @@
                 <button v-on:click="projectPicked = !projectPicked; seen = !seen">Choose project</button>
             </b-row>
         </b-container>
-
-
 
         <b-container v-show="projectPicked">
             <b-row class="h-100">
@@ -36,7 +32,6 @@
                 <visualization-dashboard ref="allData"/>
             </b-row>
 
-
             <b-row>
                 <b-col>
                     <b-button v-on:click="createProject" style="background-color:DarkSeaGreen;">SAVE PROJECT</b-button>
@@ -53,60 +48,72 @@
             </b-row>
         </b-container>
 
-
         <Footer/>
     </div>
 </template>
 
 <script>
-    import {mapActions, mapState} from 'vuex'
+import ProjectForm from '@/components/ProjectForm.vue'
+import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
+import SurveyBlocks from '@/components/surveyBlocks.vue'
 
-	import ProjectForm from '@/components/ProjectForm.vue'
-	import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
-	import Header from '@/components/Header.vue'
-	import Footer from '@/components/Footer.vue'
-    import SurveyBlocks from '@/components/surveyBlocks.vue'
-    
-    export default{
-        components: {
-			ProjectForm,
-			VisualizationDashboard,
-			Header,
-			Footer,
-			SurveyBlocks
-		},
-        data(){
-            return {
-                projectPicked: false,
-                //json: require('../data/projects.json') 
-                //projects: getAllProjects()
-                seen: true
+import {mapActions, mapState} from 'vuex'
+
+export default {
+    components: {
+        Header,
+        ProjectForm,
+        VisualizationDashboard,
+        SurveyBlocks,
+        Footer
+    },
+    data() {
+        return {
+            title: '',
+            description: '',
+            selected: '',
+            projectPicked: false,
+            //json: require('../data/projects.json') 
+            //projects: getAllProjects()
+            seen: true
+        }
+    },
+    computed: {
+        ...mapState({
+            projects: state => state.projects.projects
+        }),
+        projectNames: function() {
+            let names = [];
+            for (const project of this.projects) {
+                names.push(project.name);
             }
-        },
-
-        computed: {
-			...mapState({
-				projectNames: state => state.projects.projectNames,
-				projects: state => state.projects.projects
-			})
-        },
-        
-        methods: {
-			...mapActions({
-				//getAllProjects: 'projects/getAllProjects'
-			})
-		}
-        //computed :{
-        //    ...mapGetters([
-        //        'getAllProjects'
-        //    ])
-        //}
-
-        //created(){
-        //    const vm = this;
-        //    vm.getAllProjects();
-        //}
-
+            return names;
+        }
+    },
+    created: function() {
+        this.loadProjects();
+    },
+    methods: {
+        ...mapActions({
+            //getAllProjects: 'projects/getAllProjects'
+            loadProjects: 'projects/loadProjects'
+        }),
+        createProject: function() {
+            return;
+        }
     }
-    
+    //computed :{
+    //    ...mapGetters([
+    //        'getAllProjects'
+    //    ])
+    //}
+
+    //created(){
+    //    const vm = this;
+    //    vm.getAllProjects();
+    //}
+
+}
 </script>

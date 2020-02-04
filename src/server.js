@@ -23,6 +23,10 @@ if (port === 3000 || process.env.NODE_ENV === 'development') {
 const MongoClient = require('mongodb').MongoClient;
 const uri = process.env.MONGO_URI || "mongodb+srv://TestUser:mochatest@invasive-species-toriy.mongodb.net/test?retryWrites=true&w=majority";
 const dbClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+dbClient.connect(err => {
+	if (err) throw new Error(err);
+	console.log("MongoDB connected");
+});
 
 var app = express();
 // Add express configurations
@@ -152,42 +156,37 @@ app.route('/api/surveys/responses')
 		var hooked;
 
 		// Check if webhook exists, update if it doesn't
-		dbClient.connect(err => {
+		const collection = dbClient.db("DB1").collection("Projects");
+
+		collection.findOne({ surveyId: surveyId }, function(err, result) {
 			if (err) throw new Error(err);
-			const collection = dbClient.db("DB1").collection("Projects");
+			hooked = result.hooked;
+			if (!hooked) {
+				collection.updateOne({ surveyId: surveyId }, { $set: { hooked: true } }, function(err) {
+					if (err) throw new Error(err);
 
-			collection.findOne({ surveyId: surveyId }, function(err, result) {
-				if (err) throw new Error(err);
-				hooked = result.hooked;
-				if (!hooked) {
-					collection.updateOne({ surveyId: surveyId }, { $set: { hooked: true } }, function(err) {
-						if (err) throw new Error(err);
-						dbClient.close();
-
-						var baseUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/eventsubscriptions/';
-						var dataString = {
-							'topics': 'surveyengine.completedResponse.' + surveyId,
-							'publicationUrl': req.protocol + '://' + req.get('HOST') + '/api/listener?surveyId=' + surveyId,
-							'encrypt': false
+					var baseUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/eventsubscriptions/';
+					var dataString = {
+						'topics': 'surveyengine.completedResponse.' + surveyId,
+						'publicationUrl': req.protocol + '://' + req.get('HOST') + '/api/listener?surveyId=' + surveyId,
+						'encrypt': false
+					}
+					var options = {
+						method: 'POST',
+						url: baseUrl,
+						body: JSON.stringify(dataString),
+						headers: {
+							'X-API-TOKEN': req.headers['x-api-token']
 						}
-						var options = {
-							method: 'POST',
-							url: baseUrl,
-							body: JSON.stringify(dataString),
-							headers: {
-								'X-API-TOKEN': req.headers['x-api-token']
-							}
-						};
-						request(options, function (error, _, body) {
-							if (error) throw new Error(error);
-							res.send(body);
-						});
+					};
+					request(options, function (error, _, body) {
+						if (error) throw new Error(error);
+						res.send(body);
 					});
-				} else {
-					dbClient.close();
-					res.send("Webhook already exists for " + surveyId).status(200);
-				}
-			});
+				});
+			} else {
+				res.send("Webhook already exists for " + surveyId).status(200);
+			}
 		});
 	});
 
@@ -203,42 +202,27 @@ app.route('/api/listener')
 
 app.route('/api/projects')
 	.get((_, res) => {
-		dbClient.connect(err => {
+		const collection = dbClient.db("DB1").collection("Projects");
+
+		collection.find({}).toArray(function(err, docs) {
 			if (err) throw new Error(err);
-			const collection = dbClient.db("DB1").collection("Projects");
-
-			collection.find({}).toArray(function(err, docs) {
-				if (err) throw new Error(err);
-				res.send(docs);
-
-				dbClient.close();
-			});
+			res.send(docs);
 		});
 	})
 	.post((req, res) => {
-		dbClient.connect(err => {
+		const collection = dbClient.db("DB1").collection("Projects");
+
+		collection.insertOne(req.body, function(err, result) {
 			if (err) throw new Error(err);
-			const collection = dbClient.db("DB1").collection("Projects");
-
-			collection.insertOne(req.body, function(err, result) {
-				if (err) throw new Error(err);
-				res.send(result.ops);
-
-				dbClient.close();
-			});
+			res.send(result.ops);
 		});
 	})
 	.delete((req, res) => {
-		dbClient.connect(err => {
+		const collection = dbClient.db("DB1").collection("Projects");
+
+		collection.deleteOne({ name: req.body.name }, function(err, result) {
 			if (err) throw new Error(err);
-			const collection = dbClient.db("DB1").collection("Projects");
-
-			collection.deleteOne({ name: req.body.name }, function(err, result) {
-				if (err) throw new Error(err);
-				res.send({ deletedCount: result.deletedCount });
-
-				dbClient.close();
-			});
+			res.send({ deletedCount: result.deletedCount });
 		});
 	});
 

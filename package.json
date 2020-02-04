@@ -10,7 +10,7 @@
     "serve": "vue-cli-service serve",
     "prestart": "npm install",
     "start": "node src/server.js",
-    "devstart": "clear; NODE_ENV=development nodemon src/server.js",
+    "devstart": "NODE_ENV=development nodemon src/server.js",
     "test": "mocha --exit"
   },
   "main": "server.js",
