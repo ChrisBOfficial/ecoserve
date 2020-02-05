@@ -6,7 +6,9 @@ export default {
     state: {
         projects: [],
         projectsLoadStatus: 0,
-        projectBlocks: {}
+        projectBlocks: {},
+
+        selectedProjectId: ''
     },
 
     actions: {
@@ -90,6 +92,10 @@ export default {
         // Sets the project blocks
         setProjectBlocks(state, blocks) {
             state.projectBlocks = blocks;
+        },
+        // Sets the surveyId of the selected project
+        setSelectedProjectId(state, newId) {
+            state.selectedProjectId = newId;
         }
     }
 }

@@ -14,13 +14,21 @@
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
-var request = require('request');
+import { mapState } from 'vuex'
 
 export default {
   name: 'about',
   components: {
     Header,
     Footer
+  },
+  computed: {
+    ...mapState({
+      selectedId: state => state.projects.selectedProjectId
+    })
+  },
+  created: function() {
+    console.log(this.selectedId);
   }
 }
 </script>

@@ -57,7 +57,7 @@ import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 
-import {mapActions, mapState} from 'vuex'
+import {mapActions, mapState, mapMutations} from 'vuex'
 
 export default {
     components: {
@@ -103,6 +103,9 @@ export default {
             loadSurvey: 'surveys/loadSurvey',
             saveProjectBlocks: 'projects/saveProjectBlocks'
         }),
+        ...mapMutations({
+            setSelectedId: 'projects/setSelectedProjectId'
+        }),
         selectProject: function() {
             this.projectPicked = !this.projectPicked; 
             this.seen = !this.seen;
@@ -115,6 +118,7 @@ export default {
                     this.visualizations.push(block + " - " + graph[0]);
                 }
             }
+            this.setSelectedId(this.selected.surveyId);
         },
         createProject: function() {
             const payload = {
