@@ -60,7 +60,7 @@ export default {
     computed: {
         ...mapState({
             survey: state => state.surveys.survey,
-            projectBlocks: state => state.surveys.projectBlocks,
+            projectBlocks: state => state.projects.projectBlocks,
         })
     },
     methods: {
@@ -72,10 +72,10 @@ export default {
         createProject: function() {
             const payload = {
                 name: this.title,
-                "description": this.description,
-                "surveyId" : this.survey.id,
-                "blocks" : this.projectBlocks,
-                "hooked": false
+                description: this.description,
+                surveyId : this.survey.id,
+                blocks : this.projectBlocks,
+                hooked: false
             };
             this.saveProject(payload);
         }

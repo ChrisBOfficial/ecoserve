@@ -9,9 +9,7 @@ export default {
 
         survey: {},
         surveyLoadStatus: 0,
-        blocks: [],
-
-        projectBlocks: {}
+        blocks: []
     },
 
     actions: {
@@ -57,12 +55,6 @@ export default {
                         commit('setSurvey', {});
                         commit('setSurveyLoadStatus', 3);
                     });
-        },
-
-        // Sets the Project's blocks
-        saveProjectBlocks({commit}, data) {
-            console.log(data);
-            commit('setProjectBlocks', data);
         }
     },
 
@@ -86,10 +78,6 @@ export default {
         // Sets the selected survey blocks
         setSurveyBlocks(state, blocks) {
             state.blocks = blocks;
-        },
-        // Sets the project blocks
-        setProjectBlocks(state, blocks) {
-            state.projectBlocks = blocks;
         }
     }
 }

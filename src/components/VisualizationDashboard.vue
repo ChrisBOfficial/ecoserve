@@ -12,8 +12,8 @@
             </b-col>
             <b-col>
                 <b-form-select v-model="graphSelected" :select-size="4">
-                    <option v-for="graph in graphs" v-bind:value="graph.value" v-bind:key="graph.value">
-                        {{graph.text}}
+                    <option v-for="graph in graphs" v-bind:value="graph" v-bind:key="graph">
+                        {{graph}}
                     </option>
                 </b-form-select>
                 <br>
@@ -42,16 +42,26 @@ import {mapActions, mapState} from 'vuex';
 
 export default {
   name: "VisualizationDashboard",
+  props: {
+      existingVisualizations: {
+          type: Array,
+          default: function() { return [] }
+      },
+      existingBlocks: {
+          type: Object,
+          default: function() { return {} }
+      }
+  },
   data() {
       return {
         allBlocks: {},
         graphs: [
-            {text: 'Bullseyes', value:'bullseyes'},
-            {text: 'Bar Chart', value: 'barChart'}
+            'Bullseyes',
+            'Bar Chart'
         ],
         blockSelected: '',
         graphSelected: '',
-        visualizations: [],
+        visualizations: this.existingVisualizations,
         removeData: ''
       }
     },
@@ -60,31 +70,22 @@ export default {
             surveys: state => state.surveys.surveys,
             survey: state => state.surveys.survey,
             blocks: state => state.surveys.blocks,
-            projectBlocks: state => state.surveys.projectBlocks
+            projectBlocks: state => state.projects.projectBlocks
         })
     },
     methods: {
         ...mapActions({
             loadSurveys: 'surveys/loadSurveys',
             loadSurvey: 'surveys/loadSurvey',
-            saveProjectBlocks: 'surveys/saveProjectBlocks'
+            saveProjectBlocks: 'projects/saveProjectBlocks'
         }),
         addVisualization: function() {
+            // Use pre-existing blocks if empty
+            if (Object.entries(this.allBlocks).length === 0) {
+                this.allBlocks = this.existingBlocks;
+            }
             const blockSelected = this.blockSelected;
             const graphSelected = this.graphSelected;
-
-            //do something with the new graph 
-            /* if (this.allBlocks.hasOwnProperty(blockSelected)){
-                //not guarded for duplicates 
-                if(!(this.allBlocks[blockSelected].indexOf([graphSelected, "option"]) >= 0)){
-                    this.allBlocks[blockSelected].push([graphSelected, "option"])
-                    this.visualizations.push(blockSelected + "-" + graphSelected)
-                }
-            } else {
-                this.allBlocks[blockSelected] = []
-                this.allBlocks[blockSelected].push([graphSelected, "option"])
-                this.visualizations.push(blockSelected + " - " + graphSelected)
-            } */
 
             // eslint-disable-next-line no-prototype-builtins
             if (this.allBlocks.hasOwnProperty(blockSelected.description)) {
@@ -108,26 +109,26 @@ export default {
             this.graphSelected = '';
         },
         removeVisualization: function() {
+            // Use pre-existing blocks if empty
+            if (Object.entries(this.allBlocks).length === 0) {
+                this.allBlocks = this.existingBlocks;
+            }
             this.visualizations.splice(this.visualizations.indexOf(this.removeData), 1);
             const blockSelected = this.removeData.split("-")[0].trimEnd();
             const graphSelected = this.removeData.split("-")[1].trimStart();
-            /* for(var key in this.allBlocks) {
-                if(key == blockSelected.id) {
-                    var i;
-                    for (i = 0; i < this.allBlocks[key].length; i++) {
-                        if (this.allBlocks[blockSelected.id][i][0] == graphSelected) {
-                            this.allBlocks[blockSelected.id].pop(this.allBlocks[blockSelected.id][i])
-                        }
+
+            if (this.allBlocks[blockSelected].length == 1) {
+                delete this.allBlocks[blockSelected];
+            } else {
+                for (var block of this.allBlocks[blockSelected]) {
+                    if (block[0] == graphSelected) {
+                        this.allBlocks[blockSelected].splice(this.allBlocks[blockSelected].indexOf(block), 1);
                     }
                 }
-            }*/
-
-            
-            this.allBlocks[blockSelected] = this.allBlocks[blockSelected].filter(item => item[0] != graphSelected);
+            }
 
             this.saveProjectBlocks(this.allBlocks);
-            /* this.visualizations.pop(this.removeData)
-            this.removeData = ''*/
+            this.removeData = '';
         }
     }
 }

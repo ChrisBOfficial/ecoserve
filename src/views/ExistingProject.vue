@@ -30,7 +30,7 @@
             </b-row>
             <b-row>
                 <h2> Visualization Dashboard </h2>
-                <visualization-dashboard ref="allData"/>
+                <visualization-dashboard ref="allData" v-bind:existing-visualizations="visualizations" v-bind:existing-blocks="existingBlocks"/>
             </b-row>
 
             <b-row>
@@ -53,34 +53,31 @@
 </template>
 
 <script>
-import ProjectForm from '@/components/ProjectForm.vue'
 import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
-import SurveyBlocks from '@/components/surveyBlocks.vue'
 
 import {mapActions, mapState} from 'vuex'
 
 export default {
     components: {
         Header,
-        ProjectForm,
         VisualizationDashboard,
-        SurveyBlocks,
         Footer
     },
     data() {
         return {
-            title: '',
-            description: '',
-            selected: {},
             projectPicked: false,
-            seen: true
+            seen: true,
+            selected: {},
+            visualizations: [],
+            existingBlocks: {}
         }
     },
     computed: {
         ...mapState({
-            projects: state => state.projects.projects
+            projects: state => state.projects.projects,
+            projectBlocks: state => state.projects.projectBlocks
         }),
         projectNames: function() {
             let names = [];
@@ -88,6 +85,12 @@ export default {
                 names.push(project.name);
             }
             return names;
+        },
+        title: function() {
+            return this.selected.name;
+        },
+        description: function() {
+            return this.selected.description;
         }
     },
     created: function() {
@@ -97,16 +100,29 @@ export default {
         ...mapActions({
             loadProjects: 'projects/loadProjects',
             updateProject: 'projects/updateProject',
-            loadSurvey: 'surveys/loadSurvey'
+            loadSurvey: 'surveys/loadSurvey',
+            saveProjectBlocks: 'projects/saveProjectBlocks'
         }),
         selectProject: function() {
             this.projectPicked = !this.projectPicked; 
             this.seen = !this.seen;
             this.loadSurvey(this.selected.surveyId);
+            this.saveProjectBlocks(this.selected.blocks);
+
+            this.existingBlocks = this.selected.blocks;
+            for (const block in this.selected.blocks) {
+                for (const graph of this.selected.blocks[block]) {
+                    this.visualizations.push(block + " - " + graph[0]);
+                }
+            }
         },
         createProject: function() {
             const payload = {
-                // TODO
+                name: this.title,
+                description: this.description,
+                surveyId: this.selected.surveyId,
+                blocks: this.projectBlocks,
+                hooked: false
             };
             this.updateProject(payload);
         }

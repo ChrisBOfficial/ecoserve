@@ -5,11 +5,11 @@ export default {
 
     state: {
         projects: [],
-        projectsLoadStatus: 0
+        projectsLoadStatus: 0,
+        projectBlocks: {}
     },
 
     actions: {
-        // Loads all projects
         loadProjects({commit}) {
             commit('setProjectsLoadStatus', 1);
             // Calls the API to load the projects
@@ -69,6 +69,12 @@ export default {
                         console.log(error);
                         commit('setProjectsLoadStatus', 3);
                     })
+        },
+
+        // Sets the Project's blocks
+        saveProjectBlocks({commit}, data) {
+            console.log(data);
+            commit('setProjectBlocks', data);
         }
     },
 
@@ -80,6 +86,10 @@ export default {
         // Sets the projects load status
         setProjectsLoadStatus(state, status) {
             state.projectsLoadStatus = status;
+        },
+        // Sets the project blocks
+        setProjectBlocks(state, blocks) {
+            state.projectBlocks = blocks;
         }
     }
 }
