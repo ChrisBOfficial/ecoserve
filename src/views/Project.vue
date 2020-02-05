@@ -24,6 +24,7 @@
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import ProjectDescription from '@/components/ProjectDescription.vue'
+import { mapMutations } from 'vuex'
 
 export default {
     name: "ProjectList",
@@ -32,25 +33,14 @@ export default {
         Footer,
         ProjectDescription
     },
-    data() {
-        return {
-            projects: [
-                {
-                    title: "Project 1",
-                    description: "blah blah blah"
-                },
-                {
-                    title: "Project 2",
-                    description: "blah blah blah"
-                },
-                {
-                    title: "Project 3",
-                    description: "blah blah blah"
-                }
-            ]
-        }
+    created: function() {
+        this.setBlocks([]);
+    },
+    methods: {
+        ...mapMutations({
+            setBlocks: 'surveys/setSurveyBlocks'
+        })
     }
-
 }
 </script>
 

@@ -2,7 +2,7 @@
     <b-container>
         <b-row>
             <b-col>
-                <b-form-select v-model="blockSelected" :select-size="4">
+                <b-form-select v-model="blockSelected" :select-size="5">
                     <option v-for="block in blocks" v-bind:value="block" v-bind:key="block.id">
                         {{block.description}}
                     </option>
@@ -11,7 +11,7 @@
                 <span>Selected: {{ blockSelected }}</span>
             </b-col>
             <b-col>
-                <b-form-select v-model="graphSelected" :select-size="4">
+                <b-form-select v-model="graphSelected" :select-size="5">
                     <option v-for="graph in graphs" v-bind:value="graph" v-bind:key="graph">
                         {{graph}}
                     </option>
@@ -24,7 +24,7 @@
             <button v-on:click="addVisualization" style="background-color:DarkSeaGreen;">ADD VISUALIZATION</button>
         </b-row>
         <b-row class="align-items-center">
-            <b-form-select v-model="removeData" :select-size="4">
+            <b-form-select v-model="removeData" :select-size="visualizationBoxSize">
                 <option v-for="visualization in visualizations" v-bind:value="visualization" v-bind:key="visualization">
                     {{visualization}}
                 </option>
@@ -71,7 +71,10 @@ export default {
             survey: state => state.surveys.survey,
             blocks: state => state.surveys.blocks,
             projectBlocks: state => state.projects.projectBlocks
-        })
+        }),
+        visualizationBoxSize: function() {
+            return this.visualizations.length >= 2 ? this.visualizations.length : 2;
+        }
     },
     methods: {
         ...mapActions({

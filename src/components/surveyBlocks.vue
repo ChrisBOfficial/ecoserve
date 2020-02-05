@@ -4,7 +4,7 @@
             <h3>Pick Survey From Qualtrics</h3>
         </b-row>
         <b-row class="align-items-center">
-            <b-form-select v-model="selectedSurvey" v-on:change="selectSurvey" :select-size="4">
+            <b-form-select v-model="selectedSurvey" v-on:change="selectSurvey" :select-size="5">
                 <option v-for="survey in surveys" v-bind:value="survey" v-bind:key="survey.name" >{{ survey.name }}</option>
             </b-form-select>
             <br>

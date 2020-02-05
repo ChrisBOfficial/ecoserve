@@ -3,7 +3,7 @@
         <Header/>
         <b-container v-show="seen">
             <b-row>
-                <b-form-select v-model="selected" :select-size="4">
+                <b-form-select v-model="selected" :select-size="5">
                     <option v-for="project in projects" :value="project" :key="project.name">
                         {{project.name}}
                     </option>
