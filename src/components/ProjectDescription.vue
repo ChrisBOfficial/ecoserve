@@ -1,8 +1,8 @@
 <template>
     <div>
-        <h4>
-            <a href="url">{{project.title}}</a>
-        </h4>
+        <h5>
+            <a href="url">{{project.name}}</a>
+        </h5>
         <p>
             {{project.description}}
         </p>
@@ -12,10 +12,7 @@
 <script>
 export default {
     name: "ProjectDescription",
-    props: {
-        
-    }
-    
+    props: ['project']
 }
 
 </script>
