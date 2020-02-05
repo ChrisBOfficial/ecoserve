@@ -12,7 +12,7 @@
               :height="100"
               :width="100">
               <template slot="cell" scope="props">
-              <div>{{props.item}}</div>
+              <div>{{svgContainer}}</div>
               </template>
               </grid>
           </b-tab>
@@ -57,7 +57,7 @@ export default {
                             .data(jsonCircles)
                             .enter()
                             .append("circle"),
-      circleAttributes = circles 
+      circleAttributes: circles 
                         .attr("cx", function (d) { return d.x_axis; })
                         .attr("cy", function (d) { return d.y_axis; })
                         .attr("r", function(d) { return d.radius; })
