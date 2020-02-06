@@ -9,9 +9,7 @@ export default {
 
         survey: {},
         surveyLoadStatus: 0,
-        blocks: [],
-
-        projectBlocks: {}
+        blocks: []
     },
 
     actions: {
@@ -37,7 +35,7 @@ export default {
         // Loads a specific survey
         loadSurvey({commit}, data) {
             commit('setSurveyLoadStatus', 1);
-            // Calls the API to load a survey by surveyId
+            // Calls the API to load a survey by surveyId and save the blocks
             SurveysAPI.getSurvey(data)
                     .then(response => {
                         console.log(response.data);
@@ -57,12 +55,6 @@ export default {
                         commit('setSurvey', {});
                         commit('setSurveyLoadStatus', 3);
                     });
-        },
-
-        // Sets the Project's blocks
-        saveProjectBlocks({commit}, data) {
-            console.log(data);
-            commit('setProjectBlocks', data);
         }
     },
 
@@ -86,10 +78,6 @@ export default {
         // Sets the selected survey blocks
         setSurveyBlocks(state, blocks) {
             state.blocks = blocks;
-        },
-        // Sets the project blocks
-        setProjectBlocks(state, blocks) {
-            state.projectBlocks = blocks;
         }
     }
 }

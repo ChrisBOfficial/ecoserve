@@ -4,12 +4,14 @@ export default {
     namespaced: true,
 
     state: {
-        projects: {},
-        projectsLoadStatus: 0
+        projects: [],
+        projectsLoadStatus: 0,
+        projectBlocks: {},
+
+        selectedProjectId: ''
     },
 
     actions: {
-        // Loads all projects
         loadProjects({commit}) {
             commit('setProjectsLoadStatus', 1);
             // Calls the API to load the projects
@@ -27,20 +29,31 @@ export default {
                         commit('setProjectsLoadStatus', 3);
                     });
         },
-        saveProject({commit}, data) {
+        saveProject({commit, dispatch}, data) {
             commit('setProjectsLoadStatus', 1);
             // Calls the API to save a project
             ProjectsAPI.postProject(data)
                     .then(response => {
                         if (response.data) {
                             console.log(response.data);
-                            commit('setProjects', response.data);
-                            commit('setProjectsLoadStatus', 2);
+                            dispatch('loadProjects');
                         }
                     })
                     .catch(error => {
                         console.log(error);
                         commit('setProjectsLoadStatus', 3);
+                    });
+        },
+        updateProject({dispatch}, data) {
+            ProjectsAPI.patchProject(data)
+                    .then(response => {
+                        if (response.data) {
+                            console.log(response.data);
+                            dispatch('loadProjects');
+                        }
+                    })
+                    .catch(error => {
+                        console.log(error);
                     });
         },
         deleteProject({commit}, data) {
@@ -58,6 +71,12 @@ export default {
                         console.log(error);
                         commit('setProjectsLoadStatus', 3);
                     })
+        },
+
+        // Sets the Project's blocks
+        saveProjectBlocks({commit}, data) {
+            console.log(data);
+            commit('setProjectBlocks', data);
         }
     },
 
@@ -69,6 +88,14 @@ export default {
         // Sets the projects load status
         setProjectsLoadStatus(state, status) {
             state.projectsLoadStatus = status;
+        },
+        // Sets the project blocks
+        setProjectBlocks(state, blocks) {
+            state.projectBlocks = blocks;
+        },
+        // Sets the surveyId of the selected project
+        setSelectedProjectId(state, newId) {
+            state.selectedProjectId = newId;
         }
     }
 }

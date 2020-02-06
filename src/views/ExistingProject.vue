@@ -1,24 +1,20 @@
 <template>
-
     <div class='existing-project-container'>
         <Header/>
-        
-
         <b-container v-show="seen">
             <b-row>
-                <h3>Choose a project: </h3> 
-                <b-form-select v-model="selected" :select-size="4">
-                    <option v-for="project in projects" :value="project" :key="project">
+                <b-form-select v-model="selected" :select-size="5">
+                    <option v-for="project in projects" :value="project" :key="project.name">
                         {{project.name}}
                     </option>
                 </b-form-select>
             </b-row>
             <b-row>
-                <button v-on:click="projectPicked = !projectPicked; seen = !seen">Choose project</button>
+                <button v-on:click="selectProject" style="background-color:DarkSeaGreen;">
+                    Choose project
+                </button>
             </b-row>
         </b-container>
-
-
 
         <b-container v-show="projectPicked">
             <b-row class="h-100">
@@ -30,13 +26,12 @@
             </b-row>
             <b-row>
                 <h3>Survey: insert survey name</h3>
-                <button> Link to Survey </button>
+                <button style="background-color:DarkSeaGreen;"> Link to Survey </button>
             </b-row>
             <b-row>
                 <h2> Visualization Dashboard </h2>
-                <visualization-dashboard ref="allData"/>
+                <visualization-dashboard ref="allData" v-bind:existing-visualizations="visualizations" v-bind:existing-blocks="existingBlocks"/>
             </b-row>
-
 
             <b-row>
                 <b-col>
@@ -49,69 +44,94 @@
                     </b-modal>
                 </b-col>
                 <b-col>
-                    <router-link to="/visualizationpage" tag="button" style="background-color:DarkSeaGreen;">Go To Visualization</router-link>
+                    <router-link to="/visualizationpage" tag="b-button" style="background-color:DarkSeaGreen;">Go To Visualization</router-link>
                 </b-col>
             </b-row>
         </b-container>
-
-
         <Footer/>
     </div>
 </template>
 
+
 <script>
-    import {mapActions, mapState} from 'vuex'
+import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
+import Header from '@/components/Header.vue'
+import Footer from '@/components/Footer.vue'
 
-	import ProjectForm from '@/components/ProjectForm.vue'
-	import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
-	import Header from '@/components/Header.vue'
-	import Footer from '@/components/Footer.vue'
-    import SurveyBlocks from '@/components/surveyBlocks.vue'
-    
-    export default{
-        name: "existingProject",
-        components: {
-			ProjectForm,
-			VisualizationDashboard,
-			Header,
-			Footer,
-			SurveyBlocks
-		},
-        data(){
-            return {
-                projectPicked: false,
-                //json: require('../data/projects.json') 
-                //projects: getAllProjects()
-                seen: true
+import {mapActions, mapState, mapMutations} from 'vuex'
+
+
+export default {
+    components: {
+        Header,
+        VisualizationDashboard,
+        Footer
+    },
+    data() {
+        return {
+            projectPicked: false,
+            seen: true,
+            selected: {},
+            visualizations: [],
+            existingBlocks: {}
+        }
+    },
+    computed: {
+        ...mapState({
+            projects: state => state.projects.projects,
+            projectBlocks: state => state.projects.projectBlocks
+        }),
+        projectNames: function() {
+            let names = [];
+            for (const project of this.projects) {
+                names.push(project.name);
             }
+            return names;
         },
-
-        computed: {
-			...mapState({
-				projects: state => state.projects.projects
-			})
+        title: function() {
+            return this.selected.name;
         },
-        created: function() {
-            this.loadProjects();
+        description: function() {
+            return this.selected.description;
+        }
+    },
+    created: function() {
+        this.loadProjects();
+    },
+    methods: {
+        ...mapActions({
+            loadProjects: 'projects/loadProjects',
+            updateProject: 'projects/updateProject',
+            loadSurvey: 'surveys/loadSurvey',
+            saveProjectBlocks: 'projects/saveProjectBlocks'
+        }),
+        ...mapMutations({
+            setSelectedId: 'projects/setSelectedProjectId'
+        }),
+        selectProject: function() {
+            this.projectPicked = !this.projectPicked; 
+            this.seen = !this.seen;
+            this.loadSurvey(this.selected.surveyId);
+            this.saveProjectBlocks(this.selected.blocks);
+
+            this.existingBlocks = this.selected.blocks;
+            for (const block in this.selected.blocks) {
+                for (const graph of this.selected.blocks[block]) {
+                    this.visualizations.push(block + " - " + graph[0]);
+                }
+            }
+            this.setSelectedId(this.selected.surveyId);
         },
-        
-        methods: {
-			...mapActions({
-                loadProjects: 'projects/loadProjects',
-                saveProject: 'projects/saveProject'
-			})
-		}
-        //computed :{
-        //    ...mapGetters([
-        //        'getAllProjects'
-        //    ])
-        //}
-
-        //created(){
-        //    const vm = this;
-        //    vm.getAllProjects();
-        //}
-
+        createProject: function() {
+            const payload = {
+                name: this.title,
+                description: this.description,
+                surveyId: this.selected.surveyId,
+                blocks: this.projectBlocks,
+                hooked: false
+            };
+            this.updateProject(payload);
+        }
     }
-    
+}
 </script>

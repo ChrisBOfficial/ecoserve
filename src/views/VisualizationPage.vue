@@ -3,8 +3,8 @@
     <Header/>
     <div>
         <b-tabs content-class="mt-2">
-          <b-tab title="Bar Graphs" active><p>I'm the first tab</p></b-tab>
-          <b-tab title="Circular Charts">
+          <b-tab title="Bar Graphs" active><p>I'm the check tab</p></b-tab>
+          <b-tab title="Circular Charts" class="body">
             <grid
               :draggable="true"
               :sortable="true"
@@ -12,7 +12,7 @@
               :height="100"
               :width="100">
               <template slot="cell" scope="props">
-              <div>{{svgContainer}}</div>
+              <div>{{circles}}</div>
               </template>
               </grid>
           </b-tab>
@@ -22,15 +22,15 @@
   </div>
 </template>
 
+<script src="https://d3js.org/d3.v5.min.js"></script>
+
+
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
-import Vue from 'vue'
-import Grid from 'vue-js-grid'
+import { mapState } from 'vuex'
+import * as d3 from 'd3'
 
-Vue.use(Grid)
-
-var request = require('request');
 
 export default {
   name: 'about',
@@ -63,6 +63,14 @@ export default {
                         .attr("r", function(d) { return d.radius; })
                         .style("fill", function(d) { return d.color; })
     }
+  },
+  computed: {
+    ...mapState({
+      selectedId: state => state.projects.selectedProjectId
+    })
+  },
+  created: function() {
+    console.log(this.selectedId);
   }
 }
 </script>
