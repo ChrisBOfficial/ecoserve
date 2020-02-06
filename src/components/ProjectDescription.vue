@@ -1,7 +1,7 @@
 <template>
     <div>
         <h5>
-            <router-link :to="{ name: 'dashboard', query: { id:project.surveyId }}">{{ project.name }}</router-link>
+            <router-link :to="{ name: 'dashboard', query: { id:project.projectId }}">{{ project.name }}</router-link>
         </h5>
         <p>
             {{project.description}}

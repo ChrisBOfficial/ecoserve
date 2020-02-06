@@ -44,7 +44,7 @@
                     </b-modal>
                 </b-col>
                 <b-col>
-                    <router-link :to="{ name: 'dashboard', query: { id:selected.surveyId }}" tag="b-button" style="background-color:DarkSeaGreen;">Go To Visualization</router-link>
+                    <router-link :to="{ name: 'dashboard', query: { id:selected.projectId }}" tag="b-button" style="background-color:DarkSeaGreen;">Go To Visualization</router-link>
                 </b-col>
             </b-row>
         </b-container>
@@ -118,13 +118,14 @@ export default {
                     this.visualizations.push(block + " - " + graph[0]);
                 }
             }
-            this.setSelectedId(this.selected.surveyId);
+            this.setSelectedId(this.selected.projectId);
         },
         createProject: function() {
             const payload = {
                 name: this.title,
                 description: this.description,
                 surveyId: this.selected.surveyId,
+                projectId: this.title + "+" + this.selected.surveyId,
                 blocks: this.projectBlocks,
                 hooked: false
             };

@@ -17,7 +17,7 @@
                         <br/>
 
                         <b-col class="col-md-11 position-absolute">
-                            <ProjectDescription v-for="project in projects" :key="project.surveyId" v-bind:project="project"></ProjectDescription>
+                            <ProjectDescription v-for="project in projects" :key="project.projectId" v-bind:project="project"></ProjectDescription>
                         </b-col>
                     </b-col>
 

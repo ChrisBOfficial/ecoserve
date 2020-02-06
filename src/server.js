@@ -162,7 +162,7 @@ app.route('/api/surveys/responses')
 			if (err) throw new Error(err);
 			hooked = result.hooked;
 			if (!hooked) {
-				collection.updateOne({ surveyId: surveyId }, { $set: { hooked: true } }, function(err) {
+				collection.updateMany({ surveyId: surveyId }, { $set: { hooked: true } }, function(err) {
 					if (err) throw new Error(err);
 
 					var baseUrl = 'https://' + process.env.VUE_APP_Q_DATA_CENTER + '.qualtrics.com/API/v3/eventsubscriptions/';
@@ -220,7 +220,7 @@ app.route('/api/projects')
 	.patch((req, res) => {
 		const collection = dbClient.db("DB1").collection("Projects");
 
-		collection.updateOne({ surveyId: req.body.surveyId }, { $set: req.body }, function(err) {
+		collection.updateOne({ projectId: req.body.projectId }, { $set: req.body }, function(err) {
 			if (err) throw new Error(err);
 			res.sendStatus(200);
 		});
@@ -228,7 +228,7 @@ app.route('/api/projects')
 	.delete((req, res) => {
 		const collection = dbClient.db("DB1").collection("Projects");
 
-		collection.deleteOne({ surveyId: req.body.surveyId }, function(err, result) {
+		collection.deleteOne({ projectId: req.body.projectId }, function(err, result) {
 			if (err) throw new Error(err);
 			res.send({ deletedCount: result.deletedCount });
 		});
