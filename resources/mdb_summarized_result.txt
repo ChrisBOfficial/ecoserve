@@ -1,0 +1,44 @@
+[
+  {
+    '$unwind': {
+      'path': '$responses', 
+      'includeArrayIndex': 'string'
+    }
+  }, {
+    '$project': {
+      'totals': {
+        '$objectToArray': '$responses.values'
+      }
+    }
+  }, {
+    '$unwind': {
+      'path': '$totals'
+    }
+  }, {
+    '$group': {
+      '_id': '$totals.k', 
+      'mean': {
+        '$avg': '$totals.v'
+      }, 
+      'total': {
+        '$sum': '$totals.v'
+      }, 
+      'count': {
+        '$sum': 1
+      }, 
+      'sd': {
+        '$stdDevPop': '$totals.v'
+      }
+    }
+  }, {
+    '$addFields': {
+      'se': {
+        '$divide': [
+          '$sd', {
+            '$sqrt': '$count'
+          }
+        ]
+      }
+    }
+  }
+]
