@@ -14,21 +14,15 @@
 <script>
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
-import { mapState } from 'vuex'
 
 export default {
-  name: 'about',
+  name: 'dashboard',
   components: {
     Header,
     Footer
   },
-  computed: {
-    ...mapState({
-      selectedId: state => state.projects.selectedProjectId
-    })
-  },
   created: function() {
-    console.log(this.selectedId);
+    console.log(this.$route.query.id);
   }
 }
 </script>

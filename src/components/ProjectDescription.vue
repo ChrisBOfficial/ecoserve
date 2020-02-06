@@ -1,7 +1,7 @@
 <template>
     <div>
         <h5>
-            <a href="url">{{project.name}}</a>
+            <router-link :to="{ name: 'dashboard', query: { id:project.surveyId }}">{{ project.name }}</router-link>
         </h5>
         <p>
             {{project.description}}
@@ -14,5 +14,4 @@ export default {
     name: "ProjectDescription",
     props: ['project']
 }
-
 </script>
