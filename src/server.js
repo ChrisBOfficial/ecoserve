@@ -228,7 +228,7 @@ app.route('/api/projects')
 	.delete((req, res) => {
 		const collection = dbClient.db("DB1").collection("Projects");
 
-		collection.deleteOne({ name: req.body.name }, function(err, result) {
+		collection.deleteOne({ surveyId: req.body.surveyId }, function(err, result) {
 			if (err) throw new Error(err);
 			res.send({ deletedCount: result.deletedCount });
 		});
