@@ -38,8 +38,8 @@
                     <b-button v-on:click="createProject" style="background-color:DarkSeaGreen;">SAVE PROJECT</b-button>
                 </b-col>
                 <b-col>
-                    <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-1>DELETE PROJECT</b-button>
-                    <b-modal id="modal-1" title="Warning">
+                    <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center>DELETE PROJECT</b-button>
+                    <b-modal id="modal-center" centered title="Warning" ok-variant="danger" ok-title="Yes" cancel-title="No">
                         <p class="my-4">Are you sure you want to delete the project?</p>
                     </b-modal>
                 </b-col>
