@@ -7,15 +7,9 @@
 
 <script>
 import store from './store'
-import Header from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue'
 
 export default {
-  store,
-  components: {
-    Header,
-    Footer
-  }
+  store
 }
 </script>
 

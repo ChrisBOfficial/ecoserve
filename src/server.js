@@ -46,6 +46,7 @@ app.get('/', (_, res) => {
 	res.sendFile(path.join(__dirname, distDirectory, '/index.html'));
 });
 
+// Endpoint for survey information
 app.route('/api/surveys')
 	.get((req, res) => {
 		var specifier;
@@ -72,6 +73,7 @@ app.route('/api/surveys')
 		});
 	});
 
+// Endpoint for survey response data
 app.route('/api/surveys/responses')
 	.get((req, res) => {
 		async function respond(req, res) {
@@ -190,6 +192,7 @@ app.route('/api/surveys/responses')
 		});
 	});
 
+// Endpoint for handling Qualtrics events
 app.route('/api/listener')
 	.post((req, res) => {
 		var surveyId = req.query.surveyId;
@@ -200,6 +203,7 @@ app.route('/api/listener')
 		res.sendStatus(200);
 	});
 
+// Endpoint for project documents in MongoDB
 app.route('/api/projects')
 	.get((_, res) => {
 		const collection = dbClient.db("DB1").collection("Projects");
@@ -213,7 +217,13 @@ app.route('/api/projects')
 		const collection = dbClient.db("DB1").collection("Projects");
 
 		collection.insertOne(req.body, function(err, result) {
-			if (err) throw new Error(err);
+			if (err) {
+				if (err.name === "MongoError" && err.code === 11000) {
+					return res.send("Project already exists");
+				}
+
+				throw new Error(err);
+			}
 			res.send(result.ops);
 		});
 	})
