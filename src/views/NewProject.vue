@@ -74,6 +74,7 @@ export default {
                 name: this.title,
                 description: this.description,
                 surveyId : this.survey.id,
+                projectId: this.title + "+" + this.survey.id,
                 blocks : this.projectBlocks,
                 hooked: false
             };

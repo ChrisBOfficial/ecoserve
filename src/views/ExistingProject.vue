@@ -38,13 +38,13 @@
                     <b-button v-on:click="createProject" style="background-color:DarkSeaGreen;">SAVE PROJECT</b-button>
                 </b-col>
                 <b-col>
-                    <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal>DELETE PROJECT</b-button>
-                    <b-modal id="modal" title="Warning">
+                    <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-1>DELETE PROJECT</b-button>
+                    <b-modal id="modal-1" title="Warning">
                         <p class="my-4">Are you sure you want to delete the project?</p>
                     </b-modal>
                 </b-col>
                 <b-col>
-                    <router-link to="/visualizationpage" tag="b-button" style="background-color:DarkSeaGreen;">Go To Visualization</router-link>
+                    <router-link :to="{ name: 'dashboard', query: { id:selected.projectId }}" tag="b-button" style="background-color:DarkSeaGreen;">Go To Visualization</router-link>
                 </b-col>
             </b-row>
         </b-container>
@@ -57,6 +57,8 @@
 import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import {mapActions, mapState, mapMutations} from 'vuex'
 
@@ -120,13 +122,14 @@ export default {
                     this.visualizations.push(block + " - " + graph[0]);
                 }
             }
-            this.setSelectedId(this.selected.surveyId);
+            this.setSelectedId(this.selected.projectId);
         },
         createProject: function() {
             const payload = {
                 name: this.title,
                 description: this.description,
                 surveyId: this.selected.surveyId,
+                projectId: this.title + "+" + this.selected.surveyId,
                 blocks: this.projectBlocks,
                 hooked: false
             };
