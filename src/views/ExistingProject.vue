@@ -44,7 +44,7 @@
                     </b-modal>
                 </b-col>
                 <b-col>
-                    <router-link to="/visualizationpage" tag="b-button" style="background-color:DarkSeaGreen;">Go To Visualization</router-link>
+                    <router-link :to="{ name: 'dashboard', query: { id:selected.surveyId }}" tag="b-button" style="background-color:DarkSeaGreen;">Go To Visualization</router-link>
                 </b-col>
             </b-row>
         </b-container>

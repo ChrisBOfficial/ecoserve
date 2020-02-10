@@ -43,10 +43,9 @@ const routes = [
     component: () => import('@/views/ExistingProject.vue')
   },
   {
-    path: '/visualizationpage',
-    name: 'visualizationpage',
-    component: () => import('@/views/VisualizationPage.vue'),
-    props: true
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('@/views/Dashboard.vue')
   }
 ]
 
