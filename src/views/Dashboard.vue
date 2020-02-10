@@ -4,17 +4,17 @@
     <div>
         <b-tabs content-class="mt-2">
           <b-tab title="Bar Graphs" active><p>I'm the check 1 tab</p></b-tab>
-          <b-tab title="Circular Charts" class="body">
+          <b-tab title="Circular Charts" class="circularGraph">
             <grid
               :draggable="true"
               :sortable="true"
               :items="items"
               :height="100"
               :width="100">
-              <template slot="cell" scope="props">
-              <div>{{circles}}</div>
-              </template>
-              </grid>
+                <template slot="cell" scope="props">
+                  <div>{{props.item}}</div>
+                </template>
+            </grid>
           </b-tab>
         </b-tabs>
     </div>
@@ -44,6 +44,11 @@ export default {
         'a',
         'b',
         'c'
+      ],
+      tempData: [
+        { "x_axis": 30, "y_axis": 30, "radius": 20, "color" : "green" },
+        { "x_axis": 70, "y_axis": 70, "radius": 20, "color" : "purple"},
+        { "x_axis": 110, "y_axis": 100, "radius": 20, "color" : "red"}
       ]
     }
   },
@@ -54,19 +59,22 @@ export default {
   },
   created: function() {
     console.log(this.$route.query.id);
-    this.createGraph(this.jsonCircles);
+    
   },
-  
+  mounted() {
+    this.createGraph();
+  },
+
   methods: {
-    createGraph: function(graphData){
-      svgContainer = d3.select("body").append("svg")
+    createGraph: function(){
+      var svgContainer = d3.select(".circularGraph").append().append("svg")
                                       .attr("width", 200)
                                       .attr("height", 200);
-      circles = svgContainer.selectAll("circle")
-                            .data(graphData)
+      var circles = svgContainer.selectAll("circle")
+                            .data(this.tempData)
                             .enter()
                             .append("circle");
-      circleAttributes = circles 
+      var circleAttributes = circles 
                         .attr("cx", function (d) { return d.x_axis; })
                         .attr("cy", function (d) { return d.y_axis; })
                         .attr("r", function(d) { return d.radius; })
