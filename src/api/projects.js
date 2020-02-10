@@ -16,6 +16,6 @@ export default {
 
     // Delete a project
     deleteProject(project) {
-        return window.axios.delete('/projects', project);
+        return window.axios.delete('/projects', { data: project });
     }
 }

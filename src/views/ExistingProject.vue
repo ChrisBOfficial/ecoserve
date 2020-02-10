@@ -39,7 +39,8 @@
                 </b-col>
                 <b-col>
                     <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center>DELETE PROJECT</b-button>
-                    <b-modal id="modal-center" centered title="Warning" ok-variant="danger" ok-title="Yes" cancel-title="No">
+                    <b-modal id="modal-center" centered title="Warning" 
+                        ok-variant="danger" ok-title="Yes" cancel-title="No" :hide-header-close="true" v-on:ok="deleteProject">
                         <p class="my-4">Are you sure you want to delete the project?</p>
                     </b-modal>
                 </b-col>
@@ -104,8 +105,9 @@ export default {
         ...mapActions({
             loadProjects: 'projects/loadProjects',
             updateProject: 'projects/updateProject',
+            removeProject: 'projects/deleteProject',
+            saveProjectBlocks: 'projects/saveProjectBlocks',
             loadSurvey: 'surveys/loadSurvey',
-            saveProjectBlocks: 'projects/saveProjectBlocks'
         }),
         ...mapMutations({
             setSelectedId: 'projects/setSelectedProjectId'
@@ -134,6 +136,13 @@ export default {
                 hooked: false
             };
             this.updateProject(payload);
+        },
+        deleteProject: function() {
+            const payload = {
+                projectId: this.title + "+" + this.selected.surveyId
+            };
+            this.removeProject(payload);
+            this.$router.replace('project');
         }
     }
 }
