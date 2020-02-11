@@ -32,10 +32,10 @@
 </template>
 
 <script>
-import Header from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue'
-import ProjectDescription from '@/components/ProjectDescription.vue'
-import { mapMutations, mapState, mapActions } from 'vuex'
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
+import ProjectDescription from '@/components/ProjectDescription.vue';
+import { mapMutations, mapState, mapActions } from 'vuex';
 
 export default {
     name: "ProjectList",

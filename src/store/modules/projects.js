@@ -76,7 +76,6 @@ export default {
 
         // Sets the Project's blocks
         saveProjectBlocks({commit}, data) {
-            console.log(data);
             commit('setProjectBlocks', data);
         }
     },

@@ -82,17 +82,14 @@ export default {
             loadSurvey: 'surveys/loadSurvey',
             saveProjectBlocks: 'projects/saveProjectBlocks'
         }),
-        //add functionality to make sure that there is both information 
-        //on both column before we can add new visualization. No 
-        //undefined data.
         addVisualization: function() {
             // Use pre-existing blocks if empty
             if (Object.entries(this.allBlocks).length === 0) {
-                this.allBlocks = this.existingBlocks;
+                this.allBlocks = JSON.parse(JSON.stringify(this.existingBlocks));
             }
             const blockSelected = this.blockSelected;
             const graphSelected = this.graphSelected;
-            if(blockSelected == 'undefined' || graphSelected == 'undefined'){
+            if(blockSelected == 'undefined' || graphSelected == 'undefined') {
                 return;
             }
 
@@ -120,7 +117,7 @@ export default {
         removeVisualization: function() {
             // Use pre-existing blocks if empty
             if (Object.entries(this.allBlocks).length === 0) {
-                this.allBlocks = this.existingBlocks;
+                this.allBlocks = JSON.parse(JSON.stringify(this.existingBlocks));
             }
             this.visualizations.splice(this.visualizations.indexOf(this.removeData), 1);
             const blockSelected = this.removeData.split("-")[0].trimEnd();

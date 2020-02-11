@@ -30,7 +30,7 @@
             </b-row>
             <b-row>
                 <h2> Visualization Dashboard </h2>
-                <visualization-dashboard ref="allData" v-bind:existing-visualizations="visualizations" v-bind:existing-blocks="existingBlocks"/>
+                <visualization-dashboard v-bind:existing-visualizations="visualizations" v-bind:existing-blocks="existingBlocks"/>
             </b-row>
 
             <b-row>
@@ -59,13 +59,13 @@
 
 
 <script>
-import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
-import Header from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import VisualizationDashboard from '@/components/VisualizationDashboard.vue';
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 
-import {mapActions, mapState, mapMutations} from 'vuex'
+import {mapActions, mapState, mapMutations} from 'vuex';
 
 
 export default {

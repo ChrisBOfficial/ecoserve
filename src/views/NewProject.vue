@@ -38,10 +38,10 @@
 
 
 <script>
-import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
-import Header from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue'
-import surveyBlocks from '@/components/surveyBlocks.vue'
+import VisualizationDashboard from '@/components/VisualizationDashboard.vue';
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
+import surveyBlocks from '@/components/surveyBlocks.vue';
 import {mapActions, mapState} from 'vuex';
 
 export default {

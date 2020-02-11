@@ -26,10 +26,10 @@
 
 
 <script>
-import Header from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue'
-import { mapState } from 'vuex'
-import * as d3 from 'd3'
+import Header from '@/components/Header.vue';
+import Footer from '@/components/Footer.vue';
+import { mapState } from 'vuex';
+import * as d3 from 'd3';
 
 
 export default {
