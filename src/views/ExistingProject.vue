@@ -35,11 +35,15 @@
 
             <b-row>
                 <b-col>
-                    <b-button v-on:click="createProject" style="background-color:DarkSeaGreen;">SAVE PROJECT</b-button>
+                    <b-button v-on:click="saveProject" style="background-color:DarkSeaGreen;" v-b-modal.modal-center-1>SAVE PROJECT</b-button>
+                    <b-modal id="modal-center-1" centered title="Saved!"
+                        ok-title="Go to Projects" cancel-title="Continue editing" :hide-header="true" v-on:ok="exitEditing">
+                        <p class="my-4">Project saved!</p>
+                    </b-modal>
                 </b-col>
                 <b-col>
-                    <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center>DELETE PROJECT</b-button>
-                    <b-modal id="modal-center" centered title="Warning" 
+                    <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center-2>DELETE PROJECT</b-button>
+                    <b-modal id="modal-center-2" centered title="Warning" 
                         ok-variant="danger" ok-title="Yes" cancel-title="No" :hide-header-close="true" v-on:ok="deleteProject">
                         <p class="my-4">Are you sure you want to delete the project?</p>
                     </b-modal>
@@ -126,7 +130,7 @@ export default {
             }
             this.setSelectedId(this.selected.projectId);
         },
-        createProject: function() {
+        saveProject: function() {
             const payload = {
                 name: this.title,
                 description: this.description,
@@ -137,12 +141,15 @@ export default {
             };
             this.updateProject(payload);
         },
+        exitEditing: function() {
+            this.$router.push('project');
+        },
         deleteProject: function() {
             const payload = {
                 projectId: this.title + "+" + this.selected.surveyId
             };
             this.removeProject(payload);
-            this.$router.replace('project');
+            this.exitEditing();
         }
     }
 }
