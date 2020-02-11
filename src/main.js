@@ -3,6 +3,9 @@ import App from './App.vue';
 import router from './router';
 import store from './store';
 import axios from 'axios';
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 var apiUrl;
 if (process.env.NODE_ENV == 'development') {
@@ -21,6 +24,7 @@ const instance = axios.create({
 window.axios = instance;
 Vue.config.productionTip = false;
 
+Vue.use(BootstrapVue);
 new Vue({
   router,
   store,

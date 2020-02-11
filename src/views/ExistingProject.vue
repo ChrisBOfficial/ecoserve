@@ -37,14 +37,14 @@
                 <b-col>
                     <b-button v-on:click="saveProject" style="background-color:DarkSeaGreen;" v-b-modal.modal-center-1>SAVE PROJECT</b-button>
                     <b-modal id="modal-center-1" centered :hide-header="true"
-                        ok-title="Go to Projects" cancel-title="Continue editing" v-on:ok="exitEditing">
+                        size="sm" ok-title="Go to Projects" cancel-title="Continue editing" v-on:ok="exitEditing">
                         <p class="my-4">Project saved!</p>
                     </b-modal>
                 </b-col>
                 <b-col>
                     <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center-2>DELETE PROJECT</b-button>
-                    <b-modal id="modal-center-2" centered title="Warning" 
-                        ok-variant="danger" ok-title="Yes" cancel-title="No" :hide-header-close="true" v-on:ok="deleteProject">
+                    <b-modal id="modal-center-2" centered title="Warning" ok-variant="danger" ok-title="Yes" cancel-title="No" 
+                        :hide-header-close="true" v-on:ok="deleteProject">
                         <p class="my-4">Are you sure you want to delete the project?</p>
                     </b-modal>
                 </b-col>
@@ -62,11 +62,7 @@
 import VisualizationDashboard from '@/components/VisualizationDashboard.vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
-
 import {mapActions, mapState, mapMutations} from 'vuex';
-
 
 export default {
     components: {

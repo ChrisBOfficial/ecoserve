@@ -20,7 +20,6 @@ export default {
             SurveysAPI.getSurveys()
                     .then(response => {
                         if (response.data.result && response.data.result.elements) {
-                            console.log(response.data.result);
                             commit('setSurveys', response.data.result.elements);
                             commit('setSurveysLoadStatus', 2);
                         }
@@ -38,7 +37,6 @@ export default {
             // Calls the API to load a survey by surveyId and save the blocks
             SurveysAPI.getSurvey(data)
                     .then(response => {
-                        console.log(response.data);
                         commit('setSurvey', response.data.result);
                         commit('setSurveyLoadStatus', 2);
                         var blocks = [];

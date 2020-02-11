@@ -93,8 +93,7 @@ export default {
                 return;
             }
 
-            // eslint-disable-next-line no-prototype-builtins
-            if (this.allBlocks.hasOwnProperty(blockSelected.description)) {
+            if (Object.prototype.hasOwnProperty.call(this.allBlocks, blockSelected.description)) {
                 var contained = false;
                 for (let item of this.allBlocks[blockSelected.description]) {
                     if (item[0] == graphSelected && item[1] == "option") {

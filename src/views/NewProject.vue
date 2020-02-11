@@ -24,14 +24,16 @@
                 </b-row>
 
                 <b-row align-h="center">
-                    <b-col class="col-4 text-center align-items-center">
+                    <b-col class="col-4">
                         <b-button v-on:click="createProject" style="background-color:DarkSeaGreen;" v-b-modal.modal-center>CREATE PROJECT</b-button>
-                        <b-modal id="modal-center" centered :hide-header="true" ok-only v-on:ok="exitEditing">
-                            <p class="my-4">Project created!</p>
+                        <b-modal id="modal-center" centered :hide-header="true" size="sm" @show="validateForm"
+                            :no-close-on-backdrop="true" :no-close-on-esc="true" :ok-only="true" v-on:ok="exitEditing">
+                            <p>Project created!</p>
                         </b-modal>
                     </b-col>
                 </b-row>
             </b-container>
+            <p style="text-align: center; color: red;" v-for="error in validateErrors" :key="error"> {{ error }} </p>
         <Footer/>
     </div>
 </template>
@@ -42,7 +44,7 @@ import VisualizationDashboard from '@/components/VisualizationDashboard.vue';
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
 import surveyBlocks from '@/components/surveyBlocks.vue';
-import {mapActions, mapState} from 'vuex';
+import {mapActions, mapState, mapMutations} from 'vuex';
 
 export default {
     components: {
@@ -54,7 +56,8 @@ export default {
     data() {
         return {
             title: '',
-            description: ''
+            description: '',
+            validateErrors: []
         }
     },
     computed: {
@@ -63,22 +66,61 @@ export default {
             projectBlocks: state => state.projects.projectBlocks,
         })
     },
+    created: function() {
+        this.setSurvey({});
+        this.setProjectBlocks({});
+    },
     methods: {
         ...mapActions({
             loadSurveys: 'surveys/loadSurveys',
             loadSurvey: 'surveys/loadSurvey',
             saveProject: 'projects/saveProject'
         }),
+        ...mapMutations({
+            setSurvey: 'surveys/setSurvey',
+            setProjectBlocks: 'projects/setProjectBlocks'
+        }),
+        validateForm: function(bvModalEvt) {
+            let invalid = false;
+            this.validateErrors = [];
+            let blocks = JSON.parse(JSON.stringify(this.projectBlocks));
+
+            if (this.title === '') {
+                this.validateErrors.push("Please provide a title");
+                invalid = true;
+            }
+            if (this.description === '') {
+                this.validateErrors.push("Please provide a description");
+                invalid = true;
+            }
+            if (this.survey.id === undefined) {
+                this.validateErrors.push("Project requires a survey");
+                invalid = true;
+            }
+            if (Object.entries(blocks).length === 0) {
+                this.validateErrors.push("Project requires at least one visualization");
+                invalid = true;
+            }
+            if (invalid) {
+                if (bvModalEvt) bvModalEvt.preventDefault();
+                return false;
+            } else {
+                this.$bvModal.show('modal-center');
+                return true;
+            }
+        },
         createProject: function() {
-            const payload = {
-                name: this.title,
-                description: this.description,
-                surveyId : this.survey.id,
-                projectId: this.title + "+" + this.survey.id,
-                blocks : this.projectBlocks,
-                hooked: false
-            };
-            this.saveProject(payload);
+            if (this.validateForm()) {
+                const payload = {
+                    name: this.title,
+                    description: this.description,
+                    surveyId : this.survey.id,
+                    projectId: this.title + "+" + this.survey.id,
+                    blocks : this.projectBlocks,
+                    hooked: false
+                };
+                this.saveProject(payload);
+            }
         },
         exitEditing: function() {
             this.$router.push('project');

@@ -6,6 +6,11 @@
                 <b-row class="h-100 align-items-center">
                     <b-col class="col-6 text-center align-items-center" id="ProjectList">
                         <h3>PROJECTS</h3>
+                        <b-col>
+                            <ProjectDescription v-for="project in projects" :key="project.projectId" v-bind:project="project"></ProjectDescription>
+                        </b-col>
+                        <br/>
+
                         <b-row>
                             <div class="col-md-6">
                                 <router-link to="/newproject" tag="button" style="background-color:DarkSeaGreen;">Create new project</router-link>
@@ -14,11 +19,6 @@
                                 <router-link to="/existingproject" tag="button" style="background-color:DarkSeaGreen;">Edit existing project</router-link>
                             </div>
                         </b-row>
-                        <br/>
-
-                        <b-col class="col-md-11 position-absolute">
-                            <ProjectDescription v-for="project in projects" :key="project.projectId" v-bind:project="project"></ProjectDescription>
-                        </b-col>
                     </b-col>
 
                     <b-col class="col-6 text-center align-items-center">
