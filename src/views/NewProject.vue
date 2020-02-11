@@ -23,12 +23,12 @@
                     <visualization-dashboard/>
                 </b-row>
 
-                <b-row>
-                    <b-col>
-                        <button v-on:click="createProject" style="background-color:DarkSeaGreen;">CREATE PROJECT</button>
-                    </b-col>
-                    <b-col>
-                        <button style="background-color:DarkSeaGreen;">DELETE PROJECT</button>
+                <b-row align-h="center">
+                    <b-col class="col-4 text-center align-items-center">
+                        <b-button v-on:click="createProject" style="background-color:DarkSeaGreen;" v-b-modal.modal-center>CREATE PROJECT</b-button>
+                        <b-modal id="modal-center" centered :hide-header="true" ok-only v-on:ok="exitEditing">
+                            <p class="my-4">Project created!</p>
+                        </b-modal>
                     </b-col>
                 </b-row>
             </b-container>
@@ -79,6 +79,9 @@ export default {
                 hooked: false
             };
             this.saveProject(payload);
+        },
+        exitEditing: function() {
+            this.$router.push('project');
         }
     }
 }

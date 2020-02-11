@@ -36,8 +36,8 @@
             <b-row>
                 <b-col>
                     <b-button v-on:click="saveProject" style="background-color:DarkSeaGreen;" v-b-modal.modal-center-1>SAVE PROJECT</b-button>
-                    <b-modal id="modal-center-1" centered title="Saved!"
-                        ok-title="Go to Projects" cancel-title="Continue editing" :hide-header="true" v-on:ok="exitEditing">
+                    <b-modal id="modal-center-1" centered :hide-header="true"
+                        ok-title="Go to Projects" cancel-title="Continue editing" v-on:ok="exitEditing">
                         <p class="my-4">Project saved!</p>
                     </b-modal>
                 </b-col>
