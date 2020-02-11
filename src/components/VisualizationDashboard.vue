@@ -88,7 +88,7 @@ export default {
         addVisualization: function() {
             // Use pre-existing blocks if empty
             if (Object.entries(this.allBlocks).length === 0) {
-                this.allBlocks = JSON.parse(JSON.stringify(this.existingBlocks));
+                this.allBlocks = this.existingBlocks;
             }
             const blockSelected = this.blockSelected;
             const graphSelected = this.graphSelected;
@@ -112,14 +112,14 @@ export default {
                 this.visualizations.push(blockSelected.description + " - " + graphSelected);
             }
 
-            this.saveProjectBlocks(this.allBlocks);
+            this.setProjectBlocks(this.allBlocks);
             this.blockSelected = "";
             this.graphSelected = "";
         },
         removeVisualization: function() {
             // Use pre-existing blocks if empty
             if (Object.entries(this.allBlocks).length === 0) {
-                this.allBlocks = JSON.parse(JSON.stringify(this.existingBlocks));
+                this.allBlocks = this.existingBlocks;
             }
             this.visualizations.splice(this.visualizations.indexOf(this.removeData), 1);
             const blockSelected = this.removeData.split("-")[0].trimEnd();

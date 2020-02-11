@@ -46,6 +46,7 @@
                         centered
                         :hide-header="true"
                         size="sm"
+                        @show="validateForm"
                         ok-title="Go to Projects"
                         cancel-title="Continue editing"
                         v-on:ok="exitEditing"
@@ -78,6 +79,7 @@
                 </b-col>
             </b-row>
         </b-container>
+        <p style="text-align: center; color: red;" v-for="error in validateErrors" :key="error">{{ error }}</p>
         <Footer />
     </div>
 </template>
@@ -96,11 +98,15 @@ export default {
     },
     data() {
         return {
+            title: "",
+            description: "",
             projectPicked: false,
             seen: true,
             selected: {},
             visualizations: [],
-            existingBlocks: {}
+            existingBlocks: {},
+            validateErrors: [],
+            previousProjectId: ""
         };
     },
     computed: {
@@ -114,12 +120,6 @@ export default {
                 names.push(project.name);
             }
             return names;
-        },
-        title: function() {
-            return this.selected.name;
-        },
-        description: function() {
-            return this.selected.description;
         }
     },
     created: function() {
@@ -137,6 +137,8 @@ export default {
             setSelectedId: "projects/setSelectedProjectId"
         }),
         selectProject: function() {
+            this.title = this.selected.name;
+            this.description = this.selected.description;
             this.projectPicked = !this.projectPicked;
             this.seen = !this.seen;
             this.loadSurvey(this.selected.surveyId);
@@ -148,18 +150,53 @@ export default {
                     this.visualizations.push(block + " - " + graph[0]);
                 }
             }
+            this.previousProjectId = this.selected.projectId;
             this.setSelectedId(this.selected.projectId);
         },
+        validateForm: function(bvModalEvt) {
+            let invalid = false;
+            this.validateErrors = [];
+            let blocks = JSON.parse(JSON.stringify(this.projectBlocks));
+
+            if (this.title === "") {
+                this.validateErrors.push("Please provide a title");
+                invalid = true;
+            }
+            if (this.description === "") {
+                this.validateErrors.push("Please provide a description");
+                invalid = true;
+            }
+            if (this.selected.surveyId === undefined) {
+                this.validateErrors.push("Project requires a survey");
+                invalid = true;
+            }
+            if (Object.entries(blocks).length === 0) {
+                this.validateErrors.push("Project requires at least one visualization");
+                invalid = true;
+            }
+            if (invalid) {
+                if (bvModalEvt) bvModalEvt.preventDefault();
+                return false;
+            } else {
+                this.$bvModal.show("modal-center");
+                return true;
+            }
+        },
         saveProject: function() {
-            const payload = {
-                name: this.title,
-                description: this.description,
-                surveyId: this.selected.surveyId,
-                projectId: this.title + "+" + this.selected.surveyId,
-                blocks: this.projectBlocks,
-                hooked: false
-            };
-            this.updateProject(payload);
+            if (this.validateForm()) {
+                const payload = {
+                    previousId: this.previousProjectId,
+                    data: {
+                        name: this.title,
+                        description: this.description,
+                        surveyId: this.selected.surveyId,
+                        projectId: this.title + "+" + this.selected.surveyId,
+                        blocks: this.projectBlocks,
+                        hooked: false
+                    }
+                };
+                this.updateProject(payload);
+            }
         },
         exitEditing: function() {
             this.$router.push("project");
