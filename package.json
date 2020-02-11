@@ -1,64 +1,64 @@
 {
-  "name": "invasive-species",
-  "version": "0.1.0",
-  "description": "A platform for the integration of traditional and local knowledge with ecosystem service assessments and environmental decision making.",
-  "private": true,
-  "scripts": {
-    "build": "vue-cli-service build",
-    "deploy": "npm run build && cd resources && ./prep-deploy.sh",
-    "deploy-windows": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command npm run build; cd resources; ./prep-deploy.ps1",
-    "serve": "vue-cli-service serve",
-    "prestart": "npm install",
-    "start": "node src/server.js",
-    "devstart": "NODE_ENV=development nodemon src/server.js",
-    "test": "mocha --exit"
-  },
-  "main": "server.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cseseniordesign/invasive-species.git"
-  },
-  "bugs": {
-    "url": "https://github.com/cseseniordesign/invasive-species/issues"
-  },
-  "homepage": "https://github.com/cseseniordesign/invasive-species#readme",
-  "dependencies": {
-    "axios": "^0.19.2",
-    "bootstrap": "^4.4.1",
-    "bootstrap-vue": "^2.4.0",
-    "cors": "^2.8.5",
-    "d3": "^5.15.0",
-    "dotenv": "^8.2.0",
-    "express": "^4.17.1",
-    "mongodb": "^3.5.2",
-    "request": "^2.88.0",
-    "socket.io": "^2.3.0",
-    "socket.io-client": "^2.3.0",
-    "unzip-stream": "^0.3.0",
-    "vue": "^2.6.11",
-    "vue-js-grid": "^1.0.1",
-    "vue-router": "^3.1.5",
-    "vuex": "^3.1.2"
-  },
-  "devDependencies": {
-    "@vue/cli-plugin-router": "^4.2.2",
-    "@vue/cli-plugin-vuex": "^4.2.2",
-    "@vue/cli-service": "^4.2.2",
-    "babel-eslint": "^10.0.3",
-    "eslint": "^6.8.0",
-    "eslint-plugin-vue": "^6.1.2",
-    "mocha": "^7.0.1",
-    "nodemon": "^2.0.2",
-    "supertest": "^4.0.2",
-    "vue-template-compiler": "^2.6.11"
-  },
-  "postcss": {
-    "plugins": {
-      "autoprefixer": {}
-    }
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions"
-  ]
+    "name": "invasive-species",
+    "version": "0.1.0",
+    "description": "A platform for the integration of traditional and local knowledge with ecosystem service assessments and environmental decision making.",
+    "private": true,
+    "scripts": {
+        "build": "vue-cli-service build",
+        "deploy": "npm run build && cd resources && ./prep-deploy.sh",
+        "deploy-windows": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command npm run build; cd resources; ./prep-deploy.ps1",
+        "serve": "vue-cli-service serve",
+        "prestart": "npm install",
+        "start": "node src/server.js",
+        "devstart": "NODE_ENV=development nodemon src/server.js",
+        "test": "mocha --exit"
+    },
+    "main": "server.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/cseseniordesign/invasive-species.git"
+    },
+    "bugs": {
+        "url": "https://github.com/cseseniordesign/invasive-species/issues"
+    },
+    "homepage": "https://github.com/cseseniordesign/invasive-species#readme",
+    "dependencies": {
+        "axios": "^0.19.2",
+        "bootstrap": "^4.4.1",
+        "bootstrap-vue": "^2.4.0",
+        "cors": "^2.8.5",
+        "d3": "^5.15.0",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "mongodb": "^3.5.2",
+        "request": "^2.88.0",
+        "socket.io": "^2.3.0",
+        "socket.io-client": "^2.3.0",
+        "unzip-stream": "^0.3.0",
+        "vue": "^2.6.11",
+        "vue-js-grid": "^1.0.1",
+        "vue-router": "^3.1.5",
+        "vuex": "^3.1.2"
+    },
+    "devDependencies": {
+        "@vue/cli-plugin-router": "^4.2.2",
+        "@vue/cli-plugin-vuex": "^4.2.2",
+        "@vue/cli-service": "^4.2.2",
+        "babel-eslint": "^10.0.3",
+        "eslint": "^6.8.0",
+        "eslint-plugin-vue": "^6.1.2",
+        "mocha": "^7.0.1",
+        "nodemon": "^2.0.2",
+        "supertest": "^4.0.2",
+        "vue-template-compiler": "^2.6.11"
+    },
+    "postcss": {
+        "plugins": {
+            "autoprefixer": {}
+        }
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions"
+    ]
 }

@@ -11,7 +11,7 @@
               :items="items"
               :height="100"
               :width="100">
-                <template slot="cell" scope="props">
+                <template slot="cell" slot-scope="props">
                   <div>{{props.item}}</div>
                 </template>
             </grid>
