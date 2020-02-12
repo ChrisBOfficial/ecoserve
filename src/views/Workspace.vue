@@ -3,13 +3,22 @@
         <Header />
         <div class="container" style="padding:10px 10px;">
             <div class="well" style="padding-top: 136px;">
-                <button v-on:click="getSpecificSurvey('SV_b78ghjEDgpEZU3j', ...arguments)">
+                <button
+                    style="background-color:DarkSeaGreen;"
+                    v-on:click="getSpecificSurvey('SV_b78ghjEDgpEZU3j', ...arguments)"
+                >
                     Log survey SV_b78ghjEDgpEZU3j
                 </button>
                 <div style="width: 50%; margin: 0 auto;">
-                    <button v-for="survey in formattedSurveys" :key="survey.name">{{ survey.name }}</button>
+                    <button
+                        style="background-color:DarkSeaGreen;"
+                        v-for="survey in formattedSurveys"
+                        :key="survey.name"
+                    >
+                        {{ survey.name }}
+                    </button>
                 </div>
-                <button v-on:click="loadSurveys">Refresh surveys</button>
+                <button style="background-color:DarkSeaGreen;" v-on:click="loadSurveys">Refresh surveys</button>
             </div>
         </div>
         <Footer />

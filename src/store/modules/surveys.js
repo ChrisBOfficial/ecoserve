@@ -9,7 +9,8 @@ export default {
 
         survey: {},
         surveyLoadStatus: 0,
-        blocks: []
+        blocks: [],
+        questions: []
     },
 
     actions: {
@@ -39,14 +40,31 @@ export default {
                 .then(response => {
                     commit("setSurvey", response.data.result);
                     commit("setSurveyLoadStatus", 2);
-                    var blocks = [];
-                    var survey = response.data.result;
+
+                    let blocks = [];
+                    let survey = response.data.result;
                     for (const block of survey.flow) {
-                        var blockData = survey.blocks[block.id];
+                        let blockData = survey.blocks[block.id];
                         blockData.id = block.id;
                         blocks.push(blockData);
                     }
                     commit("setSurveyBlocks", blocks);
+
+                    let questions = [];
+                    for (const questionId in survey.questions) {
+                        if (survey.questions[questionId].questionType.type === "SBS") {
+                            let questionData = { ID: questionId, sub: [] };
+                            for (const subQuestionId in survey.questions[questionId].subQuestions) {
+                                let subData = {
+                                    subID: subQuestionId,
+                                    subtext: survey.questions[questionId].subQuestions[subQuestionId].choiceText
+                                };
+                                questionData.sub.push(subData);
+                            }
+                            questions.push(questionData);
+                        }
+                    }
+                    commit("setSurveyQuestions", questions);
                 })
                 .catch(error => {
                     console.log(error);
@@ -73,9 +91,13 @@ export default {
         setSurveyLoadStatus(state, status) {
             state.surveyLoadStatus = status;
         },
-        // Sets the selected survey blocks
+        // Sets the selected survey's blocks
         setSurveyBlocks(state, blocks) {
             state.blocks = blocks;
+        },
+        // Sets the selected survey's questions
+        setSurveyQuestions(state, questions) {
+            state.questions = questions;
         }
     }
 };
