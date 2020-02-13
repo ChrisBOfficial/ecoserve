@@ -237,7 +237,7 @@ app.route("/api/projects")
     .patch((req, res) => {
         const collection = dbClient.db("DB1").collection("Projects");
 
-        collection.updateOne({ projectId: req.body.projectId }, { $set: req.body }, function(err) {
+        collection.updateOne({ projectId: req.body.previousId }, { $set: req.body.data }, function(err) {
             if (err) throw new Error(err);
             res.sendStatus(200);
         });
