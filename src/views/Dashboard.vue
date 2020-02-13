@@ -6,7 +6,7 @@
           <b-tab id="barChartTab" title="Bar Graphs" active>
             <p>I'm the check 3 tab</p>
             <b-container class="bv-example-row">
-              <b-row>
+              <b-row cols="1" cols-sm="2" cols-md="4" cols-lg="6">
                 <b-col v-for="(item , index) in barChartDatas" :key="index">
                   <BarChart title="Bar Chart" xKey="name" yKey="amount" conf="confidence" :ind="index" :data="item"/> 
                 </b-col>
@@ -27,8 +27,6 @@
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import BarChart from '@/components/BarChart.vue'
-import { Dashboard, Layout, DashItem } from "vue-responsive-dash";
-
 
 import { mapState } from 'vuex'
 import * as d3 from 'd3'
@@ -39,10 +37,7 @@ export default {
   components: {
     Header,
     Footer,
-    BarChart,
-    Dashboard,
-    Layout,
-    DashItem
+    BarChart
   },
   data () {
     return {
@@ -111,6 +106,33 @@ export default {
             amount: 32,
             confidence: "high"
           }
+        ],
+        [
+          {
+            name: "Roses",
+            amount: 45,
+            confidence: "low"
+          },
+          {
+            name: "Tlips",
+            amount: 5,
+            confidence: "none"
+          },
+          {
+            name: "Daisies",
+            amount: 15,
+            confidence: "moderate"
+          },
+          {
+            name: "Narcissuses",
+            amount: 9,
+            confidence: "extreme"
+          },
+          {
+            name: "Wallaby",
+            amount: 2,
+            confidence: "high"
+          }
         ]
       ]
     }
@@ -131,7 +153,7 @@ export default {
 
   methods: {
     createGraph: function(){
-      var svgContainer = d3.select(".circularGraph").append().append("svg")
+      var svgContainer = d3.select(".circularGraph").append("svg")
                                       .attr("width", 200)
                                       .attr("height", 200);
       var circles = svgContainer.selectAll("circle")

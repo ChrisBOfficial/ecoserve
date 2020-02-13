@@ -1,16 +1,16 @@
 <template>
-  <div id="app">
-    <!-- Dynamically loaded views -->
-    <router-view/>
-  </div>
+    <div id="app">
+        <!-- Dynamically loaded views -->
+        <router-view />
+    </div>
 </template>
 
 <script>
-import store from './store'
+import store from "./store";
 
 export default {
-  store
-}
+    store
+};
 </script>
 
 <!--CSS Styling-->

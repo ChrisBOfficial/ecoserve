@@ -1,10 +1,10 @@
 <template>
     <div>
         <h5>
-            <router-link :to="{ name: 'dashboard', query: { id:project.projectId }}">{{ project.name }}</router-link>
+            <router-link :to="{ name: 'dashboard', query: { id: project.projectId } }">{{ project.name }}</router-link>
         </h5>
         <p>
-            {{project.description}}
+            {{ project.description }}
         </p>
     </div>
 </template>
@@ -12,6 +12,6 @@
 <script>
 export default {
     name: "ProjectDescription",
-    props: ['project']
-}
+    props: ["project"]
+};
 </script>

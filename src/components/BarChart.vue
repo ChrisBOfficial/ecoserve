@@ -1,5 +1,5 @@
 <template>
-    <div v-bind:id="'container' + ind" class="svg-container" align="center">
+    <div :id="this.ind" class="svg-container" align="center">
         <h3>{{ title + " " + ind}}</h3>
         <svg v-if="redrawToggle === true" :width="svgWidth" :height="svgHeight">
             <g>
@@ -34,7 +34,7 @@
             ind: Number
         },
         mounted() {
-            var elementID = 'container' + this.ind;
+            var elementID = this.ind;
             console.log(elementID);
             this.svgWidth = document.getElementById(elementID).offsetWidth * 0.75;
             this.AddResizeListener();
@@ -42,7 +42,14 @@
         },
         data: () => ({
             svgWidth: 0,
-            redrawToggle: true
+            redrawToggle: true,
+            title: title,
+            conf: conf,
+            xKey: xKey,
+            yKey: yKey,
+            data: data,
+            ind: ind
+
         }),
         methods: {
             AnimateLoad() {
@@ -68,8 +75,10 @@
                     this.$data.redrawToggle = false;
                     setTimeout(() => {
                         this.$data.redrawToggle = true;
+                        var elementID = this.ind;
+
                         this.$data.svgWidth =
-                            document.getElementById("container").offsetWidth * 0.75;
+                            document.getElementById(elementID).offsetWidth * 0.75;
                         this.AnimateLoad();
                     }, 300);
                 });

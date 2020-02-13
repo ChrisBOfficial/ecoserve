@@ -1,11 +1,11 @@
 <template>
-    <div class='existing-project-container'>
-        <Header/>
+    <div class="existing-project-container">
+        <Header />
         <b-container v-show="seen">
             <b-row>
                 <b-form-select v-model="selected" :select-size="5">
                     <option v-for="project in projects" :value="project" :key="project.name">
-                        {{project.name}}
+                        {{ project.name }}
                     </option>
                 </b-form-select>
             </b-row>
@@ -18,7 +18,7 @@
 
         <b-container v-show="projectPicked">
             <b-row class="h-100">
-                <h1 aria-placeholder="CREATE NEW PROJECT"> {{title}} </h1>
+                <h1 aria-placeholder="CREATE NEW PROJECT">{{ title }}</h1>
             </b-row>
             <b-row>
                 <b-form-input v-model="title" placeholder="Enter Project Title"></b-form-input>
@@ -26,42 +26,67 @@
             </b-row>
             <b-row>
                 <h3>Survey: insert survey name</h3>
-                <button style="background-color:DarkSeaGreen;"> Link to Survey </button>
+                <button style="background-color:DarkSeaGreen;">Link to Survey</button>
             </b-row>
             <b-row>
-                <h2> Visualization Dashboard </h2>
-                <visualization-dashboard ref="allData" v-bind:existing-visualizations="visualizations" v-bind:existing-blocks="existingBlocks"/>
+                <h2>Visualization Dashboard</h2>
+                <visualization-dashboard
+                    v-bind:existing-visualizations="visualizations"
+                    v-bind:existing-blocks="existingBlocks"
+                />
             </b-row>
 
             <b-row>
                 <b-col>
-                    <b-button v-on:click="createProject" style="background-color:DarkSeaGreen;">SAVE PROJECT</b-button>
+                    <b-button v-on:click="saveProject" style="background-color:DarkSeaGreen;" v-b-modal.modal-center-1
+                        >SAVE PROJECT</b-button
+                    >
+                    <b-modal
+                        id="modal-center-1"
+                        centered
+                        :hide-header="true"
+                        size="sm"
+                        ok-title="Go to Projects"
+                        cancel-title="Continue editing"
+                        v-on:ok="exitEditing"
+                    >
+                        <p class="my-4">Project saved!</p>
+                    </b-modal>
                 </b-col>
                 <b-col>
-                    <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-1>DELETE PROJECT</b-button>
-                    <b-modal id="modal-1" title="Warning">
+                    <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center-2>DELETE PROJECT</b-button>
+                    <b-modal
+                        id="modal-center-2"
+                        centered
+                        title="Warning"
+                        ok-variant="danger"
+                        ok-title="Yes"
+                        cancel-title="No"
+                        :hide-header-close="true"
+                        v-on:ok="deleteProject"
+                    >
                         <p class="my-4">Are you sure you want to delete the project?</p>
                     </b-modal>
                 </b-col>
                 <b-col>
-                    <router-link :to="{ name: 'dashboard', query: { id:selected.projectId }}" tag="b-button" style="background-color:DarkSeaGreen;">Go To Visualization</router-link>
+                    <router-link
+                        :to="{ name: 'dashboard', query: { id: selected.projectId } }"
+                        tag="b-button"
+                        style="background-color:DarkSeaGreen;"
+                        >Go To Visualization</router-link
+                    >
                 </b-col>
             </b-row>
         </b-container>
-        <Footer/>
+        <Footer />
     </div>
 </template>
 
-
 <script>
-import VisualizationDashboard from '@/components/VisualizationDashboard.vue'
-import Header from '@/components/Header.vue'
-import Footer from '@/components/Footer.vue'
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-
-import {mapActions, mapState, mapMutations} from 'vuex'
-
+import VisualizationDashboard from "@/components/VisualizationDashboard.vue";
+import Header from "@/components/Header.vue";
+import Footer from "@/components/Footer.vue";
+import { mapActions, mapState, mapMutations } from "vuex";
 
 export default {
     components: {
@@ -76,7 +101,7 @@ export default {
             selected: {},
             visualizations: [],
             existingBlocks: {}
-        }
+        };
     },
     computed: {
         ...mapState({
@@ -102,16 +127,17 @@ export default {
     },
     methods: {
         ...mapActions({
-            loadProjects: 'projects/loadProjects',
-            updateProject: 'projects/updateProject',
-            loadSurvey: 'surveys/loadSurvey',
-            saveProjectBlocks: 'projects/saveProjectBlocks'
+            loadProjects: "projects/loadProjects",
+            updateProject: "projects/updateProject",
+            removeProject: "projects/deleteProject",
+            saveProjectBlocks: "projects/saveProjectBlocks",
+            loadSurvey: "surveys/loadSurvey"
         }),
         ...mapMutations({
-            setSelectedId: 'projects/setSelectedProjectId'
+            setSelectedId: "projects/setSelectedProjectId"
         }),
         selectProject: function() {
-            this.projectPicked = !this.projectPicked; 
+            this.projectPicked = !this.projectPicked;
             this.seen = !this.seen;
             this.loadSurvey(this.selected.surveyId);
             this.saveProjectBlocks(this.selected.blocks);
@@ -124,7 +150,7 @@ export default {
             }
             this.setSelectedId(this.selected.projectId);
         },
-        createProject: function() {
+        saveProject: function() {
             const payload = {
                 name: this.title,
                 description: this.description,
@@ -134,7 +160,17 @@ export default {
                 hooked: false
             };
             this.updateProject(payload);
+        },
+        exitEditing: function() {
+            this.$router.push("project");
+        },
+        deleteProject: function() {
+            const payload = {
+                projectId: this.title + "+" + this.selected.surveyId
+            };
+            this.removeProject(payload);
+            this.exitEditing();
         }
     }
-}
+};
 </script>

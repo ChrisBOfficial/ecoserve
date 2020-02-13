@@ -5,23 +5,25 @@
         </b-row>
         <b-row class="align-items-center">
             <b-form-select v-model="selectedSurvey" v-on:change="selectSurvey" :select-size="5">
-                <option v-for="survey in surveys" v-bind:value="survey" v-bind:key="survey.name" >{{ survey.name }}</option>
+                <option v-for="survey in surveys" v-bind:value="survey" v-bind:key="survey.name">{{
+                    survey.name
+                }}</option>
             </b-form-select>
-            <br>
-            <span>Selected: {{selectedSurvey}} </span>
+            <br />
+            <span>Selected: {{ selectedSurvey }} </span>
         </b-row>
     </b-container>
 </template>
 
 <script>
-import {mapActions, mapState} from 'vuex';
+import { mapActions, mapState } from "vuex";
 
 export default {
     name: "surveyBlocks",
     data() {
         return {
-            selectedSurvey: ''
-        }
+            selectedSurvey: ""
+        };
     },
     computed: {
         ...mapState({
@@ -35,12 +37,12 @@ export default {
     },
     methods: {
         ...mapActions({
-            loadSurveys: 'surveys/loadSurveys',
-            loadSurvey: 'surveys/loadSurvey'
+            loadSurveys: "surveys/loadSurveys",
+            loadSurvey: "surveys/loadSurvey"
         }),
         selectSurvey: function(selected) {
             this.loadSurvey(selected.id);
         }
     }
-}
+};
 </script>
