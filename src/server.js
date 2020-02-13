@@ -150,6 +150,9 @@ app.route("/api/surveys/responses")
                         })
                         .on("end", function() {
                             const results = JSON.parse(Buffer.concat(chunks).toString("utf8")).responses;
+
+                            // const collection = dbClient.db("DB1").collection("Projects");
+
                             res.send(results);
                         });
 
