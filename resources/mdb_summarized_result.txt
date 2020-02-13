@@ -1,9 +1,5 @@
 ##Barchart Aggregation Pipeline##
-<<<<<<< Updated upstream
 
-=======
-##Node##
->>>>>>> Stashed changes
 [
   {
     '$match': {
@@ -223,8 +219,6 @@
   }
 ]
 
-<<<<<<< Updated upstream
-=======
 ##Mongo Shell ##
 
 [{$match: {
@@ -297,8 +291,6 @@
 
     }}]
 
-
->>>>>>> Stashed changes
 ##Circular Chart Aggregation Pipeline##
 
 ##Nutrition Label Aggregation Pipeline##
