@@ -25,7 +25,7 @@ const routes = [
     {
         path: "/csv",
         name: "csv",
-        component: () => import("@/views/CSVupload.vue")
+        component: () => import("@/views/tempCircleChart.vue")
     },
     {
         path: "/workspace",
