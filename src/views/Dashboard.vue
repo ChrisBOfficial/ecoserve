@@ -15,8 +15,8 @@
         </b-tab>
         <b-tab title="Circular Charts">
             <p>I'm the second tab</p>
-            <CirclularChart title="Circle Chart" xKey="service" yKey="mean" :data="CircleChartData"/>
-            <CircleChart :values="values"></CircleChart>
+            <CirclularChart title="Circle Chart" />
+            <CircleChart title="Circle Chart" :values="values" yKey="amount" :data="barChartData"></CircleChart>
         </b-tab>
   </b-tabs>
 </div>
@@ -34,14 +34,14 @@ import CirclularChart from "../components/CirclularChart";
 export default {
   name: 'dashboard',
   components: {
-      CircleChart
+      CircleChart,
       CirclularChart,
     Header,
     Footer,
     BarChart
   },
     data: () => ({
-        values: [2,-2,5,4,-3],
+        values: [20,50,60,40,30],
         speciesList: ["Roses", "Tulips", "Daisies", "Narcissuses", "Wallaby"],
         barChartData: [
             {
