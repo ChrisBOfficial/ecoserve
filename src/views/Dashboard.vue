@@ -16,6 +16,7 @@
         <b-tab title="Circular Charts">
             <p>I'm the second tab</p>
             <CirclularChart title="Circle Chart" xKey="service" yKey="mean" :data="CircleChartData"/>
+            <CircleChart :values="values"></CircleChart>
         </b-tab>
   </b-tabs>
 </div>
@@ -27,17 +28,20 @@
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
 import BarChart from '@/components/Barchart.vue'
+import CircleChart from '@/components/CircleChart.vue'
 import CirclularChart from "../components/CirclularChart";
 
 export default {
   name: 'dashboard',
   components: {
+      CircleChart
       CirclularChart,
     Header,
     Footer,
     BarChart
   },
     data: () => ({
+        values: [2,-2,5,4,-3],
         speciesList: ["Roses", "Tulips", "Daisies", "Narcissuses", "Wallaby"],
         barChartData: [
             {
