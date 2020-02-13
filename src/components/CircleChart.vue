@@ -1,6 +1,37 @@
 <template>
   <div id="container" class="svg-container" align="center">
-    <svg></svg>
+    <svg v-for="item in data" :width="svg_width" :height="svg_height">
+            <g>
+                <circle
+                  v-for="value in values"
+                  :key="value"
+                  :cx="250"
+                  :cy="250"
+                  :r="value"
+                  :stroke-width="1"
+                  :stroke-opacity="1"
+                  :stroke="tick"
+                  :fill="fill"
+                  :fill-opacity=".1"
+                />
+                <path
+                  v-for="value in values"
+                  :key="value"
+                  :cx="250"
+                  :cy="250"
+                  :innerRadius="0"
+                  :outerRadius="value"
+                  :startAngle="0"
+                  :endAngle="endAng"
+                  :padAngle="0.01"
+                  :padRadius="0"
+                  :fill="fill"
+                  :fill-opacity="1"
+                />
+                
+            </g>
+        </svg>
+    <h1>{{ title }}</h1>
   </div>
 </template>
 
@@ -11,20 +42,28 @@ const d3 = require('d3');
 const d3Scale = require('d3-scale');
 
 export default {
-  props: ["values"],
-  data: () => {
-    return {
-      circleChart: null
-    };
+  props: {
+    values: Array,
+    title: String,
+    data: Array,
+    xKey: String
   },
+  data: () => ({
+    svg_width: 500,
+    svg_height: 500,
+    fill: "none",
+    tick: "black"
+
+  }),
   watch: {
     values: function(val){
       if (this.circleChart != null) this.circleChart.remove();
       this.renderChart(val);
+      console.log(val);
     }
   },
   created: function() {
-    this.renderChart(this.values);
+   
   },
   methods: {
     renderChart(issues_val){
@@ -37,44 +76,8 @@ export default {
       const innerRadius = 100;
       const outerRadius = 200;
 
-      const svg = d3.select("svg")
-        .attr("width", svg_width)
-        .attr("height", svg_height);
-    
-
       
-      this.circleChart = svg
-        .append("g")
-        .attr("transform", `translate(${margin}, ${margin})`);
-      
-      console.log("before circle ticks")
-      var i = 0;
-      const numTicks = 11; //needs one more than 10 (20% chunks) to get the 0% line 
-      var sdat = [];
-    
-    for (i=0; i<=numTicks; i++) {
-       sdat[i] = (outerRadius/numTicks) * i;
-    }
-      this.circleChart.selectAll('.circle-ticks').remove();
-
-      var circleAxes = svg
-        .selectAll('.circle-ticks')
-        .data(sdat)
-        .enter().append('svg:g')
-        .attr("class", "circle-ticks");
-
-        // radial tick lines
-        //Note: look into changing zero ticks color to black
-      circleAxes.append("svg:circle")
-        .attr("r", String)
-        .attr("class", "circle")
-        .style("stroke", "#CCC")
-        .style("opacity", 1.00)
-        .style("fill", "none");
-
-      console.log("After circle ticks")
-      console.log(svg_width)
-
+/*
       var x = d3
         .scaleBand()
         .range([0, 2 * Math.PI])    // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
@@ -139,8 +142,19 @@ export default {
           .endAngle(function(d) { return x(issues_val) + x.bandwidth(); })
           .padAngle(0.01)
           .padRadius(innerRadius));
-     
+     */
     }
+  },
+  computed:{
+     innerRadius(){
+       return 150;
+     },
+     endAng(){
+       return 0.25*Math.PI
+     },
+     outerRadius(){
+       return 300;
+     }
   }
 }
 </script>
