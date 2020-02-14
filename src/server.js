@@ -443,7 +443,6 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
 
                 cursor.toArray(function(err, docs) {
                     if (err) throw new Error(err);
-                    console.log(docs);
                     res.send(docs);
                 });
             }
@@ -572,7 +571,6 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
 
                 cursor.toArray(function(err, docs) {
                     if (err) throw new Error(err);
-                    console.log(docs);
                     res.send(docs);
                 });
             }
