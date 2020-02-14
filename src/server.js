@@ -214,7 +214,7 @@ app.route("/api/surveys/responses")
     });
 
 //* Endpoint for MongoDB aggregate pipelines
-app.route("/api/surveys/responses").get((req, res) => {
+app.route("/api/surveys/responses/aggregates").get((req, res) => {
     let surveyId = req.query.surveyId;
     let pipeline = req.query.pipeline;
     const collection = dbClient.db("DB1").collection("Responses");
@@ -448,6 +448,135 @@ app.route("/api/surveys/responses").get((req, res) => {
                 });
             }
         );
+    } else if (pipeline === "circlechart") {
+        collection.aggregate(
+            [
+                {
+                    $match: {
+                        surveyId: "SV_b78ghjEDgpEZU3j"
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$responses"
+                    }
+                },
+                {
+                    $project: {
+                        totals: {
+                            $objectToArray: "$responses.values"
+                        }
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$totals"
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            QID: {
+                                $arrayElemAt: [
+                                    {
+                                        $split: ["$totals.k", "#"]
+                                    },
+                                    0
+                                ]
+                            },
+                            subquestion: {
+                                $substr: [
+                                    "$totals.k",
+                                    {
+                                        $subtract: [
+                                            {
+                                                $strLenCP: "$totals.k"
+                                            },
+                                            1
+                                        ]
+                                    },
+                                    1
+                                ]
+                            },
+                            type: {
+                                $substr: [
+                                    "$totals.k",
+                                    {
+                                        $subtract: [
+                                            {
+                                                $strLenCP: "$totals.k"
+                                            },
+                                            3
+                                        ]
+                                    },
+                                    1
+                                ]
+                            }
+                        },
+                        mean: {
+                            $avg: "$totals.v"
+                        }
+                    }
+                },
+                {
+                    $match: {
+                        "_id.QID": {
+                            $regex: new RegExp("^Q")
+                        }
+                    }
+                },
+                {
+                    $match: {
+                        "_id.type": {
+                            $eq: "1"
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: "$_id.subquestion",
+                        QID: "$_id.QID",
+                        mean: "$mean"
+                    }
+                },
+                {
+                    $sort: {
+                        QID: 1
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            type: "$_id"
+                        },
+                        values: {
+                            $push: {
+                                service: "$QID",
+                                mean: "$mean"
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: 0,
+                        type: "$_id.type",
+                        values: 1
+                    }
+                }
+            ],
+            function(err, cursor) {
+                if (err) throw new Error(err);
+
+                cursor.toArray(function(err, docs) {
+                    if (err) throw new Error(err);
+                    console.log(docs);
+                    res.send(docs);
+                });
+            }
+        );
+    } else if (pipeline === "label") {
+        return;
     }
 });
 

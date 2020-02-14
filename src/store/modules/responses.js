@@ -294,7 +294,11 @@ export default {
                     { service: "Water", mean: 2.4594594594594596 }
                 ]
             }
-        ]
+        ],
+
+        barchartAggregate: [],
+        circleAggregate: [],
+        labelAggregate: []
     },
 
     actions: {
@@ -330,6 +334,24 @@ export default {
                     console.log(error);
                     commit("setHookLoadStatus", 3);
                 });
+        },
+
+        // Get aggregated response data for a given visualization
+        getAggregateData({ commit }, data) {
+            ResponsesAPI.getAggregateResponses(data.id, data.pipeline)
+                .then(response => {
+                    console.log(response.data);
+                    if (data.pipeline === "barchart") {
+                        commit("setBarchartAggregate", response.data);
+                    } else if (data.pipeline === "circlechart") {
+                        commit("setCircleAggregate", response.data);
+                    } else if (data.pipeline === "label") {
+                        commit("setLabelAggregate", response.data);
+                    }
+                })
+                .catch(error => {
+                    console.log(error);
+                });
         }
     },
 
@@ -344,6 +366,15 @@ export default {
         },
         setHookLoadStatus(state, status) {
             state.hookLoadStatus = status;
+        },
+        setBarchartAggregate(state, data) {
+            state.barchartAggregate = data;
+        },
+        setCircleAggregate(state, data) {
+            state.circleAggregate = data;
+        },
+        setLabelAggregate(state, data) {
+            state.labelAggregate = data;
         }
     }
 };

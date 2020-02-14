@@ -3,17 +3,20 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 var d3 = Object.assign({}, require("d3"), require("d3-scale"));
 
 export default {
     computed: {
         ...mapState({
             data: state => state.responses.dummy,
-            data2: state => state.responses.dummy2
+            data2: state => state.responses.dummy2,
+            circleAggregate: state => state.responses.circleAggregate
         })
     },
-    mounted: function() {
+    created: function() {
+        // this.getResponses("SV_b78ghjEDgpEZU3j");
+        this.getAggregate({ id: "SV_b78ghjEDgpEZU3j", pipeline: "circlechart" });
         // let avrg = this.avg(this.data);
         let grid = d3
             .select("body")
@@ -122,6 +125,10 @@ export default {
             }); */
     },
     methods: {
+        ...mapActions({
+            getResponses: "responses/loadResponses",
+            getAggregate: "responses/getAggregateData"
+        }),
         avg: function(data) {
             var values = 0;
             var total = 0;
@@ -264,7 +271,7 @@ export default {
                     "d",
                     d3
                         .arc() // imagine your doing a part of a donut plot
-                        .innerRadius(function(d) {
+                        .innerRadius(function() {
                             return ybis(0);
                         })
                         .outerRadius(function(d) {
@@ -285,7 +292,7 @@ export default {
                 );
 
             // Adding tick marks
-            let circleAxes, i;
+            let circleAxes;
             svg.selectAll(".circle-ticks").remove();
 
             circleAxes = svg
@@ -305,7 +312,7 @@ export default {
                 .style("fill", "none");
         },
         circleLead: function(species, location) {
-            this.data2.forEach(
+            this.circleAggregate.forEach(
                 function(d) {
                     if (d.type == species) {
                         this.circleChart(d.values, location);
