@@ -1,5 +1,5 @@
 ##Barchart Aggregation Pipeline##
-
+##NODE##
 [
   {
     '$match': {
@@ -292,5 +292,159 @@
     }}]
 
 ##Circular Chart Aggregation Pipeline##
+##NODE##
+
+[
+  {
+    '$match': {
+      'surveyId': 'SV_b78ghjEDgpEZU3j'
+    }
+  }, {
+    '$unwind': {
+      'path': '$responses'
+    }
+  }, {
+    '$project': {
+      'totals': {
+        '$objectToArray': '$responses.values'
+      }
+    }
+  }, {
+    '$unwind': {
+      'path': '$totals'
+    }
+  }, {
+    '$group': {
+      '_id': {
+        'QID': {
+          '$arrayElemAt': [
+            {
+              '$split': [
+                '$totals.k', '#'
+              ]
+            }, 0
+          ]
+        }, 
+        'subquestion': {
+          '$substr': [
+            '$totals.k', {
+              '$subtract': [
+                {
+                  '$strLenCP': '$totals.k'
+                }, 1
+              ]
+            }, 1
+          ]
+        }, 
+        'type': {
+          '$substr': [
+            '$totals.k', {
+              '$subtract': [
+                {
+                  '$strLenCP': '$totals.k'
+                }, 3
+              ]
+            }, 1
+          ]
+        }
+      }, 
+      'mean': {
+        '$avg': '$totals.v'
+      }
+    }
+  }, {
+    '$match': {
+      '_id.QID': {
+        '$regex': new RegExp('^Q')
+      }
+    }
+  }, {
+    '$match': {
+      '_id.type': {
+        '$eq': '1'
+      }
+    }
+  }, {
+    '$project': {
+      '_id': '$_id.subquestion', 
+      'QID': '$_id.QID', 
+      'mean': '$mean'
+    }
+  }, {
+    '$sort': {
+      'QID': 1
+    }
+  }, {
+    '$group': {
+      '_id': {
+        'type': '$_id'
+      }, 
+      'values': {
+        '$push': {
+          'service': '$QID', 
+          'mean': '$mean'
+        }
+      }
+    }
+  }, {
+    '$project': {
+      '_id': 0, 
+      'type': '$_id.type', 
+      'values': 1
+    }
+  }
+]
+
+
+##MONGO SHELL##
+
+[{$match: {
+  "surveyId" : "SV_b78ghjEDgpEZU3j"
+}}, {$unwind: {
+  path: "$responses"
+}
+}, {$project: {
+  "totals": {$objectToArray: "$responses.values"}
+}}, {$unwind: {
+  path: "$totals"
+}}, {$group: {
+  _id: {QID: {$arrayElemAt: 
+    [{$split: ['$totals.k', "#"]},0]}, 
+      subquestion: {
+        '$substr': [
+          '$totals.k', {
+            '$subtract': [
+              {'$strLenCP': '$totals.k'}, 1]}, 1]
+      }, type: {
+        '$substr': [
+          '$totals.k', {
+            '$subtract': [
+              {'$strLenCP': '$totals.k'
+              }, 3]}, 1]}}, 
+    mean: {$avg:"$totals.v"}
+}}, {$match: {
+  "_id.QID": {$regex: /^Q/}
+}}, {$match: {
+  "_id.type": {$eq: "1"}
+}}, {$project: {
+  _id: "$_id.subquestion", 
+
+    QID: "$_id.QID", 
+
+    mean: "$mean"
+}}, {$sort: {
+  QID: 1
+}}, {$group: {
+  _id: {type: "$_id"}, 
+  values: {$push: {service: "$QID",
+  mean: "$mean"}}
+
+  }}, {$project: {
+  _id: 0,
+  type: "$_id.type",
+  values:1
+
+   }}]
+
 
 ##Nutrition Label Aggregation Pipeline##
