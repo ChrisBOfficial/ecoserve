@@ -6,7 +6,6 @@
 
 - Burbach, Christopher (Development Manager, Squad Lead)
 - Saltzman, Alexis (Product Manager)
-- Kozisek, Nick
 - Ralph, Stephen
 - Doan, Vy
 
