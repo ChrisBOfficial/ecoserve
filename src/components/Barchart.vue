@@ -1,6 +1,7 @@
 <template>
     <div id="container" class="svg-container" align="center">
-        <h1>{{ title }}</h1>
+        <h1>{{  }}</h1>
+
         <svg v-if="redrawToggle === true" :width="svgWidth" :height="svgHeight">
             <g>
                 <rect
@@ -12,7 +13,9 @@
                         :width="xScale.bandwidth()"
                         :height="0"
                 ></rect>
+
             </g>
+
         </svg>
     </div>
 </template>
@@ -64,7 +67,7 @@
                     setTimeout(() => {
                         this.$data.redrawToggle = true;
                         this.$data.svgWidth =
-                            document.getElementById("container").offsetWidth * 0.75;
+                            document.getElementById("container").offsetWidth * 1.75;
                         this.AnimateLoad();
                     }, 300);
                 });
@@ -84,7 +87,7 @@
             xScale() {
                 return scaleBand()
                     .rangeRound([0, this.svgWidth])
-                    .padding(0.1)
+                    .padding(0.5)
                     .domain(
                         this.data.map(d => {
                             return d[this.xKey];
