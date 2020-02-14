@@ -5,37 +5,36 @@
 <script>
 import { mapState, mapActions } from "vuex";
 var d3 = Object.assign({}, require("d3"), require("d3-scale"));
+import io from "socket.io-client";
 
 export default {
     computed: {
         ...mapState({
             data: state => state.responses.dummy,
-            data2: state => state.responses.dummy2,
             circleAggregate: state => state.responses.circleAggregate
         })
     },
-    created: function() {
-        // this.getResponses("SV_b78ghjEDgpEZU3j");
-        this.getAggregate({ id: "SV_b78ghjEDgpEZU3j", pipeline: "circlechart" });
-        // let avrg = this.avg(this.data);
-        let grid = d3
-            .select("body")
-            .append("div")
-            .attr("id", "grid")
-            .attr("class", "grid");
-        let chars = grid
-            .selectAll("div")
-            .data(this.data.Species)
-            .enter()
-            .append("div")
-            .attr("class", "char");
-        chars.style(
-            "fill",
-            function(d) {
-                this.circleLead(d.label, this.$el);
-            }.bind(this)
-        );
-        /* let content = chars.append("div").attr("class", "charContent");
+    watch: {
+        circleAggregate: function() {
+            // let avrg = this.avg(this.data);
+            let grid = d3
+                .select("body")
+                .append("div")
+                .attr("id", "grid")
+                .attr("class", "grid");
+            let chars = grid
+                .selectAll("div")
+                .data(this.data.Species)
+                .enter()
+                .append("div")
+                .attr("class", "char");
+            chars.style(
+                "fill",
+                function(d) {
+                    this.circleLead(d.label, this.$el);
+                }.bind(this)
+            );
+            /* let content = chars.append("div").attr("class", "charContent");
         content.append("h2").text(function(d, i) {
             return d.label;
         });
@@ -123,6 +122,26 @@ export default {
             .text(function(d, i) {
                 return d.confidence;
             }); */
+        }
+    },
+    created: function() {
+        this.lastUpdate = Date.now();
+
+        this.socket = io("/SV_b78ghjEDgpEZU3j", { transport: "polling" });
+        this.socket.on(
+            "surveyComplete",
+            function(msg) {
+                if (Date.now() - this.lastUpdate >= 5000) {
+                    this.lastUpdate = Date.now();
+                    console.log(msg);
+                }
+            }.bind(this)
+        );
+        // this.createHook('SV_0kUXcBoAFl6hbSJ');
+    },
+    mounted: function() {
+        // this.getResponses("SV_b78ghjEDgpEZU3j");
+        this.getAggregate({ id: "SV_b78ghjEDgpEZU3j", pipeline: "circlechart" });
     },
     methods: {
         ...mapActions({
@@ -204,7 +223,7 @@ export default {
                         .innerRadius(innerRadius)
                         .outerRadius(function(d) {
                             if (d.mean > 0) {
-                                return y(d.mean);
+                                return y(d.mean) * 1.1;
                             } else {
                                 return y(0);
                             }
@@ -276,7 +295,7 @@ export default {
                         })
                         .outerRadius(function(d) {
                             if (d.mean < 0) {
-                                return ybis(d.mean * -1);
+                                return ybis(d.mean * -1.1);
                             } else {
                                 return ybis(0);
                             }

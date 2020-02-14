@@ -12,7 +12,7 @@ export default {
         dummy: {
             Species: [
                 {
-                    label: "Canada Thistle",
+                    label: "1",
                     services: [
                         "Wild Food",
                         "Forest Production",
@@ -27,7 +27,7 @@ export default {
                     confidence: ["high", "low", "medium", "high", "high", "low", "medium", "high"]
                 },
                 {
-                    label: "Leafy Spurge",
+                    label: "2",
                     services: [
                         "Wild Food",
                         "Forest Production",
@@ -42,7 +42,7 @@ export default {
                     confidence: ["high", "low", "medium", "high", "high", "low", "medium", "high"]
                 },
                 {
-                    label: "Musk Thistle",
+                    label: "3",
                     services: [
                         "Wild Food",
                         "Forest Production",
@@ -57,7 +57,7 @@ export default {
                     confidence: ["high", "low", "medium", "high", "high", "low", "medium", "high"]
                 },
                 {
-                    label: "Plumeless Thistle",
+                    label: "4",
                     services: [
                         "Wild Food",
                         "Forest Production",
@@ -72,7 +72,7 @@ export default {
                     confidence: ["high", "low", "medium", "high", "high", "low", "medium", "high"]
                 },
                 {
-                    label: "Sericea Lespedeza",
+                    label: "5",
                     services: [
                         "Wild Food",
                         "Forest Production",
@@ -87,7 +87,7 @@ export default {
                     confidence: ["high", "low", "medium", "high", "high", "low", "medium", "high"]
                 },
                 {
-                    label: "Spotted Diffuse Knapweed",
+                    label: "6",
                     services: [
                         "Wild Food",
                         "Forest Production",
@@ -102,7 +102,7 @@ export default {
                     confidence: ["high", "low", "medium", "high", "high", "low", "medium", "high"]
                 },
                 {
-                    label: "Russian Olive",
+                    label: "7",
                     services: [
                         "Wild Food",
                         "Forest Production",
@@ -117,7 +117,7 @@ export default {
                     confidence: ["high", "low", "medium", "high", "high", "low", "medium", "high"]
                 },
                 {
-                    label: "Scotch Thistle",
+                    label: "8",
                     services: [
                         "Wild Food",
                         "Forest Production",
@@ -132,22 +132,7 @@ export default {
                     confidence: ["high", "low", "medium", "high", "high", "low", "medium", "high"]
                 },
                 {
-                    label: "Eastern Redcedar",
-                    services: [
-                        "Wild Food",
-                        "Forest Production",
-                        "Pollination",
-                        "Ecological Integrity",
-                        "Biodiversity",
-                        "Forage",
-                        "Livestock",
-                        "Water"
-                    ],
-                    impact: ["-40%", "+20%", "0%", "-20%", "+60%", "0%", "+80%", "-100%"],
-                    confidence: ["high", "low", "medium", "high", "high", "low", "medium", "high"]
-                },
-                {
-                    label: "Smooth Brome",
+                    label: "9",
                     services: [
                         "Wild Food",
                         "Forest Production",
@@ -340,7 +325,6 @@ export default {
         getAggregateData({ commit }, data) {
             ResponsesAPI.getAggregateResponses(data.id, data.pipeline)
                 .then(response => {
-                    console.log(response.data);
                     if (data.pipeline === "barchart") {
                         commit("setBarchartAggregate", response.data);
                     } else if (data.pipeline === "circlechart") {

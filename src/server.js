@@ -552,7 +552,9 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
                         values: {
                             $push: {
                                 service: "$QID",
-                                mean: "$mean"
+                                mean: {
+                                    $subtract: ["$mean", 6]
+                                }
                             }
                         }
                     }
