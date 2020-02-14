@@ -213,6 +213,244 @@ app.route("/api/surveys/responses")
         });
     });
 
+//* Endpoint for MongoDB aggregate pipelines
+app.route("/api/surveys/responses").get((req, res) => {
+    let surveyId = req.query.surveyId;
+    let pipeline = req.query.pipeline;
+    const collection = dbClient.db("DB1").collection("Responses");
+
+    if (pipeline === "barchart") {
+        collection.aggregate(
+            [
+                {
+                    $match: {
+                        surveyId: surveyId
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$responses"
+                    }
+                },
+                {
+                    $project: {
+                        totals: {
+                            $objectToArray: "$responses.values"
+                        }
+                    }
+                },
+                {
+                    $unwind: {
+                        path: "$totals"
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            QID: {
+                                $arrayElemAt: [
+                                    {
+                                        $split: ["$totals.k", "#"]
+                                    },
+                                    0
+                                ]
+                            },
+                            subquestion: {
+                                $substr: [
+                                    "$totals.k",
+                                    {
+                                        $subtract: [
+                                            {
+                                                $strLenCP: "$totals.k"
+                                            },
+                                            1
+                                        ]
+                                    },
+                                    1
+                                ]
+                            },
+                            type: {
+                                $substr: [
+                                    "$totals.k",
+                                    {
+                                        $subtract: [
+                                            {
+                                                $strLenCP: "$totals.k"
+                                            },
+                                            3
+                                        ]
+                                    },
+                                    1
+                                ]
+                            }
+                        },
+                        mean: {
+                            $avg: "$totals.v"
+                        },
+                        count: {
+                            $sum: 1
+                        },
+                        sd: {
+                            $stdDevPop: "$totals.v"
+                        }
+                    }
+                },
+                {
+                    $addFields: {
+                        se: {
+                            $divide: [
+                                "$sd",
+                                {
+                                    $sqrt: "$count"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    $project: {
+                        _id: "$_id.QID",
+                        subquestion: "$_id.subquestion",
+                        confidence: {
+                            $switch: {
+                                branches: [
+                                    {
+                                        case: {
+                                            $eq: ["$_id.type", "2"]
+                                        },
+                                        then: "$mean"
+                                    },
+                                    {
+                                        case: {
+                                            $eq: ["$_id.type", "1"]
+                                        },
+                                        then: null
+                                    }
+                                ],
+                                default: null
+                            }
+                        },
+                        mean: {
+                            $switch: {
+                                branches: [
+                                    {
+                                        case: {
+                                            $eq: ["$_id.type", "2"]
+                                        },
+                                        then: null
+                                    },
+                                    {
+                                        case: {
+                                            $eq: ["$_id.type", "1"]
+                                        },
+                                        then: "$mean"
+                                    }
+                                ],
+                                default: "$mean"
+                            }
+                        },
+                        se: {
+                            $switch: {
+                                branches: [
+                                    {
+                                        case: {
+                                            $eq: ["$_id.type", "2"]
+                                        },
+                                        then: null
+                                    },
+                                    {
+                                        case: {
+                                            $eq: ["$_id.type", "1"]
+                                        },
+                                        then: "$se"
+                                    }
+                                ],
+                                default: "$se"
+                            }
+                        },
+                        type: "$_id.type"
+                    }
+                },
+                {
+                    $group: {
+                        _id: {
+                            QID: "$_id",
+                            subquestion: "$subquestion"
+                        },
+                        confidence: {
+                            $avg: "$confidence"
+                        },
+                        mean: {
+                            $avg: "$mean"
+                        },
+                        se: {
+                            $avg: "$se"
+                        }
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$_id.QID",
+                        data: {
+                            $push: {
+                                subquestion: "$_id.subquestion",
+                                confidence: {
+                                    $switch: {
+                                        branches: [
+                                            {
+                                                case: {
+                                                    $lte: ["$confidence", 1]
+                                                },
+                                                then: "none"
+                                            },
+                                            {
+                                                case: {
+                                                    $lte: ["$confidence", 2]
+                                                },
+                                                then: "low"
+                                            },
+                                            {
+                                                case: {
+                                                    $lte: ["$confidence", 3]
+                                                },
+                                                then: "moderate"
+                                            },
+                                            {
+                                                case: {
+                                                    $lte: ["$confidence", 4]
+                                                },
+                                                then: "high"
+                                            },
+                                            {
+                                                case: {
+                                                    $lte: ["$confidence", 5]
+                                                },
+                                                then: "extreme"
+                                            }
+                                        ],
+                                        default: "moderate"
+                                    }
+                                },
+                                mean: "$mean",
+                                se: "$se"
+                            }
+                        }
+                    }
+                }
+            ],
+            function(err, cursor) {
+                if (err) throw new Error(err);
+
+                cursor.toArray(function(err, docs) {
+                    if (err) throw new Error(err);
+                    console.log(docs);
+                    res.send(docs);
+                });
+            }
+        );
+    }
+});
+
 //* Endpoint for handling Qualtrics events
 app.route("/api/listener").post((req, res) => {
     var surveyId = req.query.surveyId;

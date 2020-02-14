@@ -23,8 +23,8 @@ const routes = [
         component: () => import("@/views/Project.vue")
     },
     {
-        path: "/csv",
-        name: "csv",
+        path: "/tempdash",
+        name: "tempdash",
         component: () => import("@/views/tempCircleChart.vue")
     },
     {

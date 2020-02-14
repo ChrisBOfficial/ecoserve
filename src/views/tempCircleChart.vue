@@ -1,13 +1,5 @@
 <template>
-    <body>
-        <div id="filters">
-            Order by:
-            <!--- <a id="orderAppearances" >No. of Appearances</a> |
-                  <a id="orderSigil" >Allegiance</a> |
-                  <a id="orderFirst" >First Appearance</a> |
-                  <a id="orderName" >Name</a> --->
-        </div>
-    </body>
+    <body></body>
 </template>
 
 <script>
@@ -23,7 +15,6 @@ export default {
     },
     mounted: function() {
         // let avrg = this.avg(this.data);
-        console.log();
         let grid = d3
             .select("body")
             .append("div")
@@ -35,15 +26,13 @@ export default {
             .enter()
             .append("div")
             .attr("class", "char");
-
         chars.style(
             "fill",
             function(d) {
-                console.log(this);
                 this.circleLead(d.label, this.$el);
             }.bind(this)
         );
-        let content = chars.append("div").attr("class", "charContent");
+        /* let content = chars.append("div").attr("class", "charContent");
         content.append("h2").text(function(d, i) {
             return d.label;
         });
@@ -130,30 +119,28 @@ export default {
             .append("span")
             .text(function(d, i) {
                 return d.confidence;
-            });
+            }); */
     },
     methods: {
         avg: function(data) {
             var values = 0;
             var total = 0;
             var holder = 0;
+            console.log(data);
             data.forEach(d => {
                 holder = data[d].meanl;
                 values = values + holder;
                 total = ++total;
             });
-            console.log(values);
-            console.log(total);
-            console.log(values / total);
             return values / total;
         },
         circleChart: function(results, location) {
             // set the dimensions of the canvas
             let margin = { top: 0, right: 0, bottom: 0, left: 0 },
-                width = 240 - margin.left - margin.right,
-                height = 240 - margin.top - margin.bottom,
-                innerRadius = 60,
-                outerRadius = 110; // the outerRadius goes from the middle of the SVG area to the border, hard coded the radius
+                width = 324 - margin.left - margin.right,
+                height = 324 - margin.top - margin.bottom,
+                innerRadius = 81,
+                outerRadius = 148.5; // the outerRadius goes from the middle of the SVG area to the border, hard coded the radius
             let numTicks = 11; //needs one more than 10 (20% chunks) to get the 0% line
             let sdat = [];
 
@@ -242,7 +229,7 @@ export default {
                             "translate(" +
                             (y(0) + 10) +
                             ",0)"
-                        ); //
+                        );
                     } else {
                         return (
                             "rotate(" +
@@ -251,7 +238,7 @@ export default {
                             "translate(" +
                             (y(d.mean) + 10) +
                             ",0)"
-                        ); //
+                        );
                     }
                 })
                 .append("text")
@@ -263,7 +250,7 @@ export default {
                         ? "rotate(180)"
                         : "rotate(0)";
                 })
-                .style("font-size", "8px")
+                .style("font-size", "11px")
                 .attr("alignment-baseline", "middle");
 
             // Add the second series
@@ -333,7 +320,6 @@ export default {
 <style scoped>
 @import "https://fonts.googleapis.com/css?family=Trirong:100,200";
 body {
-    background-color: #323232;
     font-family: "Trirong", georgia, times, serif;
     font-weight: 200;
     font-size: 18px;
