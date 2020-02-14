@@ -20,6 +20,12 @@
       'path': '$totals'
     }
   }, {
+    '$match': {
+      'totals.k': {
+        '$regex': new RegExp('^Q')
+      }
+    }
+  }, {
     '$group': {
       '_id': {
         'QID': {
@@ -211,14 +217,17 @@
               'default': 'moderate'
             }
           }, 
-          'mean': '$mean', 
+          'mean': {
+            '$subtract': [
+              '$mean', 6
+            ]
+          }, 
           'se': '$se'
         }
       }
     }
   }
 ]
-
 ##Mongo Shell ##
 
 [{$match: {
@@ -230,9 +239,11 @@
   "totals": {$objectToArray: "$responses.values"}
 }}, {$unwind: {
   path: "$totals"
+}}, {$match: {
+  "totals.k": {$regex: /^Q/}
 }}, {$group: {
-  _id: {QID: {$arrayElemAt:
-    [{$split: ['$totals.k', "#"]},0]},
+  _id: {QID: {$arrayElemAt: 
+    [{$split: ['$totals.k', "#"]},0]}, 
       subquestion: {
         '$substr': [
           '$totals.k', {
@@ -243,14 +254,14 @@
           '$totals.k', {
             '$subtract': [
               {'$strLenCP': '$totals.k'
-              }, 3]}, 1]}},
+              }, 3]}, 1]}}, 
     mean: {$avg:"$totals.v"}, count: {$sum: 1}, sd: {$stdDevPop: "$totals.v"}
 }}, {$addFields: {
   se: {$divide: ["$sd", {$sqrt: "$count"}]}
 }}, {$project: {
-  _id: "$_id.QID",
+  _id: "$_id.QID", 
 
-    subquestion: "$_id.subquestion",
+    subquestion: "$_id.subquestion", 
   confidence: {$switch: {
     branches: [
       {case: {$eq: ["$_id.type", "2"]}, then: "$mean"},
@@ -271,13 +282,13 @@
   }}, type: "$_id.type"
 }}, {$group: {
   _id: {QID: "$_id",
-  subquestion: "$subquestion"},
-  confidence: {$avg: "$confidence"},
-  mean: {$avg: "$mean"},
+  subquestion: "$subquestion"}, 
+  confidence: {$avg: "$confidence"}, 
+  mean: {$avg: "$mean"}, 
   se: {$avg: "$se"}
 }}, {$group: {
   _id: "$_id.QID",
-  data: {$push: {subquestion: "$_id.subquestion",
+  data: {$push: {subquestion: "$_id.subquestion", 
   confidence: {$switch: {
     branches: [
       {case: {$lte: ["$confidence", 1]}, then: "none"},
@@ -286,7 +297,7 @@
       {case: {$lte: ["$confidence", 4]}, then: "high"},
       {case: {$lte: ["$confidence", 5]}, then: "extreme"}
       ], default: "moderate"
-  }}, mean: "$mean", se: "$se"}}
+  }}, mean: {$subtract:["$mean", 6]}, se: "$se"}}
 
 
     }}]
@@ -352,15 +363,23 @@
         '$avg': '$totals.v'
       }
     }
+  },
+{
+    '$project': {
+      '_id': '$_id.subquestion', 
+      'QID': '$_id.QID', 
+      'mean': '$mean',
+      'type': '$_id.type'
+    }
   }, {
     '$match': {
-      '_id.QID': {
+      'QID': {
         '$regex': new RegExp('^Q')
       }
     }
   }, {
     '$match': {
-      '_id.type': {
+      'type': {
         '$eq': '1'
       }
     }
