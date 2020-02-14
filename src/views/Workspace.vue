@@ -59,7 +59,7 @@ export default {
     created: function() {
         this.lastUpdate = Date.now();
         this.loadSurveys();
-        this.getResponses("SV_b78ghjEDgpEZU3j");
+        this.getResponses("SV_3yOO65TG4UFqw6N");
 
         this.socket = io("/SV_3yOO65TG4UFqw6N", { transport: "polling" });
         this.socket.on(

@@ -150,10 +150,20 @@ app.route("/api/surveys/responses")
                         })
                         .on("end", function() {
                             const results = JSON.parse(Buffer.concat(chunks).toString("utf8")).responses;
+                            let processedResults = { surveyId: surveyId, responses: [] };
+                            for (let result of results) {
+                                let resultObj = { values: result.values, labels: result.labels };
+                                processedResults.responses.push(resultObj);
+                            }
 
-                            // const collection = dbClient.db("DB1").collection("Projects");
+                            const collection = dbClient.db("DB1").collection("Responses");
+                            collection
+                                .updateOne({ surveyId: surveyId }, { $set: processedResults }, { upsert: true })
+                                .catch(err => {
+                                    throw new Error(err);
+                                });
 
-                            res.send(results);
+                            res.send(processedResults);
                         });
 
                     // Save the file to disk
