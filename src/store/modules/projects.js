@@ -13,35 +13,40 @@ export default {
 
     actions: {
         loadProjects({ commit }) {
-            commit("setProjectsLoadStatus", 1);
-            // Calls the API to load the projects
-            ProjectsAPI.getProjects()
-                .then(response => {
-                    if (response.data) {
-                        commit("setProjects", response.data);
-                        commit("setProjectsLoadStatus", 2);
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                    commit("setProjects", {});
-                    commit("setProjectsLoadStatus", 3);
-                });
+            return new Promise((resolve, reject) => {
+                commit("setProjectsLoadStatus", 1);
+                // Calls the API to load the projects
+                ProjectsAPI.getProjects()
+                    .then(response => {
+                        if (response.data) {
+                            commit("setProjects", response.data);
+                            commit("setProjectsLoadStatus", 2);
+                            resolve(response.data);
+                        }
+                    })
+                    .catch(error => {
+                        commit("setProjects", {});
+                        commit("setProjectsLoadStatus", 3);
+                        reject(error);
+                    });
+            });
         },
         saveProject({ commit, dispatch }, data) {
-            commit("setProjectsLoadStatus", 1);
-            // Calls the API to save a project
-            ProjectsAPI.postProject(data)
-                .then(response => {
-                    if (response.data) {
-                        console.log(response.data);
-                        dispatch("loadProjects");
-                    }
-                })
-                .catch(error => {
-                    console.log(error);
-                    commit("setProjectsLoadStatus", 3);
-                });
+            return new Promise((resolve, reject) => {
+                commit("setProjectsLoadStatus", 1);
+                // Calls the API to save a project
+                ProjectsAPI.postProject(data)
+                    .then(response => {
+                        if (response.data) {
+                            dispatch("loadProjects");
+                            resolve(response.data);
+                        }
+                    })
+                    .catch(error => {
+                        commit("setProjectsLoadStatus", 3);
+                        reject(error);
+                    });
+            });
         },
         updateProject({ dispatch }, data) {
             // Calls the API to update a project
@@ -52,7 +57,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    throw new Error(error);
                 });
         },
         deleteProject({ commit }, data) {
@@ -66,8 +71,8 @@ export default {
                     }
                 })
                 .catch(error => {
-                    console.log(error);
                     commit("setProjectsLoadStatus", 3);
+                    throw new Error(error);
                 });
         },
 

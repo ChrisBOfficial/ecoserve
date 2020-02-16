@@ -135,13 +135,13 @@ export default {
     },
     async mounted() {
         this.surveyId = this.$route.query.id.split("+")[1];
-        await this.getResponses("SV_b78ghjEDgpEZU3j");
+        this.getResponses("SV_b78ghjEDgpEZU3j");
         this.getAggregate({ id: "SV_b78ghjEDgpEZU3j", pipeline: "circlechart" });
 
         /* this.createHook("SV_b78ghjEDgpEZU3j");
         this.lastUpdate = Date.now();
 
-        this.socket = io(this.socketUrl, { transports: "polling" });
+        this.socket = io(this.socketUrl);
         this.socket.on(
             "SV_b78ghjEDgpEZU3j",
             function(msg) {

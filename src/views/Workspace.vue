@@ -62,7 +62,7 @@ export default {
         this.loadSurveys();
         this.getResponses("SV_b78ghjEDgpEZU3j");
 
-        this.socket = io(this.socketUrl, { transports: "polling" });
+        this.socket = io(this.socketUrl);
         this.socket.on(
             "SV_b78ghjEDgpEZU3j",
             function(msg) {
