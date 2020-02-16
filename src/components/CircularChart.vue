@@ -1,10 +1,12 @@
 <template>
-    <body />
+    <body>
+        <button @click="removeCircles">CLICK HERE</button>
+    </body>
 </template>
 
 <script>
 import { mapState, mapActions } from "vuex";
-import io from "socket.io-client";
+const io = require("socket.io-client");
 const d3 = Object.assign({}, require("d3"), require("d3-scale"));
 
 export default {
@@ -44,99 +46,101 @@ export default {
                 }.bind(this)
             );
             /* let content = chars.append("div").attr("class", "charContent");
-        content.append("h2").text(function(d, i) {
-            return d.label;
-        });
-
-        chars.classed("size1", true);
-
-        chars.on(
-            "click",
-            function(d, i) {
-                if (this.className.split(" ").indexOf("open") > -1) {
-                    d3.select(this).classed("open", false);
-                } else {
-                    let gridColumns = window.getComputedStyle(this.parentElement).gridTemplateColumns.split(" ");
-                    let gridRows = window.getComputedStyle(this.parentElement).gridTemplateRows.split(" ");
-                    let numColumns = gridColumns.length;
-                    let numRows = gridRows.length;
-                    let xPosInGrid =
-                        this.getBoundingClientRect().left - this.parentElement.getBoundingClientRect().left;
-                    let yPosInGrid = this.getBoundingClientRect().top - this.parentElement.getBoundingClientRect().top;
-                    let gridRowHeight =
-                        parseFloat(gridRows[0]) + parseFloat(window.getComputedStyle(this.parentElement).gridRowGap);
-                    let gridColumnWidth =
-                        parseFloat(gridColumns[0]) +
-                        parseFloat(window.getComputedStyle(this.parentElement).gridColumnGap);
-                    let thisRow = Math.round(yPosInGrid / gridRowHeight) + 1;
-                    let thisColumn = Math.round(xPosInGrid / gridColumnWidth) + 1;
-                    let thisPortrait = this.getElementsByClassName("portrait")[0];
-                    if (thisPortrait) thisPortrait.setAttribute("src", thisPortrait.getAttribute("data-src"));
-                    chars.classed("open", false);
-                    chars.style("grid-row-start", "auto");
-                    chars.style("grid-column-start", "auto");
-                    d3.select(this).classed("open", true);
-                    let divWidth = parseFloat(window.getComputedStyle(this).gridColumnEnd.split(" ")[1]);
-                    let divHeight = parseFloat(window.getComputedStyle(this).gridRowEnd.split(" ")[1]);
-                    if (thisRow + divHeight > numRows) thisRow = 1 + numRows - divHeight;
-                    if (thisColumn + divWidth > numColumns) thisColumn = 1 + numColumns - divWidth;
-                    d3.select(this).style("grid-row-start", thisRow);
-                    d3.select(this).style("grid-column-start", thisColumn);
-                }
-            }.bind(this)
-        );
-
-        let details = content.append("div").attr("class", "details");
-        let bio = details.append("div").attr("class", "bio");
-        bio.append("h3").text(function(d, i) {
-            return d.label;
-        });
-        bio.filter(function(d) {
-            return d.services.length > 0;
-        })
-            .append("h4")
-            .text("Services: ");
-        bio.filter(function(d) {
-            return d.services.length > 0;
-        })
-            .append("span")
-            .text(function(d, i) {
-                return d.services;
-            });
-        bio.filter(function(d) {
-            return d.impact.length > 0;
-        })
-            .append("h4")
-            .text("Mean: ");
-        bio.filter(function(d) {
-            return d.impact.length > 0;
-        })
-            .append("span")
-            .text(function(d, i) {
-                return d.impact;
+            content.append("h2").text(function(d, i) {
+                return d.label;
             });
 
-        let imageHolder = details.append("div").attr("class", "imageHolder");
-        imageHolder
-            .filter(function(d) {
-                return d.confidence.length > 0;
+            chars.classed("size1", true);
+
+            chars.on(
+                "click",
+                function(d, i) {
+                    if (this.className.split(" ").indexOf("open") > -1) {
+                        d3.select(this).classed("open", false);
+                    } else {
+                        let gridColumns = window.getComputedStyle(this.parentElement).gridTemplateColumns.split(" ");
+                        let gridRows = window.getComputedStyle(this.parentElement).gridTemplateRows.split(" ");
+                        let numColumns = gridColumns.length;
+                        let numRows = gridRows.length;
+                        let xPosInGrid =
+                            this.getBoundingClientRect().left - this.parentElement.getBoundingClientRect().left;
+                        let yPosInGrid =
+                            this.getBoundingClientRect().top - this.parentElement.getBoundingClientRect().top;
+                        let gridRowHeight =
+                            parseFloat(gridRows[0]) +
+                            parseFloat(window.getComputedStyle(this.parentElement).gridRowGap);
+                        let gridColumnWidth =
+                            parseFloat(gridColumns[0]) +
+                            parseFloat(window.getComputedStyle(this.parentElement).gridColumnGap);
+                        let thisRow = Math.round(yPosInGrid / gridRowHeight) + 1;
+                        let thisColumn = Math.round(xPosInGrid / gridColumnWidth) + 1;
+                        let thisPortrait = this.getElementsByClassName("portrait")[0];
+                        if (thisPortrait) thisPortrait.setAttribute("src", thisPortrait.getAttribute("data-src"));
+                        chars.classed("open", false);
+                        chars.style("grid-row-start", "auto");
+                        chars.style("grid-column-start", "auto");
+                        d3.select(this).classed("open", true);
+                        let divWidth = parseFloat(window.getComputedStyle(this).gridColumnEnd.split(" ")[1]);
+                        let divHeight = parseFloat(window.getComputedStyle(this).gridRowEnd.split(" ")[1]);
+                        if (thisRow + divHeight > numRows) thisRow = 1 + numRows - divHeight;
+                        if (thisColumn + divWidth > numColumns) thisColumn = 1 + numColumns - divWidth;
+                        d3.select(this).style("grid-row-start", thisRow);
+                        d3.select(this).style("grid-column-start", thisColumn);
+                    }
+                }.bind(this)
+            );
+
+            let details = content.append("div").attr("class", "details");
+            let bio = details.append("div").attr("class", "bio");
+            bio.append("h3").text(function(d, i) {
+                return d.label;
+            });
+            bio.filter(function(d) {
+                return d.services.length > 0;
             })
-            .append("h4")
-            .text("Confidence: ");
-        imageHolder
-            .filter(function(d) {
-                return d.confidence.length > 0;
+                .append("h4")
+                .text("Services: ");
+            bio.filter(function(d) {
+                return d.services.length > 0;
             })
-            .append("span")
-            .text(function(d, i) {
-                return d.confidence;
-            }); */
+                .append("span")
+                .text(function(d, i) {
+                    return d.services;
+                });
+            bio.filter(function(d) {
+                return d.impact.length > 0;
+            })
+                .append("h4")
+                .text("Mean: ");
+            bio.filter(function(d) {
+                return d.impact.length > 0;
+            })
+                .append("span")
+                .text(function(d, i) {
+                    return d.impact;
+                });
+
+            let imageHolder = details.append("div").attr("class", "imageHolder");
+            imageHolder
+                .filter(function(d) {
+                    return d.confidence.length > 0;
+                })
+                .append("h4")
+                .text("Confidence: ");
+            imageHolder
+                .filter(function(d) {
+                    return d.confidence.length > 0;
+                })
+                .append("span")
+                .text(function(d, i) {
+                    return d.confidence;
+                }); */
         }
     },
     async mounted() {
         this.surveyId = this.$route.query.id.split("+")[1];
-        this.getResponses("SV_b78ghjEDgpEZU3j");
-        this.getAggregate({ id: "SV_b78ghjEDgpEZU3j", pipeline: "circlechart" });
+        this.getResponses(this.surveyId);
+        this.getAggregate({ id: this.surveyId, pipeline: "circlechart" });
 
         /* this.createHook("SV_b78ghjEDgpEZU3j");
         this.lastUpdate = Date.now();
@@ -161,6 +165,9 @@ export default {
             getResponses: "responses/loadResponses",
             getAggregate: "responses/getAggregateData"
         }),
+        removeCircles() {
+            d3.selectAll("svg").remove();
+        },
         avg(data) {
             var values = 0;
             var total = 0;

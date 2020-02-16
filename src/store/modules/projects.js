@@ -60,14 +60,13 @@ export default {
                     throw new Error(error);
                 });
         },
-        deleteProject({ commit }, data) {
+        deleteProject({ commit, dispatch }, data) {
             commit("setProjectsLoadStatus", 1);
             // Calls the API to delete a project
             ProjectsAPI.deleteProject(data)
                 .then(response => {
                     if (response.data) {
-                        commit("setProjects", response.data);
-                        commit("setProjectsLoadStatus", 2);
+                        dispatch("loadProjects");
                     }
                 })
                 .catch(error => {

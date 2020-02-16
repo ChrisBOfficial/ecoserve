@@ -102,12 +102,10 @@ app.route("/api/surveys/responses")
             };
             let downloadRequestResponse = await requestPromise(options);
             let progressId = downloadRequestResponse.body.result.progressId;
-            console.log(downloadRequestResponse.body);
 
             // Checking on data export progress and waiting until ready
             let parsedResponse;
             while (progressStatus !== "complete" && progressStatus !== "failed") {
-                console.log("progressStatus=" + progressStatus);
                 let requestCheckUrl = baseUrl + progressId;
                 delete options.json;
                 options = {
@@ -121,7 +119,6 @@ app.route("/api/surveys/responses")
                 let requestCheckResponse = await requestPromise(options);
                 parsedResponse = JSON.parse(requestCheckResponse.body);
                 requestCheckProgress = parsedResponse.result.percentComplete;
-                console.log("Download is " + requestCheckProgress + "% complete");
                 progressStatus = parsedResponse.result.status;
             }
 

@@ -29,7 +29,7 @@
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import { mapActions, mapState } from "vuex";
-import io from "socket.io-client";
+const io = require("socket.io-client");
 
 export default {
     data() {
