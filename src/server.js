@@ -6,18 +6,20 @@ const unzip = require("unzip-stream");
 const util = require("util");
 // const fs = require('fs');
 const requestPromise = util.promisify(request);
-const Pipelines = require("./api/pipelines.js");
 
 require("dotenv").config(); // Loads .env file
 
 // Use AWS port if provided, 3000 otherwise
-var port = process.env.PORT || 3000;
-var distDirectory;
+let port = process.env.PORT || 3000;
+let distDirectory;
+let Pipelines;
 if (port === 3000 || process.env.NODE_ENV === "development") {
     console.log("IN DEV MODE");
     distDirectory = "../dist";
+    Pipelines = require("./api/pipelines.js");
 } else {
     distDirectory = "dist";
+    Pipelines = require("pipelines.js");
 }
 
 // Initialize MongoDB connection using Admin user if provided, TestUser otherwise
@@ -31,7 +33,7 @@ dbClient.connect(err => {
     console.log("MongoDB connected");
 });
 
-var app = express();
+const app = express();
 // Add express configurations
 app.use(cors()); // Allow interaction with Vue serve and Qualtrics Web Listeners
 app.use(express.urlencoded({ extended: true })); // Middleware for handling raw POST data
@@ -39,10 +41,10 @@ app.use(express.json()); // Support JSON payloads in POST requests
 app.use(express.static(path.join(__dirname, distDirectory))); // Serve files in dist folder for all HTTP requests
 
 // Start server and socket.io instance on the port
-var server = app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log("Server started on port " + port);
 });
-var io = require("socket.io")(server);
+const io = require("socket.io")(server);
 
 // Any routes will be redirected to the vue app, using index.html as homepage
 app.get("/", (_, res) => {
@@ -51,14 +53,14 @@ app.get("/", (_, res) => {
 
 //* Endpoint for survey information
 app.route("/api/surveys").get((req, res) => {
-    var specifier;
+    let specifier;
     if (req.query.surveyId === undefined) {
         specifier = "";
     } else {
         specifier = req.query.surveyId;
     }
-    var targetUrl = "https://" + process.env.VUE_APP_Q_DATA_CENTER + ".qualtrics.com/API/v3/surveys/" + specifier;
-    var options = {
+    let targetUrl = "https://" + process.env.VUE_APP_Q_DATA_CENTER + ".qualtrics.com/API/v3/surveys/" + specifier;
+    let options = {
         method: "GET",
         url: targetUrl,
         headers: {
@@ -80,16 +82,16 @@ app.route("/api/surveys/responses")
     .get((req, res) => {
         async function respond(req, res) {
             // Create data export
-            var surveyId = req.query.surveyId;
-            var requestCheckProgress = 0.0;
-            var progressStatus = "inProgress";
-            var baseUrl =
+            const surveyId = req.query.surveyId;
+            let requestCheckProgress = 0.0;
+            let progressStatus = "inProgress";
+            let baseUrl =
                 "https://" +
                 process.env.VUE_APP_Q_DATA_CENTER +
                 ".qualtrics.com/API/v3/surveys/" +
                 surveyId +
                 "/export-responses/";
-            var options = {
+            let options = {
                 method: "POST",
                 url: baseUrl,
                 json: { format: "json" },
@@ -98,14 +100,15 @@ app.route("/api/surveys/responses")
                     "X-API-TOKEN": req.headers["x-api-token"]
                 }
             };
-            var downloadRequestResponse = await requestPromise(options);
-            var progressId = downloadRequestResponse.body.result.progressId;
+            let downloadRequestResponse = await requestPromise(options);
+            let progressId = downloadRequestResponse.body.result.progressId;
             console.log(downloadRequestResponse.body);
 
             // Checking on data export progress and waiting until ready
+            let parsedResponse;
             while (progressStatus !== "complete" && progressStatus !== "failed") {
                 console.log("progressStatus=" + progressStatus);
-                var requestCheckUrl = baseUrl + progressId;
+                let requestCheckUrl = baseUrl + progressId;
                 delete options.json;
                 options = {
                     method: "GET",
@@ -115,8 +118,8 @@ app.route("/api/surveys/responses")
                         "X-API-TOKEN": req.headers["x-api-token"]
                     }
                 };
-                var requestCheckResponse = await requestPromise(options);
-                var parsedResponse = JSON.parse(requestCheckResponse.body);
+                let requestCheckResponse = await requestPromise(options);
+                parsedResponse = JSON.parse(requestCheckResponse.body);
                 requestCheckProgress = parsedResponse.result.percentComplete;
                 console.log("Download is " + requestCheckProgress + "% complete");
                 progressStatus = parsedResponse.result.status;
@@ -125,10 +128,10 @@ app.route("/api/surveys/responses")
             // Check for error
             if (progressStatus === "failed") throw new Error("export failed");
 
-            var fileId = parsedResponse.result.fileId;
+            let fileId = parsedResponse.result.fileId;
 
             // Downloading file
-            var requestDownloadUrl = baseUrl + fileId + "/file";
+            let requestDownloadUrl = baseUrl + fileId + "/file";
             options = {
                 method: "GET",
                 url: requestDownloadUrl,
@@ -144,7 +147,7 @@ app.route("/api/surveys/responses")
                 // For each file in the zipfile
                 .on("entry", function(entry) {
                     // Get the file as a string
-                    const chunks = [];
+                    let chunks = [];
                     entry
                         .on("data", function(chunk) {
                             chunks.push(chunk);
@@ -175,8 +178,8 @@ app.route("/api/surveys/responses")
         respond(req, res);
     })
     .post((req, res) => {
-        var surveyId = req.query.surveyId;
-        var hooked;
+        const surveyId = req.query.surveyId;
+        let hooked;
 
         // Check if webhook exists, update if it doesn't
         const collection = dbClient.db("DB1").collection("Projects");
@@ -188,14 +191,14 @@ app.route("/api/surveys/responses")
                 collection.updateMany({ surveyId: surveyId }, { $set: { hooked: true } }, function(err) {
                     if (err) throw new Error(err);
 
-                    var baseUrl =
+                    let baseUrl =
                         "https://" + process.env.VUE_APP_Q_DATA_CENTER + ".qualtrics.com/API/v3/eventsubscriptions/";
-                    var dataString = {
+                    let dataString = {
                         topics: "surveyengine.completedResponse." + surveyId,
                         publicationUrl: req.protocol + "://" + req.get("HOST") + "/api/listener?surveyId=" + surveyId,
                         encrypt: false
                     };
-                    var options = {
+                    let options = {
                         method: "POST",
                         url: baseUrl,
                         body: JSON.stringify(dataString),
@@ -216,8 +219,8 @@ app.route("/api/surveys/responses")
 
 //* Endpoint for MongoDB aggregate pipelines
 app.route("/api/surveys/responses/aggregates").get((req, res) => {
-    let surveyId = req.query.surveyId;
-    let pipeline = req.query.pipeline;
+    const surveyId = req.query.surveyId;
+    const pipeline = req.query.pipeline;
     const collection = dbClient.db("DB1").collection("Responses");
 
     if (pipeline === "barchart") {
@@ -245,9 +248,9 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
 
 //* Endpoint for handling Qualtrics events
 app.route("/api/listener").post((req, res) => {
-    var surveyId = req.query.surveyId;
+    const surveyId = req.query.surveyId;
     if (req.body.Status == "Complete") {
-        var nsp = io.of("/" + surveyId);
+        let nsp = io.of("/" + surveyId);
         nsp.emit("surveyComplete", req.body.ResponseID);
     }
     res.sendStatus(200);
