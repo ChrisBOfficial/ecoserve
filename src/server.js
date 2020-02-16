@@ -19,7 +19,7 @@ if (port === 3000 || process.env.NODE_ENV === "development") {
     Pipelines = require("./api/pipelines.js");
 } else {
     distDirectory = "dist";
-    Pipelines = require("pipelines.js");
+    Pipelines = require("./pipelines.js");
 }
 
 // Initialize MongoDB connection using Admin user if provided, TestUser otherwise

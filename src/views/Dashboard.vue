@@ -17,7 +17,7 @@
                 </b-tab>
                 <b-tab title="Circular Charts">
                     <p>I'm the second tab</p>
-                    <CircularChart />
+                    <CircularChart :surveyId="givenSurvey" />
                 </b-tab>
             </b-tabs>
         </div>
@@ -30,7 +30,7 @@ import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import BarChart from "@/components/Barchart.vue";
 import CircularChart from "@/components/CircularChart.vue";
-const d3 = require("d3");
+const d3 = Object.assign({}, require("d3"), require("d3-scale"));
 
 export default {
     name: "dashboard",
@@ -41,6 +41,7 @@ export default {
         BarChart
     },
     data: () => ({
+        givenSurvey: "",
         values: [20, 50, 60, 40, 30],
         speciesList: ["Roses", "Tulips", "Daisies", "Narcissuses", "Wallaby"],
         barChartData: [
@@ -187,7 +188,7 @@ export default {
         ]
     }),
     created: function() {
-        console.log(this.$route.query.id);
+        this.givenSurvey = this.$route.query.id.split("+")[1];
     },
     mounted() {
         this.createGraph();

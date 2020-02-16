@@ -5,10 +5,11 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import io from "socket.io-client";
-var d3 = Object.assign({}, require("d3"), require("d3-scale"));
+const d3 = Object.assign({}, require("d3"), require("d3-scale"));
 
 export default {
     name: "CircularChart",
+    props: ["surveyId"],
     computed: {
         ...mapState({
             data: state => state.responses.dummy,
@@ -126,6 +127,8 @@ export default {
         }
     },
     created: function() {
+        console.log(this.surveyId);
+        /* this.createHook('SV_b78ghjEDgpEZU3j');
         this.lastUpdate = Date.now();
 
         this.socket = io("/SV_b78ghjEDgpEZU3j", { transport: "polling" });
@@ -137,15 +140,14 @@ export default {
                     console.log(msg);
                 }
             }.bind(this)
-        );
-        // this.createHook('SV_0kUXcBoAFl6hbSJ');
+        ); */
     },
     mounted: function() {
-        // this.getResponses("SV_b78ghjEDgpEZU3j");
         this.getAggregate({ id: "SV_b78ghjEDgpEZU3j", pipeline: "circlechart" });
     },
     methods: {
         ...mapActions({
+            createHook: "responses/createHook",
             getResponses: "responses/loadResponses",
             getAggregate: "responses/getAggregateData"
         }),
