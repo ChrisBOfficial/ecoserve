@@ -1,5 +1,12 @@
 import ResponsesAPI from "@/api/responses.js";
 
+let socketUrl;
+if (process.env.NODE_ENV === "development") {
+    socketUrl = "http://localhost:3000";
+} else if (process.env.NODE_ENV === "production") {
+    socketUrl = window.location.origin;
+}
+
 export default {
     namespaced: true,
 
@@ -151,24 +158,28 @@ export default {
 
         barchartAggregate: [],
         circleAggregate: [],
-        labelAggregate: []
+        labelAggregate: [],
+
+        url: socketUrl
     },
 
     actions: {
         // Loads responses for a specific survey
         loadResponses({ commit }, data) {
-            commit("setResponsesLoadStatus", 1);
-            // Calls the API to load the responses
-            ResponsesAPI.getResponses(data)
-                .then(response => {
-                    console.log(response.data);
-                    commit("setResponses", response.data);
-                    commit("setResponsesLoadStatus", 2);
-                })
-                .catch(error => {
-                    console.log(error);
-                    commit("setResponsesLoadStatus", 3);
-                });
+            return new Promise((resolve, reject) => {
+                commit("setResponsesLoadStatus", 1);
+                // Calls the API to load the responses
+                ResponsesAPI.getResponses(data)
+                    .then(response => {
+                        commit("setResponses", response.data);
+                        commit("setResponsesLoadStatus", 2);
+                        resolve(response.data);
+                    })
+                    .catch(error => {
+                        commit("setResponsesLoadStatus", 3);
+                        reject(error);
+                    });
+            });
         },
 
         // Subscribes to survey updates for a given surveyId

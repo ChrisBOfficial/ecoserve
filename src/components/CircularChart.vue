@@ -9,11 +9,18 @@ const d3 = Object.assign({}, require("d3"), require("d3-scale"));
 
 export default {
     name: "CircularChart",
-    props: ["surveyId"],
+    data() {
+        return {
+            socket: {},
+            lastUpdate: 0,
+            surveyId: ""
+        };
+    },
     computed: {
         ...mapState({
             data: state => state.responses.dummy,
-            circleAggregate: state => state.responses.circleAggregate
+            circleAggregate: state => state.responses.circleAggregate,
+            socketUrl: state => state.responses.url
         })
     },
     watch: {
@@ -126,14 +133,17 @@ export default {
             }); */
         }
     },
-    created: function() {
-        console.log(this.surveyId);
-        /* this.createHook('SV_b78ghjEDgpEZU3j');
+    async mounted() {
+        this.surveyId = this.$route.query.id.split("+")[1];
+        await this.getResponses("SV_b78ghjEDgpEZU3j");
+        this.getAggregate({ id: "SV_b78ghjEDgpEZU3j", pipeline: "circlechart" });
+
+        /* this.createHook("SV_b78ghjEDgpEZU3j");
         this.lastUpdate = Date.now();
 
-        this.socket = io("/SV_b78ghjEDgpEZU3j", { transport: "polling" });
+        this.socket = io(this.socketUrl, { transports: "polling" });
         this.socket.on(
-            "surveyComplete",
+            "SV_b78ghjEDgpEZU3j",
             function(msg) {
                 if (Date.now() - this.lastUpdate >= 5000) {
                     this.lastUpdate = Date.now();
@@ -142,8 +152,8 @@ export default {
             }.bind(this)
         ); */
     },
-    mounted: function() {
-        this.getAggregate({ id: "SV_b78ghjEDgpEZU3j", pipeline: "circlechart" });
+    destroyed() {
+        this.socket.close();
     },
     methods: {
         ...mapActions({
@@ -151,7 +161,7 @@ export default {
             getResponses: "responses/loadResponses",
             getAggregate: "responses/getAggregateData"
         }),
-        avg: function(data) {
+        avg(data) {
             var values = 0;
             var total = 0;
             var holder = 0;
@@ -163,7 +173,7 @@ export default {
             });
             return values / total;
         },
-        circleChart: function(results, location) {
+        circleChart(results, location) {
             // set the dimensions of the canvas
             let margin = { top: 0, right: 0, bottom: 0, left: 0 },
                 width = 324 - margin.left - margin.right,
@@ -226,7 +236,7 @@ export default {
                         .innerRadius(innerRadius)
                         .outerRadius(function(d) {
                             if (d.mean > 0) {
-                                return y(d.mean) * 1.1;
+                                return y(d.mean);
                             } else {
                                 return y(0);
                             }
@@ -298,7 +308,7 @@ export default {
                         })
                         .outerRadius(function(d) {
                             if (d.mean < 0) {
-                                return ybis(d.mean * -1.1);
+                                return ybis(d.mean * -1);
                             } else {
                                 return ybis(0);
                             }
@@ -333,7 +343,7 @@ export default {
                 .style("opacity", 0.5)
                 .style("fill", "none");
         },
-        circleLead: function(species, location) {
+        circleLead(species, location) {
             this.circleAggregate.forEach(
                 function(d) {
                     if (d.type == species) {

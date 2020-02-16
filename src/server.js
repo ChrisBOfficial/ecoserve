@@ -250,8 +250,7 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
 app.route("/api/listener").post((req, res) => {
     const surveyId = req.query.surveyId;
     if (req.body.Status == "Complete") {
-        let nsp = io.of("/" + surveyId);
-        nsp.emit("surveyComplete", req.body.ResponseID);
+        io.emit(surveyId, req.body.Status);
     }
     res.sendStatus(200);
 });
