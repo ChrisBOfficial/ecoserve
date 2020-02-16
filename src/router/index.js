@@ -23,11 +23,6 @@ const routes = [
         component: () => import("@/views/Project.vue")
     },
     {
-        path: "/tempdash",
-        name: "tempdash",
-        component: () => import("@/views/tempCircleChart.vue")
-    },
-    {
         path: "/workspace",
         name: "workspace",
         component: () => import("@/views/Workspace.vue")

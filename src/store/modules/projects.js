@@ -34,6 +34,7 @@ export default {
             ProjectsAPI.postProject(data)
                 .then(response => {
                     if (response.data) {
+                        console.log(response.data);
                         dispatch("loadProjects");
                     }
                 })
@@ -60,7 +61,6 @@ export default {
             ProjectsAPI.deleteProject(data)
                 .then(response => {
                     if (response.data) {
-                        console.log(response.data);
                         commit("setProjects", response.data);
                         commit("setProjectsLoadStatus", 2);
                     }

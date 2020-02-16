@@ -33,7 +33,6 @@
                         centered
                         :hide-header="true"
                         size="sm"
-                        @show="validateForm"
                         :no-close-on-backdrop="true"
                         :no-close-on-esc="true"
                         :ok-only="true"

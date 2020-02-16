@@ -17,6 +17,7 @@
                 </b-tab>
                 <b-tab title="Circular Charts">
                     <p>I'm the second tab</p>
+                    <CircularChart />
                 </b-tab>
             </b-tabs>
         </div>
@@ -28,15 +29,13 @@
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import BarChart from "@/components/Barchart.vue";
-import CircleChart from "@/components/CircleChart.vue";
-import CirclularChart from "../components/CirclularChart";
+import CircularChart from "@/components/CircularChart.vue";
 const d3 = require("d3");
 
 export default {
     name: "dashboard",
     components: {
-        CircleChart,
-        CirclularChart,
+        CircularChart,
         Header,
         Footer,
         BarChart

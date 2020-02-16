@@ -21,10 +21,6 @@
                         </li>
 
                         <li class="nav-item">
-                            <router-link class="nav-link" to="/tempdash">DEMO</router-link>
-                        </li>
-
-                        <li class="nav-item">
                             <router-link class="nav-link" to="/workspace">WORKSPACE</router-link>
                         </li>
 

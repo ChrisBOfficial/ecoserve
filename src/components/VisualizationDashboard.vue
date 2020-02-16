@@ -112,7 +112,7 @@ export default {
                 this.visualizations.push(blockSelected.description + " - " + graphSelected);
             }
 
-            this.setProjectBlocks(this.allBlocks);
+            this.saveProjectBlocks(this.allBlocks);
             this.blockSelected = "";
             this.graphSelected = "";
         },

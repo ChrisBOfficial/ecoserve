@@ -608,7 +608,6 @@ app.route("/api/projects")
                 if (err.name === "MongoError" && err.code === 11000) {
                     return res.send("Project already exists");
                 }
-
                 throw new Error(err);
             }
             res.send(result.ops);
