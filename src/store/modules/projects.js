@@ -45,7 +45,7 @@ export default {
         },
         updateProject({ dispatch }, data) {
             // Calls the API to update a project
-            ProjectsAPI.patchProject(data)
+            ProjectsAPI.putProject(data)
                 .then(response => {
                     if (response.data) {
                         dispatch("loadProjects");

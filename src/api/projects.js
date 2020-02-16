@@ -10,8 +10,8 @@ export default {
     },
 
     // Update a project
-    patchProject(project) {
-        return window.axios.patch("/projects", project);
+    putProject(project) {
+        return window.axios.put("/projects", project);
     },
 
     // Delete a project
