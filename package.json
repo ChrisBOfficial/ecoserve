@@ -9,7 +9,7 @@
     "bugs": "https://github.com/cseseniordesign/invasive-species/issues",
     "homepage": "https://github.com/cseseniordesign/invasive-species#readme",
     "version": "0.1.0",
-    "description": "A web platform for visualizing Qualtrics survey data.",
+    "description": "A web platform for visualizing Qualtrics survey responses.",
     "repository": {
         "type": "git",
         "url": "git+https://github.com/cseseniordesign/invasive-species.git"
@@ -71,5 +71,8 @@
         "plugins": {
             "autoprefixer": {}
         }
+    },
+    "jest": {
+        "preset": "@vue/cli-plugin-unit-jest/presets/no-babel/"
     }
 }

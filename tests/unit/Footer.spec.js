@@ -1,9 +1,9 @@
 import { shallowMount, createLocalVue } from "@vue/test-utils";
-import BootstrapVue from "bootstrap-vue";
+import VueRouter from "vue-router";
 import Footer from "@/components/Footer.vue";
 
 const localVue = createLocalVue();
-localVue.use(BootstrapVue);
+localVue.use(VueRouter);
 
 describe("Footer", () => {
     it("Footer component renders", () => {
