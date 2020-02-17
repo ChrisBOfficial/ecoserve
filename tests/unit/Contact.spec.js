@@ -1,13 +1,9 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
-import BootstrapVue from "bootstrap-vue";
-import Contact from "@/views/Contact.vue";
-
-const localVue = createLocalVue();
-localVue.use(BootstrapVue);
+import { shallowMount } from "@vue/test-utils";
+import contact from "@/views/Contact.vue";
 
 describe("Contact", () => {
     it("Contact page renders", () => {
-        const wrapper = shallowMount(Contact, { localVue });
+        const wrapper = shallowMount(contact);
         expect(wrapper.isVueInstance()).toBe(true);
     });
 });

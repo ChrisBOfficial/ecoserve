@@ -1,13 +1,9 @@
-import { shallowMount, createLocalVue } from "@vue/test-utils";
-import BootstrapVue from "bootstrap-vue";
-import About from "@/views/About.vue";
-
-const localVue = createLocalVue();
-localVue.use(BootstrapVue);
+import { shallowMount } from "@vue/test-utils";
+import about from "@/views/About.vue";
 
 describe("About", () => {
     it("About page renders", () => {
-        const wrapper = shallowMount(About, { localVue });
+        const wrapper = shallowMount(about);
         expect(wrapper.isVueInstance()).toBe(true);
     });
 });
