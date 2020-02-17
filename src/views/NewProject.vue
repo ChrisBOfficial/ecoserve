@@ -10,7 +10,7 @@
                 <b-form-input v-model="description" placeholder="Enter Project Description"></b-form-input>
             </b-row>
             <b-row>
-                <h3>Create New Survey</h3>
+                <h4>Create New Survey</h4>
             </b-row>
             <b-row class="align-items-center">
                 <b-button href="https://login.qualtrics.com/login" target="_blank">Link to Qualtrics</b-button>
@@ -33,7 +33,6 @@
                         centered
                         :hide-header="true"
                         size="sm"
-                        @show="validateForm"
                         :no-close-on-backdrop="true"
                         :no-close-on-esc="true"
                         :ok-only="true"

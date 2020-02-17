@@ -21,12 +21,11 @@
                 <h1 aria-placeholder="CREATE NEW PROJECT">{{ title }}</h1>
             </b-row>
             <b-row>
-                <b-form-input v-model="title" placeholder="Enter Project Title"></b-form-input>
-                <b-form-input v-model="description" placeholder="Enter Project Description"></b-form-input>
+                <h4>Survey: "{{ this.selectedSurvey.name }}"</h4>
             </b-row>
             <b-row>
-                <h3>Survey: insert survey name</h3>
-                <button style="background-color:DarkSeaGreen;">Link to Survey</button>
+                <b-form-input v-model="title" placeholder="Enter Project Title"></b-form-input>
+                <b-form-input v-model="description" placeholder="Enter Project Description"></b-form-input>
             </b-row>
             <b-row>
                 <h2>Visualization Dashboard</h2>
@@ -112,7 +111,8 @@ export default {
     computed: {
         ...mapState({
             projects: state => state.projects.projects,
-            projectBlocks: state => state.projects.projectBlocks
+            projectBlocks: state => state.projects.projectBlocks,
+            selectedSurvey: state => state.surveys.survey
         }),
         projectNames: function() {
             let names = [];

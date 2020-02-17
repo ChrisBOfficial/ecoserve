@@ -8,7 +8,6 @@
                     </option>
                 </b-form-select>
                 <br />
-                <span>Selected: {{ blockSelected }}</span>
             </b-col>
             <b-col>
                 <b-form-select v-model="graphSelected" :select-size="5">
@@ -17,7 +16,6 @@
                     </option>
                 </b-form-select>
                 <br />
-                <span>Selected: {{ graphSelected }}</span>
             </b-col>
         </b-row>
         <b-row class="align-items-center">
@@ -30,7 +28,6 @@
                 </option>
             </b-form-select>
             <br />
-            <span>Selected: {{ removeData }}</span>
 
             <button v-on:click="removeVisualization" style="background-color:DarkSeaGreen;">
                 REMOVE VISUALIZATION
@@ -96,9 +93,11 @@ export default {
                 return;
             }
 
+            // Check if a visualization already exists for the selected block
             if (Object.prototype.hasOwnProperty.call(this.allBlocks, blockSelected.description)) {
                 var contained = false;
                 for (let item of this.allBlocks[blockSelected.description]) {
+                    // Check if selected visualization already exists for the given block
                     if (item[0] == graphSelected && item[1] == "option") {
                         contained = true;
                     }
@@ -112,7 +111,7 @@ export default {
                 this.visualizations.push(blockSelected.description + " - " + graphSelected);
             }
 
-            this.setProjectBlocks(this.allBlocks);
+            this.saveProjectBlocks(this.allBlocks);
             this.blockSelected = "";
             this.graphSelected = "";
         },

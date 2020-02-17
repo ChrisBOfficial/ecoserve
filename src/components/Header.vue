@@ -9,23 +9,18 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">
-                            <router-link class="nav-link" to="/">ABOUT</router-link>
+                            <router-link class="nav-link" to="/about">ABOUT</router-link>
                         </li>
-
                         <li class="nav-item">
                             <router-link class="nav-link" to="/project">PROJECT</router-link>
                         </li>
 
                         <li class="nav-item">
-                            <router-link class="nav-link" to="/contact">CONTACT</router-link>
-                        </li>
-
-                        <li class="nav-item">
-                            <router-link class="nav-link" to="/csv">CSV</router-link>
-                        </li>
-
-                        <li class="nav-item">
                             <router-link class="nav-link" to="/workspace">WORKSPACE</router-link>
+                        </li>
+
+                        <li class="nav-item">
+                            <router-link class="nav-link" to="/contact">CONTACT</router-link>
                         </li>
 
                         <li class="nav-item">

@@ -1,4 +1,4 @@
-var request = require("supertest"),
+const request = require("supertest"),
     app = require("../src/server").app,
     assert = require("assert");
 
@@ -63,22 +63,6 @@ describe("Vue router endpoints", function() {
         it("should return 404", function(done) {
             request(app)
                 .get("/project")
-                .expect("x-powered-by", "Express")
-                .expect(404)
-                .end(function(err, res) {
-                    if (err) {
-                        console.log(res);
-                        done(err);
-                    }
-                    done();
-                });
-        });
-    });
-
-    describe("GET '/csv'", function() {
-        it("should return 404", function(done) {
-            request(app)
-                .get("/csv")
                 .expect("x-powered-by", "Express")
                 .expect(404)
                 .end(function(err, res) {

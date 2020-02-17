@@ -29,7 +29,7 @@
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import { mapActions, mapState } from "vuex";
-import io from "socket.io-client";
+const io = require("socket.io-client");
 
 export default {
     data() {
@@ -41,7 +41,8 @@ export default {
     computed: {
         ...mapState({
             surveys: state => state.surveys.surveys,
-            survey: state => state.surveys.survey
+            survey: state => state.surveys.survey,
+            socketUrl: state => state.responses.url
         }),
         formattedSurveys: function() {
             var formattedList = [];
@@ -61,9 +62,9 @@ export default {
         this.loadSurveys();
         this.getResponses("SV_b78ghjEDgpEZU3j");
 
-        this.socket = io("/SV_3yOO65TG4UFqw6N", { transport: "polling" });
+        this.socket = io(this.socketUrl);
         this.socket.on(
-            "surveyComplete",
+            "SV_b78ghjEDgpEZU3j",
             function(msg) {
                 if (Date.now() - this.lastUpdate >= 5000) {
                     this.lastUpdate = Date.now();
