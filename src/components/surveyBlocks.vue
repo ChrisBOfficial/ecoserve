@@ -5,12 +5,11 @@
         </b-row>
         <b-row class="align-items-center">
             <b-form-select v-model="selectedSurvey" v-on:change="selectSurvey" :select-size="5">
-                <option v-for="survey in surveys" v-bind:value="survey" v-bind:key="survey.name">{{
-                    survey.name
-                }}</option>
+                <option v-for="survey in surveys" v-bind:value="survey" v-bind:key="survey.name">
+                    {{ survey.name }}
+                </option>
             </b-form-select>
             <br />
-            <span>Selected: {{ selectedSurvey }} </span>
         </b-row>
     </b-container>
 </template>

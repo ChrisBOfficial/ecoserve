@@ -147,7 +147,7 @@ export default {
         this.socket.on(
             this.surveyId,
             function(msg) {
-                if (Date.now() - this.lastUpdate >= 5000) {
+                if (Date.now() - this.lastUpdate >= 1000) {
                     this.lastUpdate = Date.now();
                     console.log(msg);
                     this.getResponses(this.surveyId)
