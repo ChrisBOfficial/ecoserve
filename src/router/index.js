@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import BootstrapVue from "bootstrap-vue";
-import About from "@/views/About.vue";
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -9,23 +8,18 @@ Vue.use(BootstrapVue);
 const routes = [
     {
         path: "/",
-        name: "about",
-        component: About
+        name: "home",
+        component: () => import("@/views/Home.vue")
     },
     {
-        path: "/contact",
-        name: "contact",
-        component: () => import("@/views/Contact.vue")
+        path: "/about",
+        name: "about",
+        component: () => import("@/views/About.vue")
     },
     {
         path: "/project",
         name: "project",
         component: () => import("@/views/Project.vue")
-    },
-    {
-        path: "/workspace",
-        name: "workspace",
-        component: () => import("@/views/Workspace.vue")
     },
     {
         path: "/newproject",
@@ -41,6 +35,16 @@ const routes = [
         path: "/dashboard",
         name: "dashboard",
         component: () => import("@/views/Dashboard.vue")
+    },
+    {
+        path: "/workspace",
+        name: "workspace",
+        component: () => import("@/views/Workspace.vue")
+    },
+    {
+        path: "/contact",
+        name: "contact",
+        component: () => import("@/views/Contact.vue")
     }
 ];
 
