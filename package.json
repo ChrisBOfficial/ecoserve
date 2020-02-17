@@ -1,21 +1,33 @@
 {
     "name": "invasive-species",
+    "contributors": [
+        "Christopher Burbach (Development Manager, Squad Lead)",
+        "Alexis Saltzman (Product Manager)",
+        "Stephen Ralph",
+        "Vy Doan"
+    ],
+    "bugs": "https://github.com/cseseniordesign/invasive-species/issues",
+    "homepage": "https://github.com/cseseniordesign/invasive-species#readme",
     "version": "0.1.0",
+    "description": "A web platform for visualizing Qualtrics survey data.",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/cseseniordesign/invasive-species.git"
+    },
+    "main": "server.js",
     "private": true,
-    "description": "A platform for the integration of traditional and local knowledge with ecosystem service assessments and environmental decision making.",
     "scripts": {
-        "serve": "vue-cli-service serve",
         "build": "vue-cli-service build",
         "deploy": "npm run build && cd resources && ./prep-deploy.sh",
         "deploy-windows": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command npm run build; cd resources; ./prep-deploy.ps1",
-        "devstart": "NODE_ENV=development nodemon src/server.js",
         "prestart": "npm install",
         "start": "node src/server.js",
-        "test:unit": "vue-cli-service test:unit",
+        "devstart": "NODE_ENV=development nodemon src/server.js",
+        "serve": "vue-cli-service serve",
         "test:server": "mocha --exit",
+        "test:unit": "vue-cli-service test:unit",
         "test": "mocha --exit; vue-cli-service test:unit"
     },
-    "main": "server.js",
     "dependencies": {
         "axios": "^0.19.1",
         "bootstrap": "^4.4.1",
@@ -51,21 +63,13 @@
         "supertest": "^4.0.2",
         "vue-template-compiler": "^2.6.10"
     },
-    "postcss": {
-        "plugins": {
-            "autoprefixer": {}
-        }
-    },
     "browserslist": [
         "> 1%",
         "last 2 versions"
     ],
-    "bugs": {
-        "url": "https://github.com/cseseniordesign/invasive-species/issues"
-    },
-    "homepage": "https://github.com/cseseniordesign/invasive-species#readme",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/cseseniordesign/invasive-species.git"
+    "postcss": {
+        "plugins": {
+            "autoprefixer": {}
+        }
     }
 }

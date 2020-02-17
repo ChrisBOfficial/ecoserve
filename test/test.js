@@ -1,4 +1,4 @@
-var request = require("supertest"),
+const request = require("supertest"),
     app = require("../src/server").app,
     assert = require("assert");
 
