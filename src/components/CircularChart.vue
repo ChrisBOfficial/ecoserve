@@ -1,7 +1,5 @@
 <template>
-    <body>
-        <button @click="removeCircles">CLICK HERE</button>
-    </body>
+    <body></body>
 </template>
 
 <script>
@@ -20,13 +18,13 @@ export default {
     },
     computed: {
         ...mapState({
-            data: state => state.responses.dummy,
             circleAggregate: state => state.responses.circleAggregate,
             socketUrl: state => state.responses.url
         })
     },
     watch: {
-        circleAggregate: function() {
+        circleAggregate: function(newData) {
+            d3.selectAll("svg").remove();
             // let avrg = this.avg(this.data);
             let grid = d3
                 .select("body")
@@ -35,14 +33,14 @@ export default {
                 .attr("class", "grid");
             let chars = grid
                 .selectAll("div")
-                .data(this.data.Species)
+                .data(newData)
                 .enter()
                 .append("div")
                 .attr("class", "char");
             chars.style(
                 "fill",
                 function(d) {
-                    this.circleLead(d.label, this.$el);
+                    this.circleLead(d.type, this.$el);
                 }.bind(this)
             );
             /* let content = chars.append("div").attr("class", "charContent");
@@ -142,19 +140,26 @@ export default {
         this.getResponses(this.surveyId);
         this.getAggregate({ id: this.surveyId, pipeline: "circlechart" });
 
-        /* this.createHook("SV_b78ghjEDgpEZU3j");
+        this.createHook(this.surveyId);
         this.lastUpdate = Date.now();
 
         this.socket = io(this.socketUrl);
         this.socket.on(
-            "SV_b78ghjEDgpEZU3j",
+            this.surveyId,
             function(msg) {
                 if (Date.now() - this.lastUpdate >= 5000) {
                     this.lastUpdate = Date.now();
                     console.log(msg);
+                    this.getResponses(this.surveyId)
+                        .then(() => {
+                            this.getAggregate({ id: this.surveyId, pipeline: "circlechart" });
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
                 }
             }.bind(this)
-        ); */
+        );
     },
     destroyed() {
         this.socket.close();
@@ -165,9 +170,6 @@ export default {
             getResponses: "responses/loadResponses",
             getAggregate: "responses/getAggregateData"
         }),
-        removeCircles() {
-            d3.selectAll("svg").remove();
-        },
         avg(data) {
             var values = 0;
             var total = 0;

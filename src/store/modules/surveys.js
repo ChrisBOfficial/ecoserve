@@ -18,7 +18,6 @@ export default {
         loadSurveys({ commit }) {
             return new Promise((resolve, reject) => {
                 commit("setSurveysLoadStatus", 1);
-                // Calls the API to load the surveys
                 SurveysAPI.getSurveys()
                     .then(response => {
                         if (response.data.result && response.data.result.elements) {
@@ -39,7 +38,6 @@ export default {
         loadSurvey({ commit }, data) {
             return new Promise((resolve, reject) => {
                 commit("setSurveyLoadStatus", 1);
-                // Calls the API to load a survey by surveyId and save the blocks
                 SurveysAPI.getSurvey(data)
                     .then(response => {
                         commit("setSurvey", response.data.result);
@@ -81,27 +79,21 @@ export default {
     },
 
     mutations: {
-        // Sets the surveys in the state
         setSurveys(state, surveys) {
             state.surveys = surveys;
         },
-        // Sets the surveys load status
         setSurveysLoadStatus(state, status) {
             state.surveysLoadStatus = status;
         },
-        // Sets the survey in the state
         setSurvey(state, survey) {
             state.survey = survey;
         },
-        // Sets the survey load status
         setSurveyLoadStatus(state, status) {
             state.surveyLoadStatus = status;
         },
-        // Sets the selected survey's blocks
         setSurveyBlocks(state, blocks) {
             state.blocks = blocks;
         },
-        // Sets the selected survey's questions
         setSurveyQuestions(state, questions) {
             state.questions = questions;
         }

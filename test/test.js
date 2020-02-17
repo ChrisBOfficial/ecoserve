@@ -75,22 +75,6 @@ describe("Vue router endpoints", function() {
         });
     });
 
-    describe("GET '/csv'", function() {
-        it("should return 404", function(done) {
-            request(app)
-                .get("/csv")
-                .expect("x-powered-by", "Express")
-                .expect(404)
-                .end(function(err, res) {
-                    if (err) {
-                        console.log(res);
-                        done(err);
-                    }
-                    done();
-                });
-        });
-    });
-
     describe("GET '/workspace'", function() {
         it("should return 404", function(done) {
             request(app)

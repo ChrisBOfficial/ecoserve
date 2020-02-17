@@ -168,7 +168,6 @@ export default {
         loadResponses({ commit }, data) {
             return new Promise((resolve, reject) => {
                 commit("setResponsesLoadStatus", 1);
-                // Calls the API to load the responses
                 ResponsesAPI.getResponses(data)
                     .then(response => {
                         commit("setResponses", response.data);
@@ -219,11 +218,9 @@ export default {
     },
 
     mutations: {
-        // Sets the responses in the state
         setResponses(state, responses) {
             state.responses = responses;
         },
-        // Sets the responses load status
         setResponsesLoadStatus(state, status) {
             state.responsesLoadStatus = status;
         },

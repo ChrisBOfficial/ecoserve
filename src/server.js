@@ -83,7 +83,6 @@ app.route("/api/surveys/responses")
         async function respond(req, res) {
             // Create data export
             const surveyId = req.query.surveyId;
-            let requestCheckProgress = 0.0;
             let progressStatus = "inProgress";
             let baseUrl =
                 "https://" +
@@ -118,16 +117,12 @@ app.route("/api/surveys/responses")
                 };
                 let requestCheckResponse = await requestPromise(options);
                 parsedResponse = JSON.parse(requestCheckResponse.body);
-                requestCheckProgress = parsedResponse.result.percentComplete;
                 progressStatus = parsedResponse.result.status;
             }
-
-            // Check for error
             if (progressStatus === "failed") throw new Error("export failed");
 
-            let fileId = parsedResponse.result.fileId;
-
             // Downloading file
+            let fileId = parsedResponse.result.fileId;
             let requestDownloadUrl = baseUrl + fileId + "/file";
             options = {
                 method: "GET",
@@ -138,10 +133,7 @@ app.route("/api/surveys/responses")
                 }
             };
             request(options)
-                // Parse the zipfile
                 .pipe(unzip.Parse())
-
-                // For each file in the zipfile
                 .on("entry", function(entry) {
                     // Get the file as a string
                     let chunks = [];
@@ -185,28 +177,29 @@ app.route("/api/surveys/responses")
             if (err) throw new Error(err);
             hooked = result.hooked;
             if (!hooked) {
-                collection.updateMany({ surveyId: surveyId }, { $set: { hooked: true } }, function(err) {
-                    if (err) throw new Error(err);
-
-                    let baseUrl =
-                        "https://" + process.env.VUE_APP_Q_DATA_CENTER + ".qualtrics.com/API/v3/eventsubscriptions/";
-                    let dataString = {
-                        topics: "surveyengine.completedResponse." + surveyId,
-                        publicationUrl: req.protocol + "://" + req.get("HOST") + "/api/listener?surveyId=" + surveyId,
-                        encrypt: false
-                    };
-                    let options = {
-                        method: "POST",
-                        url: baseUrl,
-                        body: JSON.stringify(dataString),
-                        headers: {
-                            "X-API-TOKEN": req.headers["x-api-token"]
-                        }
-                    };
-                    request(options, function(error, _, body) {
-                        if (error) throw new Error(error);
-                        res.send(body);
+                let baseUrl =
+                    "https://" + process.env.VUE_APP_Q_DATA_CENTER + ".qualtrics.com/API/v3/eventsubscriptions/";
+                let dataString = {
+                    topics: "surveyengine.completedResponse." + surveyId,
+                    publicationUrl: req.protocol + "://" + req.get("HOST") + "/api/listener?surveyId=" + surveyId,
+                    encrypt: false
+                };
+                let options = {
+                    method: "POST",
+                    url: baseUrl,
+                    body: JSON.stringify(dataString),
+                    headers: {
+                        "X-API-TOKEN": req.headers["x-api-token"],
+                        "content-type": "application/json"
+                    }
+                };
+                request(options, function(error, _, body) {
+                    if (error) throw new Error(error);
+                    collection.updateMany({ surveyId: surveyId }, { $set: { hooked: true } }).catch(error => {
+                        throw new Error(error);
                     });
+
+                    res.send(body);
                 });
             } else {
                 res.send("Webhook already exists for " + surveyId).status(200);
