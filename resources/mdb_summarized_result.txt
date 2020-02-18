@@ -308,7 +308,7 @@
 [
   {
     '$match': {
-      'surveyId': 'SV_b78ghjEDgpEZU3j'
+      'surveyId': 'SV_3Oz10c0ZYX2W2mp'
     }
   }, {
     '$unwind': {
@@ -318,90 +318,147 @@
     '$project': {
       'totals': {
         '$objectToArray': '$responses.values'
-      }
+      },
+      'descriptions': 1
     }
   }, {
     '$unwind': {
       'path': '$totals'
     }
   }, {
+    '$match': {
+      'totals.k': {
+        '$regex': '^Q'
+      }
+    }
+  }, {
+    '$unwind': {
+      'path': '$descriptions'
+    }
+  }, {
+    '$project': {
+      'QID': {
+        '$arrayElemAt': [
+          {
+            '$split': [
+              '$totals.k', '#'
+            ]
+          }, 0
+        ]
+      },
+      'sub': {
+        '$arrayElemAt': [
+          {
+            '$split': [
+              '$totals.k', '_'
+            ]
+          }, 1
+        ]
+      },
+      'col': {
+        '$substr': [
+          '$totals.k', {
+            '$subtract': [
+              {
+                '$strLenCP': '$totals.k'
+              }, 3
+            ]
+          }, 1
+        ]
+      },
+      'v': '$totals.v',
+      'service': {
+        '$arrayElemAt': [
+          {
+            '$split': [
+              '$descriptions.title', '#'
+            ]
+          }, 0
+        ]
+      },
+      'question': '$descriptions.question',
+      'subqmatch': {
+        '$arrayElemAt': [
+          {
+            '$split': [
+              '$descriptions.subQuestion', '.'
+            ]
+          }, 2
+        ]
+      },
+      'impactor': {
+        '$arrayElemAt': [
+          {
+            '$split': [
+              '$descriptions.title', '_'
+            ]
+          }, 1
+        ]
+      },
+      'descriptions': 1
+    }
+  }, {
+    '$project': {
+      'QID': 1,
+      'sub': 1,
+      'question': 1,
+      'subqmatch': 1,
+      'impactor': 1,
+      'service': 1,
+      'col': 1,
+      'v': 1,
+      'questioneq': {
+        '$cond': [
+          {
+            '$eq': [
+              '$QID', '$question'
+            ]
+          }, 1, 0
+        ]
+      },
+      'subquestioneq': {
+        '$cond': [
+          {
+            '$eq': [
+              '$sub', '$subqmatch'
+            ]
+          }, 1, 0
+        ]
+      }
+    }
+  }, {
+    '$match': {
+      'subquestioneq': 1,
+      'questioneq': 1,
+      'col': '1'
+    }
+  }, {
     '$group': {
       '_id': {
-        'QID': {
-          '$arrayElemAt': [
-            {
-              '$split': [
-                '$totals.k', '#'
-              ]
-            }, 0
-          ]
-        }, 
-        'subquestion': {
-          '$substr': [
-            '$totals.k', {
-              '$subtract': [
-                {
-                  '$strLenCP': '$totals.k'
-                }, 1
-              ]
-            }, 1
-          ]
-        }, 
-        'type': {
-          '$substr': [
-            '$totals.k', {
-              '$subtract': [
-                {
-                  '$strLenCP': '$totals.k'
-                }, 3
-              ]
-            }, 1
-          ]
-        }
-      }, 
+        'service': '$service',
+        'impactor': '$impactor'
+      },
       'mean': {
-        '$avg': '$totals.v'
+        '$avg': '$v'
       }
-    }
-  },
-{
-    '$project': {
-      '_id': '$_id.subquestion', 
-      'QID': '$_id.QID', 
-      'mean': '$mean',
-      'type': '$_id.type'
-    }
-  }, {
-    '$match': {
-      'QID': {
-        '$regex': new RegExp('^Q')
-      }
-    }
-  }, {
-    '$match': {
-      'type': {
-        '$eq': '1'
-      }
-    }
-  }, {
-    '$project': {
-      '_id': '$_id.subquestion', 
-      'QID': '$_id.QID', 
-      'mean': '$mean'
     }
   }, {
     '$sort': {
-      'QID': 1
+      'service': 1
     }
   }, {
     '$group': {
       '_id': {
-        'type': '$_id'
-      }, 
+        'type': '$_id.impactor'
+      },
       'values': {
         '$push': {
-          'service': '$QID', 
-          'mean': '$mean'
+          'service': '$_id.service',
+          'mean': {
+            '$subtract': [
+              '$mean', 6
+            ]
+          }
         }
       }
     }
@@ -418,52 +475,66 @@
 ##MONGO SHELL##
 
 [{$match: {
-  "surveyId" : "SV_b78ghjEDgpEZU3j"
+  surveyId: "SV_3Oz10c0ZYX2W2mp"
 }}, {$unwind: {
   path: "$responses"
-}
-}, {$project: {
-  "totals": {$objectToArray: "$responses.values"}
+}}, {$project: {
+  "totals": {$objectToArray: "$responses.values"},
+  descriptions:1
 }}, {$unwind: {
   path: "$totals"
-}}, {$group: {
-  _id: {QID: {$arrayElemAt: 
-    [{$split: ['$totals.k', "#"]},0]}, 
-      subquestion: {
-        '$substr': [
-          '$totals.k', {
-            '$subtract': [
-              {'$strLenCP': '$totals.k'}, 1]}, 1]
-      }, type: {
-        '$substr': [
-          '$totals.k', {
-            '$subtract': [
-              {'$strLenCP': '$totals.k'
-              }, 3]}, 1]}}, 
-    mean: {$avg:"$totals.v"}
 }}, {$match: {
-  "_id.QID": {$regex: /^Q/}
-}}, {$match: {
-  "_id.type": {$eq: "1"}
+  "totals.k": {$regex: '^Q'}
+}}, {$unwind: {
+  path: "$descriptions"
 }}, {$project: {
-  _id: "$_id.subquestion", 
+  QID: {$arrayElemAt:
+    [{$split: ['$totals.k', "#"]},0]
+  },
+  sub: {
+    $arrayElemAt:
+    [{$split: ['$totals.k', "_"]},1]
+  },
+  col: {
+    '$substr': [
+      '$totals.k', {
+        '$subtract': [
+          {'$strLenCP': '$totals.k'
+          }, 3]}, 1]
+  },
+  v: "$totals.v",
+  service: {$arrayElemAt:
+    [{$split: ["$descriptions.title","#"]},0]},
+  question: "$descriptions.question",
+  subqmatch: {$arrayElemAt:
+    [{$split: ["$descriptions.subQuestion","."]},2]},
+  impactor: {$arrayElemAt:
+    [{$split: ["$descriptions.title","_"]},1]},
+  descriptions: 1
+}}, {$project: {
+  QID:1,sub:1,question:1,subqmatch:1,impactor:1,service:1,col:1,v:1,
+  questioneq: {$cond: [{$eq: ['$QID','$question']},1,0]},
+  subquestioneq: {$cond: [{$eq: ['$sub','$subqmatch']},1,0]}
 
-    QID: "$_id.QID", 
-
-    mean: "$mean"
-}}, {$sort: {
-  QID: 1
+}}, {$match: {
+  subquestioneq:1,
+  questioneq:1,
+  col: "1"
 }}, {$group: {
-  _id: {type: "$_id"}, 
-  values: {$push: {service: "$QID",
-  mean: "$mean"}}
-
-  }}, {$project: {
-  _id: 0,
+  _id: {service: "$service", impactor: "$impactor"},
+  mean: {$avg: "$v"}
+}}, {$sort: {
+  service: 1
+}}, {$group: {
+  _id: {type: "$_id.impactor"},
+  values: {
+    $push: {service:"$_id.service", mean: {$subtract: ["$mean",6]}}
+  }
+}}, {$project: {
+  _id:0,
   type: "$_id.type",
   values:1
-
-   }}]
+}}]
 
 
 ##Nutrition Label Aggregation Pipeline##
