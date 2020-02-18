@@ -1,6 +1,6 @@
 <template>
     <div>
-        <footer class="page-footer font-small blue pt-4 sticky-bottom" style="background-color: darkslategray;">
+        <footer class="page-footer font-small blue pt-4 sticky-bottom" style="background-color: darkslategray; ">
             <!-- Footer Links -->
             <div class="container-fluid text-center text-md-left">
                 <!-- Grid row -->

@@ -1,7 +1,7 @@
 <template>
     <div>
         <Header />
-        <section>
+        <section style="min-height:100vh;">
             <div class="container h-100">
                 <div class="row h-100">
                     <div class="col text-center align-items-center">
