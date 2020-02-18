@@ -143,20 +143,29 @@ app.route("/api/surveys/responses")
                         })
                         .on("end", function() {
                             const results = JSON.parse(Buffer.concat(chunks).toString("utf8")).responses;
-                            let processedResults = { surveyId: surveyId, responses: [] };
+                            let responses = [];
                             for (let result of results) {
                                 let resultObj = { values: result.values, labels: result.labels };
-                                processedResults.responses.push(resultObj);
+                                responses.push(resultObj);
                             }
 
                             const collection = dbClient.db("DB1").collection("Responses");
                             collection
-                                .updateOne({ surveyId: surveyId }, { $set: processedResults }, { upsert: true })
+                                .updateOne(
+                                    { surveyId: surveyId },
+                                    {
+                                        $set: {
+                                            surveyId: surveyId,
+                                            responses: responses
+                                        }
+                                    },
+                                    { upsert: true }
+                                )
                                 .catch(err => {
                                     throw new Error(err);
                                 });
 
-                            res.send(processedResults);
+                            res.send(results);
                         });
 
                     // Save the file to disk
@@ -256,17 +265,49 @@ app.route("/api/projects")
         });
     })
     .post((req, res) => {
-        const collection = dbClient.db("DB1").collection("Projects");
-
-        collection.insertOne(req.body, function(err, result) {
-            if (err) {
-                if (err.name === "MongoError" && err.code === 11000) {
-                    return res.send("Project already exists");
-                }
-                throw new Error(err);
+        let options = {
+            method: "GET",
+            url: "https://" + process.env.VUE_APP_Q_DATA_CENTER + ".qualtrics.com/API/v3/surveys/" + req.body.surveyId,
+            headers: {
+                "X-API-TOKEN": req.headers["x-api-token"]
             }
-            res.send(result.ops);
-        });
+        };
+        requestPromise(options)
+            .then(response => {
+                const result = JSON.parse(response.body).result;
+                let surveyData = [];
+                for (const column in result.exportColumnMap) {
+                    surveyData.push({
+                        title: column,
+                        question: result.exportColumnMap[column].question,
+                        column: result.exportColumnMap[column].column,
+                        subQuestion: result.exportColumnMap[column].subQuestion
+                    });
+                }
+
+                const responsesCollection = dbClient.db("DB1").collection("Responses");
+                responsesCollection
+                    .updateOne({ surveyId: result.id }, { $set: { descriptions: surveyData } }, { upsert: true })
+                    .catch(err => {
+                        throw new Error(err);
+                    });
+
+                const projectsCollection = dbClient.db("DB1").collection("Projects");
+                projectsCollection
+                    .insertOne(req.body)
+                    .then(result => {
+                        res.send(result.ops);
+                    })
+                    .catch(err => {
+                        if (err.name === "MongoError" && err.code === 11000) {
+                            return res.send("Project already exists");
+                        }
+                        throw new Error(err);
+                    });
+            })
+            .catch(err => {
+                throw new Error(err);
+            });
     })
     .put((req, res) => {
         const collection = dbClient.db("DB1").collection("Projects");
