@@ -28,7 +28,7 @@
 <script>
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
-import BarChart from "@/components/Barchart.vue";
+import BarChart from "@/components/BarChart.vue";
 import CircularChart from "@/components/CircularChart.vue";
 const d3 = Object.assign({}, require("d3"), require("d3-scale"));
 

@@ -1,7 +1,6 @@
 <template>
-    <div id="container" class="svg-container" align="center">
-        <h1>{{}}</h1>
-
+    <div :id="this.ind" class="svg-container" align="center">
+        <h3>{{ title + " " + ind }}</h3>
         <svg v-if="redrawToggle === true" :width="svgWidth" :height="svgHeight">
             <g>
                 <rect
@@ -31,16 +30,25 @@ export default {
         conf: String,
         xKey: String,
         yKey: String,
-        data: Array
+        data: Array,
+        ind: Number
     },
     mounted() {
-        this.svgWidth = document.getElementById("container").offsetWidth * 0.75;
+        var elementID = this.ind;
+        console.log(elementID);
+        this.svgWidth = document.getElementById(elementID).offsetWidth * 0.75;
         this.AddResizeListener();
         this.AnimateLoad();
     },
     data: () => ({
         svgWidth: 0,
-        redrawToggle: true
+        redrawToggle: true,
+        title: String,
+        conf: String,
+        xKey: String,
+        yKey: String,
+        data: Array,
+        ind: Number
     }),
     methods: {
         AnimateLoad() {
@@ -57,6 +65,8 @@ export default {
                 .attr("height", d => {
                     return this.svgHeight - this.yScale(d[this.yKey]);
                 });
+            console.log(this.data);
+            console.log(this.ind);
         },
         AddResizeListener() {
             // redraw the chart 300ms after the window has been resized
@@ -64,7 +74,9 @@ export default {
                 this.$data.redrawToggle = false;
                 setTimeout(() => {
                     this.$data.redrawToggle = true;
-                    this.$data.svgWidth = document.getElementById("container").offsetWidth * 1.75;
+                    var elementID = this.ind;
+
+                    this.$data.svgWidth = document.getElementById(elementID).offsetWidth * 0.75;
                     this.AnimateLoad();
                 }, 300);
             });
@@ -84,7 +96,7 @@ export default {
         xScale() {
             return scaleBand()
                 .rangeRound([0, this.svgWidth])
-                .padding(0.5)
+                .padding(0.1)
                 .domain(
                     this.data.map(d => {
                         return d[this.xKey];
