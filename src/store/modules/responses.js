@@ -173,6 +173,7 @@ export default {
                         commit("setResponses", response.data);
                         commit("setResponsesLoadStatus", 2);
                         resolve(response.data);
+                        console.log(response.data);
                     })
                     .catch(error => {
                         commit("setResponsesLoadStatus", 3);
