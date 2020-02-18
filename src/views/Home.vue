@@ -1,7 +1,7 @@
 <template>
     <div>
         <Header />
-        <section class="py-5 masthead align-items-center">
+        <!-- <section class="py-5 masthead align-items-center">
             <header class="text-center" style="min-height:100vh;   padding: 40vh;">
                 <b-row class="h-100 align-items-center">
                     <div class="col-12 ">
@@ -11,7 +11,16 @@
                     </div>
                 </b-row>
             </header>
-        </section>
+        </section> -->
+        <header class="masthead">
+            <div class="container d-flex h-100 align-items-center">
+                <div class="mx-auto text-center">
+                    <h1 class="font-weight-light" style="color:white;">
+                        INTERGRATIVE ECOSYSTEM SERVICE ANALYSIS TOOL
+                    </h1>
+                </div>
+            </div>
+        </header>
         <Footer />
     </div>
 </template>
@@ -28,3 +37,10 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+@import "../assets/grayscale.css";
+@import "../assets/fonts/css/all.css";
+@import "https://fonts.googleapis.com/css?family=Varela+Round";
+@import "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i";
+</style>

@@ -2,7 +2,7 @@
     <div>
         <Header />
         <div>
-            <b-tabs content-class="mt-2" lazy>
+            <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;" lazy>
                 <b-tab title="Bar Graphs" active>
                     <p>I'm the first tab</p>
                     <b-tabs vertical lazy>
@@ -232,3 +232,10 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+@import "../assets/grayscale.css";
+@import "../assets/fonts/css/all.css";
+@import "https://fonts.googleapis.com/css?family=Varela+Round";
+@import "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i";
+</style>

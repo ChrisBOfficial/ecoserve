@@ -15,23 +15,25 @@
                         {{ graph }}
                     </option>
                 </b-form-select>
-                <br />
             </b-col>
         </b-row>
+        <br />
         <b-row class="align-items-center">
-            <button v-on:click="addVisualization" style="background-color:DarkSeaGreen;">ADD VISUALIZATION</button>
+            <b-button v-on:click="addVisualization" style="background-color:DarkSeaGreen;">ADD VISUALIZATION</b-button>
         </b-row>
+        <br />
         <b-row class="align-items-center">
             <b-form-select v-model="removeData" :select-size="visualizationBoxSize">
                 <option v-for="visualization in visualizations" v-bind:value="visualization" v-bind:key="visualization">
                     {{ visualization }}
                 </option>
             </b-form-select>
-            <br />
-
-            <button v-on:click="removeVisualization" style="background-color:DarkSeaGreen;">
+        </b-row>
+        <br />
+        <b-row class="align-items-center">
+            <b-button v-on:click="removeVisualization" style="background-color:DarkSeaGreen;">
                 REMOVE VISUALIZATION
-            </button>
+            </b-button>
         </b-row>
     </b-container>
 </template>
@@ -140,3 +142,10 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+@import "../assets/grayscale.css";
+@import "../assets/fonts/css/all.css";
+@import "https://fonts.googleapis.com/css?family=Varela+Round";
+@import "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i";
+</style>

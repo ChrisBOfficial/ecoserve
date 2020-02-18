@@ -1,5 +1,5 @@
 <template>
-    <div class="existing-project-container">
+    <div class="existing-project-container" style="padding: 15vh 0vh 0vh 0vh;">
         <Header />
         <b-container v-show="seen">
             <b-row>
@@ -10,9 +10,9 @@
                 </b-form-select>
             </b-row>
             <b-row>
-                <button v-on:click="selectProject" style="background-color:DarkSeaGreen;">
+                <b-button v-on:click="selectProject" style="background-color:DarkSeaGreen;">
                     Choose project
-                </button>
+                </b-button>
             </b-row>
         </b-container>
 
@@ -211,3 +211,10 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+@import "../assets/grayscale.css";
+@import "../assets/fonts/css/all.css";
+@import "https://fonts.googleapis.com/css?family=Varela+Round";
+@import "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i";
+</style>

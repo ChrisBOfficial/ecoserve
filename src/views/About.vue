@@ -2,7 +2,7 @@
     <div>
         <Header />
         <section class="py-5" style="min-height:100vh;">
-            <div class="container h-100">
+            <div class="container h-100" style="padding: 15vh 0vh 0vh 0vh;">
                 <div class="row h-100 align-items-center">
                     <div class="col-12 text-center">
                         <h2 class="font-weight-light">ABOUT US</h2>

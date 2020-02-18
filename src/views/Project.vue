@@ -2,7 +2,7 @@
     <div>
         <Header />
         <section class="masthead-2">
-            <b-container>
+            <b-container style="padding: 15vh 0vh 0vh 0vh;">
                 <b-row class="h-100 align-items-center">
                     <b-col class="col-6 text-center align-items-center" id="ProjectList">
                         <h3>PROJECTS</h3>
@@ -17,12 +17,12 @@
 
                         <b-row>
                             <div class="col-md-6">
-                                <router-link to="/newproject" tag="button" style="background-color:DarkSeaGreen;"
+                                <router-link to="/newproject" tag="b-button" style="background-color:DarkSeaGreen;"
                                     >Create new project</router-link
                                 >
                             </div>
                             <div class="col-md-6 col-md-offset-6">
-                                <router-link to="/existingproject" tag="button" style="background-color:DarkSeaGreen;"
+                                <router-link to="/existingproject" tag="b-button" style="background-color:DarkSeaGreen;"
                                     >Edit existing project</router-link
                                 >
                             </div>
@@ -71,3 +71,10 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+@import "../assets/grayscale.css";
+@import "../assets/fonts/css/all.css";
+@import "https://fonts.googleapis.com/css?family=Varela+Round";
+@import "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i";
+</style>

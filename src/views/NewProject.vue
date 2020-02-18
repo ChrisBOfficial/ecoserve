@@ -1,5 +1,5 @@
 <template>
-    <div class="new-project-container">
+    <div class="new-project-container" style="padding: 15vh 0vh 0vh 0vh;">
         <Header />
         <b-container>
             <b-row class="h-100">
@@ -25,18 +25,17 @@
 
             <b-row align-h="center">
                 <b-col class="col-4">
-                    <b-button v-on:click="createProject" style="background-color:DarkSeaGreen;" v-b-modal.modal-center
-                        >CREATE PROJECT</b-button
-                    >
+                    <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center>CREATE PROJECT</b-button>
                     <b-modal
                         id="modal-center"
+                        @show="validateForm"
+                        @hide="createProject"
                         centered
                         :hide-header="true"
                         size="sm"
                         :no-close-on-backdrop="true"
                         :no-close-on-esc="true"
                         :ok-only="true"
-                        v-on:ok="exitEditing"
                     >
                         <p>Project created!</p>
                     </b-modal>
@@ -119,21 +118,24 @@ export default {
             }
         },
         createProject: function() {
-            if (this.validateForm()) {
-                const payload = {
-                    name: this.title,
-                    description: this.description,
-                    surveyId: this.survey.id,
-                    projectId: this.title + "+" + this.survey.id,
-                    blocks: this.projectBlocks,
-                    hooked: false
-                };
-                this.saveProject(payload);
-            }
-        },
-        exitEditing: function() {
+            const payload = {
+                name: this.title,
+                description: this.description,
+                surveyId: this.survey.id,
+                projectId: this.title + "+" + this.survey.id,
+                blocks: this.projectBlocks,
+                hooked: false
+            };
+            this.saveProject(payload);
             this.$router.push("project");
         }
     }
 };
 </script>
+
+<style scoped>
+@import "../assets/grayscale.css";
+@import "../assets/fonts/css/all.css";
+@import "https://fonts.googleapis.com/css?family=Varela+Round";
+@import "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i";
+</style>
