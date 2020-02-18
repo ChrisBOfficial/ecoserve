@@ -275,6 +275,7 @@ app.route("/api/projects")
         requestPromise(options)
             .then(response => {
                 const result = JSON.parse(response.body).result;
+                // Create descriptions entry
                 let surveyData = [];
                 for (const column in result.exportColumnMap) {
                     surveyData.push({
@@ -285,9 +286,21 @@ app.route("/api/projects")
                     });
                 }
 
+                // Create choices entry
+                let choicesData = [];
+                for (const question in result.questions) {
+                    if (result.questions[question].questionType.type === "SBS") {
+                        choicesData.push(result.questions[question].columns["1"].choices);
+                    }
+                }
+
                 const responsesCollection = dbClient.db("DB1").collection("Responses");
                 responsesCollection
-                    .updateOne({ surveyId: result.id }, { $set: { descriptions: surveyData } }, { upsert: true })
+                    .updateOne(
+                        { surveyId: result.id },
+                        { $set: { descriptions: surveyData, choices: choicesData } },
+                        { upsert: true }
+                    )
                     .catch(err => {
                         throw new Error(err);
                     });

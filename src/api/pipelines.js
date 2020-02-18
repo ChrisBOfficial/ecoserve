@@ -236,7 +236,8 @@ const circlechartPipeline = function(surveyId) {
             $project: {
                 totals: {
                     $objectToArray: "$responses.values"
-                }
+                },
+                descriptions: 1
             }
         },
         {
@@ -245,84 +246,139 @@ const circlechartPipeline = function(surveyId) {
             }
         },
         {
-            $group: {
-                _id: {
-                    QID: {
-                        $arrayElemAt: [
-                            {
-                                $split: ["$totals.k", "#"]
-                            },
-                            0
-                        ]
-                    },
-                    subquestion: {
-                        $substr: [
-                            "$totals.k",
-                            {
-                                $subtract: [
-                                    {
-                                        $strLenCP: "$totals.k"
-                                    },
-                                    1
-                                ]
-                            },
-                            1
-                        ]
-                    },
-                    type: {
-                        $substr: [
-                            "$totals.k",
-                            {
-                                $subtract: [
-                                    {
-                                        $strLenCP: "$totals.k"
-                                    },
-                                    3
-                                ]
-                            },
-                            1
-                        ]
-                    }
-                },
-                mean: {
-                    $avg: "$totals.v"
+            $match: {
+                "totals.k": {
+                    $regex: "^Q"
                 }
             }
         },
         {
-            $match: {
-                "_id.QID": {
-                    $regex: new RegExp("^Q")
-                }
-            }
-        },
-        {
-            $match: {
-                "_id.type": {
-                    $eq: "1"
-                }
+            $unwind: {
+                path: "$descriptions"
             }
         },
         {
             $project: {
-                _id: "$_id.subquestion",
-                QID: "$_id.QID",
-                mean: "$mean"
+                QID: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$totals.k", "#"]
+                        },
+                        0
+                    ]
+                },
+                sub: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$totals.k", "_"]
+                        },
+                        1
+                    ]
+                },
+                col: {
+                    $substr: [
+                        "$totals.k",
+                        {
+                            $subtract: [
+                                {
+                                    $strLenCP: "$totals.k"
+                                },
+                                3
+                            ]
+                        },
+                        1
+                    ]
+                },
+                v: "$totals.v",
+                service: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$descriptions.title", "#"]
+                        },
+                        0
+                    ]
+                },
+                question: "$descriptions.question",
+                subqmatch: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$descriptions.subQuestion", "."]
+                        },
+                        2
+                    ]
+                },
+                impactor: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$descriptions.title", "_"]
+                        },
+                        1
+                    ]
+                },
+                descriptions: 1
             }
         },
         {
-            $sort: {
-                QID: 1
+            $project: {
+                QID: 1,
+                sub: 1,
+                question: 1,
+                subqmatch: 1,
+                impactor: 1,
+                service: 1,
+                col: 1,
+                v: 1,
+                questioneq: {
+                    $cond: [
+                        {
+                            $eq: ["$QID", "$question"]
+                        },
+                        1,
+                        0
+                    ]
+                },
+                subquestioneq: {
+                    $cond: [
+                        {
+                            $eq: ["$sub", "$subqmatch"]
+                        },
+                        1,
+                        0
+                    ]
+                }
+            }
+        },
+        {
+            $match: {
+                subquestioneq: 1,
+                questioneq: 1,
+                col: "1"
             }
         },
         {
             $group: {
                 _id: {
-                    type: "$_id"
+                    service: "$service",
+                    impactor: "$impactor"
+                },
+                mean: {
+                    $avg: "$v"
+                }
+            }
+        },
+        {
+            $sort: {
+                service: 1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    type: "$_id.impactor"
                 },
                 values: {
                     $push: {
-                        service: "$QID",
+                        service: "$_id.service",
                         mean: {
                             $subtract: ["$mean", 6]
                         }

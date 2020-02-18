@@ -137,21 +137,24 @@ export default {
             setSelectedId: "projects/setSelectedProjectId"
         }),
         selectProject: function() {
-            this.title = this.selected.name;
-            this.description = this.selected.description;
-            this.projectPicked = !this.projectPicked;
-            this.seen = !this.seen;
-            this.loadSurvey(this.selected.surveyId);
-            this.saveProjectBlocks(this.selected.blocks);
+            // Prevent showing edit form if no project is selected
+            if (Object.entries(this.selected).length !== 0) {
+                this.title = this.selected.name;
+                this.description = this.selected.description;
+                this.projectPicked = !this.projectPicked;
+                this.seen = !this.seen;
+                this.loadSurvey(this.selected.surveyId);
+                this.saveProjectBlocks(this.selected.blocks);
 
-            this.existingBlocks = this.selected.blocks;
-            for (const block in this.selected.blocks) {
-                for (const graph of this.selected.blocks[block]) {
-                    this.visualizations.push(block + " - " + graph[0]);
+                this.existingBlocks = this.selected.blocks;
+                for (const block in this.selected.blocks) {
+                    for (const graph of this.selected.blocks[block]) {
+                        this.visualizations.push(block + " - " + graph[0]);
+                    }
                 }
+                this.previousProjectId = this.selected.projectId;
+                this.setSelectedId(this.selected.projectId);
             }
-            this.previousProjectId = this.selected.projectId;
-            this.setSelectedId(this.selected.projectId);
         },
         validateForm: function(bvModalEvt) {
             let invalid = false;
