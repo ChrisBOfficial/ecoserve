@@ -1,7 +1,8 @@
 const cors = require("cors");
 const express = require("express");
-const path = require("path");
+const history = require("connect-history-api-fallback");
 const request = require("request");
+const path = require("path");
 const unzip = require("unzip-stream");
 const util = require("util");
 // const fs = require('fs');
@@ -14,10 +15,10 @@ let port = process.env.PORT || 3000;
 let distDirectory;
 let Pipelines;
 if (port === 3000 || process.env.NODE_ENV === "development") {
-    console.log("IN DEV MODE");
     distDirectory = "../dist";
     Pipelines = require("./api/pipelines.js");
 } else {
+    console.log("IN PRODUCTION MODE");
     distDirectory = "dist";
     Pipelines = require("./pipelines.js");
 }
@@ -36,6 +37,7 @@ dbClient.connect(err => {
 const app = express();
 // Add express configurations
 app.use(cors()); // Allow interaction with Vue serve and Qualtrics Web Listeners
+app.use(history()); // Middleware for HTML5 history mode
 app.use(express.urlencoded({ extended: true })); // Middleware for handling raw POST data
 app.use(express.json()); // Support JSON payloads in POST requests
 app.use(express.static(path.join(__dirname, distDirectory))); // Serve files in dist folder for all HTTP requests

@@ -1,7 +1,7 @@
 {
     "name": "invasive-species",
     "contributors": [
-        "Christopher Burbach (Development Manager, Squad Lead)",
+        "Chris Burbach (Development Manager, Squad Lead)",
         "Alexis Saltzman (Product Manager)",
         "Stephen Ralph",
         "Vy Doan"
@@ -32,6 +32,7 @@
         "axios": "^0.19.1",
         "bootstrap": "^4.4.1",
         "bootstrap-vue": "^2.1.0",
+        "connect-history-api-fallback": "^1.6.0",
         "cors": "^2.8.5",
         "d3": "^5.12.0",
         "d3-array": "2.3.3",
