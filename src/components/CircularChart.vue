@@ -1,5 +1,5 @@
 <template>
-    <body></body>
+    <body />
 </template>
 
 <script>
@@ -13,7 +13,8 @@ export default {
         return {
             socket: {},
             lastUpdate: 0,
-            surveyId: ""
+            surveyId: "",
+            intervalId: Number
         };
     },
     computed: {
@@ -24,150 +25,43 @@ export default {
     },
     watch: {
         circleAggregate: function(newData) {
-            d3.selectAll("svg").remove();
-            // let avrg = this.avg(this.data);
-            let grid = d3
-                .select("body")
-                .append("div")
-                .attr("id", "grid")
-                .attr("class", "grid");
-            let chars = grid
-                .selectAll("div")
-                .data(newData)
-                .enter()
-                .append("div")
-                .attr("class", "char");
-            chars.style(
-                "fill",
-                function(d) {
-                    this.circleLead(d.type, this.$el);
-                }.bind(this)
-            );
-            /* let content = chars.append("div").attr("class", "charContent");
-            content.append("h2").text(function(d, i) {
-                return d.label;
-            });
-
-            chars.classed("size1", true);
-
-            chars.on(
-                "click",
-                function(d, i) {
-                    if (this.className.split(" ").indexOf("open") > -1) {
-                        d3.select(this).classed("open", false);
-                    } else {
-                        let gridColumns = window.getComputedStyle(this.parentElement).gridTemplateColumns.split(" ");
-                        let gridRows = window.getComputedStyle(this.parentElement).gridTemplateRows.split(" ");
-                        let numColumns = gridColumns.length;
-                        let numRows = gridRows.length;
-                        let xPosInGrid =
-                            this.getBoundingClientRect().left - this.parentElement.getBoundingClientRect().left;
-                        let yPosInGrid =
-                            this.getBoundingClientRect().top - this.parentElement.getBoundingClientRect().top;
-                        let gridRowHeight =
-                            parseFloat(gridRows[0]) +
-                            parseFloat(window.getComputedStyle(this.parentElement).gridRowGap);
-                        let gridColumnWidth =
-                            parseFloat(gridColumns[0]) +
-                            parseFloat(window.getComputedStyle(this.parentElement).gridColumnGap);
-                        let thisRow = Math.round(yPosInGrid / gridRowHeight) + 1;
-                        let thisColumn = Math.round(xPosInGrid / gridColumnWidth) + 1;
-                        let thisPortrait = this.getElementsByClassName("portrait")[0];
-                        if (thisPortrait) thisPortrait.setAttribute("src", thisPortrait.getAttribute("data-src"));
-                        chars.classed("open", false);
-                        chars.style("grid-row-start", "auto");
-                        chars.style("grid-column-start", "auto");
-                        d3.select(this).classed("open", true);
-                        let divWidth = parseFloat(window.getComputedStyle(this).gridColumnEnd.split(" ")[1]);
-                        let divHeight = parseFloat(window.getComputedStyle(this).gridRowEnd.split(" ")[1]);
-                        if (thisRow + divHeight > numRows) thisRow = 1 + numRows - divHeight;
-                        if (thisColumn + divWidth > numColumns) thisColumn = 1 + numColumns - divWidth;
-                        d3.select(this).style("grid-row-start", thisRow);
-                        d3.select(this).style("grid-column-start", thisColumn);
-                    }
-                }.bind(this)
-            );
-
-            let details = content.append("div").attr("class", "details");
-            let bio = details.append("div").attr("class", "bio");
-            bio.append("h3").text(function(d, i) {
-                return d.label;
-            });
-            bio.filter(function(d) {
-                return d.services.length > 0;
-            })
-                .append("h4")
-                .text("Services: ");
-            bio.filter(function(d) {
-                return d.services.length > 0;
-            })
-                .append("span")
-                .text(function(d, i) {
-                    return d.services;
-                });
-            bio.filter(function(d) {
-                return d.impact.length > 0;
-            })
-                .append("h4")
-                .text("Mean: ");
-            bio.filter(function(d) {
-                return d.impact.length > 0;
-            })
-                .append("span")
-                .text(function(d, i) {
-                    return d.impact;
-                });
-
-            let imageHolder = details.append("div").attr("class", "imageHolder");
-            imageHolder
-                .filter(function(d) {
-                    return d.confidence.length > 0;
-                })
-                .append("h4")
-                .text("Confidence: ");
-            imageHolder
-                .filter(function(d) {
-                    return d.confidence.length > 0;
-                })
-                .append("span")
-                .text(function(d, i) {
-                    return d.confidence;
-                }); */
+            this.makeCharts(newData);
         }
     },
-    async mounted() {
+    mounted() {
         this.surveyId = this.$route.query.id.split("+")[1];
-        this.getResponses(this.surveyId);
         this.getAggregate({ id: this.surveyId, pipeline: "circlechart" });
 
         this.createHook(this.surveyId);
         this.lastUpdate = Date.now();
-
         this.socket = io(this.socketUrl);
         this.socket.on(
             this.surveyId,
-            function(msg) {
+            function() {
                 if (Date.now() - this.lastUpdate >= 500) {
+                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" });
                     this.lastUpdate = Date.now();
-                    console.log(msg);
-                    this.getResponses(this.surveyId)
-                        .then(() => {
-                            this.getAggregate({ id: this.surveyId, pipeline: "circlechart" });
-                        })
-                        .catch(error => {
-                            console.log(error);
-                        });
                 }
             }.bind(this)
         );
+
+        // Refresh data every 60 seconds to grab any residual responses
+        this.intervalId = setInterval(
+            function() {
+                this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).catch(err => {
+                    throw new Error(err);
+                });
+            }.bind(this),
+            60000
+        );
     },
     destroyed() {
+        clearInterval(this.intervalId);
         this.socket.close();
     },
     methods: {
         ...mapActions({
             createHook: "responses/createHook",
-            getResponses: "responses/loadResponses",
             getAggregate: "responses/getAggregateData"
         }),
         avg(data) {
@@ -362,15 +256,124 @@ export default {
                     }
                 }.bind(this)
             );
+        },
+        makeCharts(chartData) {
+            d3.selectAll("svg").remove();
+            // let avrg = this.avg(this.data);
+            let grid = d3
+                .select("body")
+                .append("div")
+                .attr("id", "grid")
+                .attr("class", "grid");
+            let chars = grid
+                .selectAll("div")
+                .data(chartData)
+                .enter()
+                .append("div")
+                .attr("class", "char");
+            chars.style(
+                "fill",
+                function(d) {
+                    this.circleLead(d.type, this.$el);
+                }.bind(this)
+            );
+            /* let content = chars.append("div").attr("class", "charContent");
+            content.append("h2").text(function(d, i) {
+                return d.label;
+            });
+
+            chars.classed("size1", true);
+
+            chars.on(
+                "click",
+                function(d, i) {
+                    if (this.className.split(" ").indexOf("open") > -1) {
+                        d3.select(this).classed("open", false);
+                    } else {
+                        let gridColumns = window.getComputedStyle(this.parentElement).gridTemplateColumns.split(" ");
+                        let gridRows = window.getComputedStyle(this.parentElement).gridTemplateRows.split(" ");
+                        let numColumns = gridColumns.length;
+                        let numRows = gridRows.length;
+                        let xPosInGrid =
+                            this.getBoundingClientRect().left - this.parentElement.getBoundingClientRect().left;
+                        let yPosInGrid =
+                            this.getBoundingClientRect().top - this.parentElement.getBoundingClientRect().top;
+                        let gridRowHeight =
+                            parseFloat(gridRows[0]) +
+                            parseFloat(window.getComputedStyle(this.parentElement).gridRowGap);
+                        let gridColumnWidth =
+                            parseFloat(gridColumns[0]) +
+                            parseFloat(window.getComputedStyle(this.parentElement).gridColumnGap);
+                        let thisRow = Math.round(yPosInGrid / gridRowHeight) + 1;
+                        let thisColumn = Math.round(xPosInGrid / gridColumnWidth) + 1;
+                        let thisPortrait = this.getElementsByClassName("portrait")[0];
+                        if (thisPortrait) thisPortrait.setAttribute("src", thisPortrait.getAttribute("data-src"));
+                        chars.classed("open", false);
+                        chars.style("grid-row-start", "auto");
+                        chars.style("grid-column-start", "auto");
+                        d3.select(this).classed("open", true);
+                        let divWidth = parseFloat(window.getComputedStyle(this).gridColumnEnd.split(" ")[1]);
+                        let divHeight = parseFloat(window.getComputedStyle(this).gridRowEnd.split(" ")[1]);
+                        if (thisRow + divHeight > numRows) thisRow = 1 + numRows - divHeight;
+                        if (thisColumn + divWidth > numColumns) thisColumn = 1 + numColumns - divWidth;
+                        d3.select(this).style("grid-row-start", thisRow);
+                        d3.select(this).style("grid-column-start", thisColumn);
+                    }
+                }.bind(this)
+            );
+
+            let details = content.append("div").attr("class", "details");
+            let bio = details.append("div").attr("class", "bio");
+            bio.append("h3").text(function(d, i) {
+                return d.label;
+            });
+            bio.filter(function(d) {
+                return d.services.length > 0;
+            })
+                .append("h4")
+                .text("Services: ");
+            bio.filter(function(d) {
+                return d.services.length > 0;
+            })
+                .append("span")
+                .text(function(d, i) {
+                    return d.services;
+                });
+            bio.filter(function(d) {
+                return d.impact.length > 0;
+            })
+                .append("h4")
+                .text("Mean: ");
+            bio.filter(function(d) {
+                return d.impact.length > 0;
+            })
+                .append("span")
+                .text(function(d, i) {
+                    return d.impact;
+                });
+
+            let imageHolder = details.append("div").attr("class", "imageHolder");
+            imageHolder
+                .filter(function(d) {
+                    return d.confidence.length > 0;
+                })
+                .append("h4")
+                .text("Confidence: ");
+            imageHolder
+                .filter(function(d) {
+                    return d.confidence.length > 0;
+                })
+                .append("span")
+                .text(function(d, i) {
+                    return d.confidence;
+                }); */
         }
     }
 };
 </script>
 
 <style scoped>
-@import "https://fonts.googleapis.com/css?family=Trirong:100,200";
 body {
-    font-family: "Trirong", georgia, times, serif;
     font-weight: 200;
     font-size: 18px;
 }

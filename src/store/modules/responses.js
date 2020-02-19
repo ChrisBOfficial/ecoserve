@@ -200,20 +200,26 @@ export default {
         },
 
         // Get aggregated response data for a given visualization
-        getAggregateData({ commit }, data) {
-            ResponsesAPI.getAggregateResponses(data.id, data.pipeline)
-                .then(response => {
-                    if (data.pipeline === "barchart") {
-                        commit("setBarchartAggregate", response.data);
-                    } else if (data.pipeline === "circlechart") {
-                        commit("setCircleAggregate", response.data);
-                    } else if (data.pipeline === "label") {
-                        commit("setLabelAggregate", response.data);
-                    }
-                })
-                .catch(error => {
-                    throw new Error(error);
+        getAggregateData({ commit, dispatch }, data) {
+            return new Promise((resolve, reject) => {
+                // Reloads the survey responses before aggregating
+                dispatch("loadResponses", data.id).then(() => {
+                    ResponsesAPI.getAggregateResponses(data.id, data.pipeline)
+                        .then(response => {
+                            if (data.pipeline === "barchart") {
+                                commit("setBarchartAggregate", response.data);
+                            } else if (data.pipeline === "circlechart") {
+                                commit("setCircleAggregate", response.data);
+                            } else if (data.pipeline === "label") {
+                                commit("setLabelAggregate", response.data);
+                            }
+                            resolve();
+                        })
+                        .catch(error => {
+                            reject(error);
+                        });
                 });
+            });
         }
     },
 
