@@ -12,9 +12,6 @@
                             <router-link class="nav-link" to="/project">PROJECTS</router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link class="nav-link" to="/workspace">WORKSPACE</router-link>
-                        </li>
-                        <li class="nav-item">
                             <router-link class="nav-link" to="/contact">CONTACT</router-link>
                         </li>
                         <li class="nav-item">

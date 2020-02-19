@@ -22,7 +22,6 @@ export default {
                             commit("setProjects", response.data);
                             commit("setProjectsLoadStatus", 2);
                             resolve(response.data);
-                            console.log(response.data);
                         }
                     })
                     .catch(error => {

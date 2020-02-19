@@ -173,7 +173,6 @@ export default {
                         commit("setResponses", response.data);
                         commit("setResponsesLoadStatus", 2);
                         resolve(response.data);
-                        console.log(response.data);
                     })
                     .catch(error => {
                         commit("setResponsesLoadStatus", 3);
@@ -195,8 +194,8 @@ export default {
                     commit("setHookLoadStatus", 2);
                 })
                 .catch(error => {
-                    console.log(error);
                     commit("setHookLoadStatus", 3);
+                    throw new Error(error);
                 });
         },
 
@@ -213,7 +212,7 @@ export default {
                     }
                 })
                 .catch(error => {
-                    console.log(error);
+                    throw new Error(error);
                 });
         }
     },

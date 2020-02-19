@@ -147,7 +147,7 @@ export default {
         this.socket.on(
             this.surveyId,
             function(msg) {
-                if (Date.now() - this.lastUpdate >= 1000) {
+                if (Date.now() - this.lastUpdate >= 500) {
                     this.lastUpdate = Date.now();
                     console.log(msg);
                     this.getResponses(this.surveyId)
@@ -298,7 +298,9 @@ export default {
                         ? "rotate(180)"
                         : "rotate(0)";
                 })
-                .style("font-size", "11px")
+                .style("font-size", "0.75rem")
+                .style("font-weight", 400)
+                .style("font-family", "Nunito")
                 .attr("alignment-baseline", "middle");
 
             // Add the second series

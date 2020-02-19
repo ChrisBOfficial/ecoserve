@@ -379,9 +379,7 @@ const circlechartPipeline = function(surveyId) {
                 values: {
                     $push: {
                         service: "$_id.service",
-                        mean: {
-                            $subtract: ["$mean", 6]
-                        }
+                        mean: "$mean"
                     }
                 }
             }

@@ -143,9 +143,27 @@ app.route("/api/surveys/responses")
                         })
                         .on("end", function() {
                             const results = JSON.parse(Buffer.concat(chunks).toString("utf8")).responses;
+                            // Create responses entry
                             let responses = [];
                             for (let result of results) {
-                                let resultObj = { values: result.values, labels: result.labels };
+                                let values = result.values;
+                                // Delete the fields we don't need from Qualtrics
+                                [
+                                    "startDate",
+                                    "endDate",
+                                    "status",
+                                    "ipAddress",
+                                    "duration",
+                                    "recordedDate",
+                                    "_recordId",
+                                    "locationLatitude",
+                                    "locationLongitude",
+                                    "distributionChannel",
+                                    "userLanguage"
+                                ].forEach(key => {
+                                    delete values[key];
+                                });
+                                let resultObj = { values: values, labels: result.labels };
                                 responses.push(resultObj);
                             }
 
