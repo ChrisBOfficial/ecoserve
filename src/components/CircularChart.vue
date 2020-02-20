@@ -1,5 +1,5 @@
 <template>
-    <body class="loadingParent">
+    <body class="lParent">
         <div v-if="loading" class="loadingio-spinner-pulse">
             <div class="ldio-container">
                 <div></div>
@@ -38,6 +38,7 @@ export default {
         }
     },
     mounted() {
+        // this.showToast();
         this.surveyId = this.$route.query.id.split("+")[1];
         this.loading = true;
         this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).then(() => {
@@ -380,6 +381,17 @@ export default {
                 .text(function(d, i) {
                     return d.confidence;
                 }); */
+        },
+        showToast() {
+            this.$bvToast.toast("Error in getting survey responses", {
+                title: "Warning",
+                toaster: "b-toaster-bottom-right",
+                variant: "danger",
+                solid: true,
+                autoHideDelay: 3000,
+                noHoverPause: true,
+                noCloseButton: true
+            });
         }
     }
 };
@@ -591,7 +603,7 @@ a {
     animation-delay: undefineds;
 }
 
-#loadingParent {
+#lParent {
     position: relative;
 }
 .loadingio-spinner-pulse {
