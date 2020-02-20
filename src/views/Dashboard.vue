@@ -1,10 +1,9 @@
 <template>
     <div>
         <Header />
-        <div>
+        <div style="min-height:100vh;">
             <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;" lazy>
                 <b-tab title="Bar Graphs" active>
-                    <p>I'm the first tab</p>
                     <b-tabs vertical lazy>
                         <b-tab v-for="question in barChartData" :key="question._id" :title="question._id">
                             <h1>{{ question._id }}</h1>
@@ -16,7 +15,6 @@
                     </b-tabs>
                 </b-tab>
                 <b-tab title="Circular Charts">
-                    <p>I'm the second tab</p>
                     <CircularChart />
                 </b-tab>
             </b-tabs>
