@@ -7,6 +7,7 @@ const unzip = require("unzip-stream");
 const util = require("util");
 // const fs = require('fs');
 const requestPromise = util.promisify(request);
+const app = express();
 
 require("dotenv").config(); // Loads .env file
 
@@ -35,7 +36,6 @@ dbClient.connect(err => {
     console.log("MongoDB connected");
 });
 
-const app = express();
 // Add express configurations
 app.use(cors()); // Allow interaction with Vue serve and Qualtrics Web Listeners
 app.use(express.urlencoded({ extended: true })); // Middleware for handling raw POST data
