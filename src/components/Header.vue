@@ -2,7 +2,7 @@
     <div id="nav">
         <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-shrink" id="mainNav">
             <div class="container">
-                <router-link class="navbar-brand" to="/">IESAT</router-link>
+                <router-link class="navbar-brand" to="/">EcoServe</router-link>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
                         <li class="nav-item">

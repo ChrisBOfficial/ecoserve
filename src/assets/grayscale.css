@@ -78,7 +78,7 @@
     font-size: 2rem;
     line-height: 2rem;
     letter-spacing: 0.8rem;
-    background: -webkit-linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.75));
+    background: -webkit-linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.65));
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
 }
@@ -176,27 +176,6 @@
         border-width: 0.25rem;
         width: 30%;
     }
-}
-
-.signup-section {
-    padding: 10rem 0;
-    background: linear-gradient(to bottom, rgba(22, 22, 22, 0.1) 0%, rgba(22, 22, 22, 0.5) 75%, #161616 100%),
-        url("./main.jpg");
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: scroll;
-    background-size: cover;
-}
-
-.signup-section .form-inline input {
-    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
-    padding: 1.25rem 2rem;
-    height: auto;
-    font-family: "Varela Round";
-    font-size: 80%;
-    text-transform: uppercase;
-    letter-spacing: 0.15rem;
-    border: 0;
 }
 
 body {
