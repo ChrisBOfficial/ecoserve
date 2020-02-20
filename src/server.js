@@ -18,7 +18,7 @@ if (port === 3000 || process.env.NODE_ENV === "development") {
     distDirectory = "../dist";
     Pipelines = require("./api/pipelines.js");
 } else {
-    console.log("IN PRODUCTION MODE");
+    console.log("IN PRODUCTION");
     distDirectory = "dist";
     Pipelines = require("./pipelines.js");
     app.use(history()); // Middleware for HTML5 history mode
