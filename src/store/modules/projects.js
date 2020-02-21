@@ -6,8 +6,9 @@ export default {
     state: {
         projects: [],
         projectsLoadStatus: 0,
-        projectBlocks: {},
+        projectBlocks: [],
 
+        project: {},
         selectedProjectId: ""
     },
 
@@ -31,6 +32,22 @@ export default {
                     });
             });
         },
+
+        // Load a specific project
+        loadProject({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                ProjectsAPI.getProject(data.split("+")[0], data.split("+")[1])
+                    .then(response => {
+                        commit("setProject", response.data);
+                        resolve();
+                    })
+                    .catch(err => {
+                        commit("setProject", {});
+                        reject(err);
+                    });
+            });
+        },
+
         // Save a project to MongoDB
         saveProject({ commit, dispatch }, data) {
             return new Promise((resolve, reject) => {
@@ -92,6 +109,9 @@ export default {
         },
         setSelectedProjectId(state, newId) {
             state.selectedProjectId = newId;
+        },
+        setProject(state, project) {
+            state.project = project;
         }
     }
 };

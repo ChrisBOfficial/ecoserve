@@ -29,7 +29,8 @@ export default {
     computed: {
         ...mapState({
             circleAggregate: state => state.responses.circleAggregate,
-            socketUrl: state => state.responses.url
+            socketUrl: state => state.responses.url,
+            project: state => state.projects.project
         })
     },
     watch: {
@@ -40,6 +41,8 @@ export default {
     mounted() {
         // this.showToast();
         this.surveyId = this.$route.query.id.split("+")[1];
+        this.loadProject(this.$route.query.id);
+
         this.loading = true;
         this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).then(() => {
             this.loading = false;
@@ -65,7 +68,7 @@ export default {
                     throw new Error(err);
                 });
             }.bind(this),
-            60000
+            30000
         );
     },
     destroyed() {
@@ -75,7 +78,8 @@ export default {
     methods: {
         ...mapActions({
             createHook: "responses/createHook",
-            getAggregate: "responses/getAggregateData"
+            getAggregate: "responses/getAggregateData",
+            loadProject: "projects/loadProject"
         }),
         avg(data) {
             var values = 0;

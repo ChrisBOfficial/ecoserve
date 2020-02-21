@@ -51,15 +51,15 @@ export default {
             }
         },
         existingBlocks: {
-            type: Object,
+            type: Array,
             default: function() {
-                return {};
+                return [];
             }
         }
     },
     data() {
         return {
-            allBlocks: {},
+            allBlocks: [],
             graphs: ["Bullseyes", "Bar Chart"],
             blockSelected: "",
             graphSelected: "",
@@ -86,30 +86,28 @@ export default {
         }),
         addVisualization: function() {
             // Use pre-existing blocks if empty
-            if (Object.entries(this.allBlocks).length === 0) {
+            if (this.allBlocks.length === 0) {
                 this.allBlocks = this.existingBlocks;
             }
             const blockSelected = this.blockSelected;
             const graphSelected = this.graphSelected;
-            if (blockSelected == "undefined" || graphSelected == "undefined") {
+            if (blockSelected === "" || graphSelected === "") {
                 return;
             }
 
-            // Check if a visualization already exists for the selected block
-            if (Object.prototype.hasOwnProperty.call(this.allBlocks, blockSelected.description)) {
-                var contained = false;
-                for (let item of this.allBlocks[blockSelected.description]) {
-                    // Check if selected visualization already exists for the given block
-                    if (item[0] == graphSelected && item[1] == "option") {
-                        contained = true;
+            let present = false;
+            for (let block of this.allBlocks) {
+                if (block.title === blockSelected.description) {
+                    present = true;
+                    // Check if the visualization is already added
+                    if (!block.visuals.includes(graphSelected)) {
+                        block.visuals.push(graphSelected);
+                        this.visualizations.push(blockSelected.description + " - " + graphSelected);
                     }
                 }
-                if (!contained) {
-                    this.allBlocks[blockSelected.description].push([graphSelected, "option"]);
-                    this.visualizations.push(blockSelected.description + " - " + graphSelected);
-                }
-            } else {
-                this.allBlocks[blockSelected.description] = [[graphSelected, "option"]];
+            }
+            if (!present) {
+                this.allBlocks.push({ title: blockSelected.description, visuals: [graphSelected] });
                 this.visualizations.push(blockSelected.description + " - " + graphSelected);
             }
 
@@ -119,19 +117,24 @@ export default {
         },
         removeVisualization: function() {
             // Use pre-existing blocks if empty
-            if (Object.entries(this.allBlocks).length === 0) {
+            if (this.allBlocks.length === 0) {
                 this.allBlocks = this.existingBlocks;
             }
             this.visualizations.splice(this.visualizations.indexOf(this.removeData), 1);
             const blockSelected = this.removeData.split("-")[0].trimEnd();
             const graphSelected = this.removeData.split("-")[1].trimStart();
+            if (blockSelected === "" || graphSelected === "") {
+                return;
+            }
 
-            if (this.allBlocks[blockSelected].length == 1) {
-                delete this.allBlocks[blockSelected];
-            } else {
-                for (var block of this.allBlocks[blockSelected]) {
-                    if (block[0] == graphSelected) {
-                        this.allBlocks[blockSelected].splice(this.allBlocks[blockSelected].indexOf(block), 1);
+            for (let [i, block] of this.allBlocks.entries()) {
+                if (block.title === blockSelected && block.visuals.includes(graphSelected)) {
+                    if (block.visuals.length == 1) {
+                        this.allBlocks.splice(i, 1);
+                        break;
+                    } else if (block.visuals.length > 1) {
+                        block.visuals.splice(block.visuals.indexOf(graphSelected), 1);
+                        break;
                     }
                 }
             }

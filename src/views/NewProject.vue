@@ -77,7 +77,7 @@ export default {
     created: function() {
         window.scrollTo(0, 0);
         this.setSurvey({});
-        this.setProjectBlocks({});
+        this.setProjectBlocks([]);
     },
     methods: {
         ...mapActions({
@@ -106,7 +106,7 @@ export default {
                 this.validateErrors.push("Project requires a survey");
                 invalid = true;
             }
-            if (Object.entries(blocks).length === 0) {
+            if (blocks.length === 0) {
                 this.validateErrors.push("Project requires at least one visualization");
                 invalid = true;
             }

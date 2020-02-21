@@ -276,13 +276,22 @@ app.route("/api/listener").post((req, res) => {
 
 //* Endpoint for project documents in MongoDB
 app.route("/api/projects")
-    .get((_, res) => {
+    .get((req, res) => {
+        const projectName = req.query.name;
+        const id = req.query.id;
         const collection = dbClient.db("DB1").collection("Projects");
 
-        collection.find({}).toArray(function(err, docs) {
-            if (err) throw new Error(err);
-            res.send(docs);
-        });
+        if (projectName === undefined && id === undefined) {
+            collection.find({}).toArray(function(err, docs) {
+                if (err) throw new Error(err);
+                res.send(docs);
+            });
+        } else {
+            collection.findOne({ projectId: projectName + "+" + id }, function(err, result) {
+                if (err) throw new Error(err);
+                res.send(result);
+            });
+        }
     })
     .post((req, res) => {
         let options = {

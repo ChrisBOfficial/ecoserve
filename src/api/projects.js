@@ -4,6 +4,11 @@ export default {
         return window.axios.get("/projects");
     },
 
+    // Get a specific project
+    getProject(projectName, projectId) {
+        return window.axios.get("/projects?name=" + projectName + "&id=" + projectId);
+    },
+
     // Add a project
     postProject(project) {
         return window.axios.post("/projects", project);

@@ -1,84 +1,91 @@
 <template>
-    <div class="existing-project-container" style="padding: 15vh 0vh 0vh 0vh;">
+    <div>
         <Header />
-        <b-container v-show="seen">
-            <b-row>
-                <b-form-select v-model="selected" :select-size="5">
-                    <option v-for="project in projects" :value="project" :key="project.name">
-                        {{ project.name }}
-                    </option>
-                </b-form-select>
-            </b-row>
-            <b-row>
-                <b-button v-on:click="selectProject" style="background-color:DarkSeaGreen;">
-                    Choose project
-                </b-button>
-            </b-row>
-        </b-container>
+        <section class="existing-project-container" style="padding: 15vh 0vh 0vh 0vh; min-height:100vh;">
+            <b-container v-show="seen">
+                <b-row>
+                    <b-form-select v-model="selected" :select-size="5">
+                        <option v-for="project in projects" :value="project" :key="project.name">
+                            {{ project.name }}
+                        </option>
+                    </b-form-select>
+                </b-row>
+                <b-row>
+                    <b-button v-on:click="selectProject" style="background-color:DarkSeaGreen;">
+                        Choose project
+                    </b-button>
+                </b-row>
+            </b-container>
 
-        <b-container v-show="projectPicked">
-            <b-row class="h-100">
-                <h1 aria-placeholder="CREATE NEW PROJECT">{{ title }}</h1>
-            </b-row>
-            <b-row>
-                <h4>Survey: "{{ this.selectedSurvey.name }}"</h4>
-            </b-row>
-            <b-row>
-                <b-form-input v-model="title" placeholder="Enter Project Title"></b-form-input>
-                <b-form-input v-model="description" placeholder="Enter Project Description"></b-form-input>
-            </b-row>
-            <b-row>
-                <h2>Visualization Dashboard</h2>
-                <visualization-dashboard
-                    v-bind:existing-visualizations="visualizations"
-                    v-bind:existing-blocks="existingBlocks"
-                />
-            </b-row>
+            <b-container v-show="projectPicked">
+                <b-row class="h-100">
+                    <h1 aria-placeholder="CREATE NEW PROJECT">{{ title }}</h1>
+                </b-row>
+                <b-row>
+                    <h4>Survey: "{{ this.selectedSurvey.name }}"</h4>
+                </b-row>
+                <b-row>
+                    <b-form-input v-model="title" placeholder="Enter Project Title"></b-form-input>
+                    <b-form-input v-model="description" placeholder="Enter Project Description"></b-form-input>
+                </b-row>
+                <b-row>
+                    <h2>Visualization Dashboard</h2>
+                    <visualization-dashboard
+                        v-bind:existing-visualizations="visualizations"
+                        v-bind:existing-blocks="existingBlocks"
+                    />
+                </b-row>
 
-            <b-row>
-                <b-col>
-                    <b-button v-on:click="saveProject" style="background-color:DarkSeaGreen;" v-b-modal.modal-center-1
-                        >SAVE PROJECT</b-button
-                    >
-                    <b-modal
-                        id="modal-center-1"
-                        centered
-                        :hide-header="true"
-                        size="sm"
-                        @show="validateForm"
-                        ok-title="Go to Projects"
-                        cancel-title="Continue editing"
-                        v-on:ok="exitEditing"
-                    >
-                        <p class="my-4">Project saved!</p>
-                    </b-modal>
-                </b-col>
-                <b-col>
-                    <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center-2>DELETE PROJECT</b-button>
-                    <b-modal
-                        id="modal-center-2"
-                        centered
-                        title="Warning"
-                        ok-variant="danger"
-                        ok-title="Yes"
-                        cancel-title="No"
-                        :hide-header-close="true"
-                        v-on:ok="deleteProject"
-                    >
-                        <p class="my-4">Are you sure you want to delete the project?</p>
-                    </b-modal>
-                </b-col>
-                <b-col>
-                    <router-link
-                        :to="{ name: 'dashboard', query: { id: selected.projectId } }"
-                        tag="b-button"
-                        style="background-color:DarkSeaGreen;"
-                        >Go To Visualization</router-link
-                    >
-                </b-col>
-            </b-row>
-        </b-container>
-        <p style="text-align: center; color: red;" v-for="error in validateErrors" :key="error">{{ error }}</p>
+                <b-row>
+                    <b-col>
+                        <b-button
+                            v-on:click="saveProject"
+                            style="background-color:DarkSeaGreen;"
+                            v-b-modal.modal-center-1
+                            >SAVE PROJECT</b-button
+                        >
+                        <b-modal
+                            id="modal-center-1"
+                            centered
+                            :hide-header="true"
+                            size="sm"
+                            @show="validateForm"
+                            ok-title="Go to Projects"
+                            cancel-title="Continue editing"
+                            v-on:ok="exitEditing"
+                        >
+                            <p class="my-4" style="text-align: center;">Project saved!</p>
+                        </b-modal>
+                    </b-col>
+                    <b-col>
+                        <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center-2
+                            >DELETE PROJECT</b-button
+                        >
+                        <b-modal
+                            id="modal-center-2"
+                            centered
+                            title="Warning"
+                            ok-variant="danger"
+                            ok-title="Yes"
+                            cancel-title="No"
+                            :hide-header-close="true"
+                            v-on:ok="deleteProject"
+                        >
+                            <p class="my-4">Are you sure you want to delete the project?</p>
+                        </b-modal>
+                    </b-col>
+                    <b-col>
+                        <router-link
+                            :to="{ name: 'dashboard', query: { id: selected.projectId } }"
+                            tag="b-button"
+                            style="background-color:DarkSeaGreen;"
+                            >Go To Visualization</router-link
+                        >
+                    </b-col>
+                </b-row>
+            </b-container>
+            <p style="text-align: center; color: red;" v-for="error in validateErrors" :key="error">{{ error }}</p>
+        </section>
         <Footer />
     </div>
 </template>
@@ -103,7 +110,7 @@ export default {
             seen: true,
             selected: {},
             visualizations: [],
-            existingBlocks: {},
+            existingBlocks: [],
             validateErrors: [],
             previousProjectId: ""
         };
@@ -147,9 +154,9 @@ export default {
                 this.saveProjectBlocks(this.selected.blocks);
 
                 this.existingBlocks = this.selected.blocks;
-                for (const block in this.selected.blocks) {
-                    for (const graph of this.selected.blocks[block]) {
-                        this.visualizations.push(block + " - " + graph[0]);
+                for (const block of this.selected.blocks) {
+                    for (const graph of block.visuals) {
+                        this.visualizations.push(block.title + " - " + graph);
                     }
                 }
                 this.previousProjectId = this.selected.projectId;
@@ -173,7 +180,7 @@ export default {
                 this.validateErrors.push("Project requires a survey");
                 invalid = true;
             }
-            if (Object.entries(blocks).length === 0) {
+            if (blocks.length === 0) {
                 this.validateErrors.push("Project requires at least one visualization");
                 invalid = true;
             }
