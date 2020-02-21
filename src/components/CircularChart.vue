@@ -62,14 +62,15 @@ export default {
         );
 
         // Refresh data every 60 seconds to grab any residual responses
-        this.intervalId = setInterval(
+        /* this.intervalId = setInterval(
             function() {
+                console.log("INTERVAL");
                 this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).catch(err => {
                     throw new Error(err);
                 });
             }.bind(this),
             30000
-        );
+        ); */
     },
     destroyed() {
         clearInterval(this.intervalId);
@@ -266,16 +267,9 @@ export default {
                 .style("opacity", 0.5)
                 .style("fill", "none");
         },
-        circleLead(species, location) {
-            this.circleAggregate.forEach(
-                function(d) {
-                    if (d.type == species) {
-                        this.circleChart(d.values, location);
-                    }
-                }.bind(this)
-            );
-        },
         makeCharts(chartData) {
+            const sortedData = JSON.parse(JSON.stringify(chartData)).sort((a, b) => a.type.localeCompare(b.type));
+
             d3.selectAll("svg").remove();
             // let avrg = this.avg(this.data);
             let grid = d3
@@ -285,14 +279,14 @@ export default {
                 .attr("class", "grid");
             let chars = grid
                 .selectAll("div")
-                .data(chartData)
+                .data(sortedData)
                 .enter()
                 .append("div")
                 .attr("class", "char");
             chars.style(
                 "fill",
                 function(d) {
-                    this.circleLead(d.type, this.$el);
+                    this.circleChart(d.values, this.$el);
                 }.bind(this)
             );
             /* let content = chars.append("div").attr("class", "charContent");
