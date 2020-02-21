@@ -222,11 +222,13 @@ app.route("/api/surveys/responses")
                         "content-type": "application/json"
                     }
                 };
-                request(options, function(error, _, body) {
+                request(options, function(error, response, body) {
                     if (error) throw new Error(error);
-                    collection.updateMany({ surveyId: surveyId }, { $set: { hooked: true } }).catch(error => {
-                        throw new Error(error);
-                    });
+                    if (response.statusCode == 200) {
+                        collection.updateMany({ surveyId: surveyId }, { $set: { hooked: true } }).catch(error => {
+                            throw new Error(error);
+                        });
+                    }
 
                     res.send(body);
                 });

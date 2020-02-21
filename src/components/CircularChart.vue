@@ -23,7 +23,8 @@ export default {
             lastUpdate: 0,
             surveyId: "",
             intervalId: Number,
-            loading: false
+            loading: false,
+            blockOrdering: {}
         };
     },
     computed: {
@@ -41,7 +42,11 @@ export default {
     mounted() {
         // this.showToast();
         this.surveyId = this.$route.query.id.split("+")[1];
-        this.loadProject(this.$route.query.id);
+        this.loadProject(this.$route.query.id).then(() => {
+            for (let i = 0; i < this.project.blocks.length; i++) {
+                this.blockOrdering[this.project.blocks[i].title] = i;
+            }
+        });
 
         this.loading = true;
         this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).then(() => {
@@ -95,6 +100,9 @@ export default {
             return values / total;
         },
         circleChart(results, location) {
+            results.sort((a, b) => {
+                return this.blockOrdering[a.service] - this.blockOrdering[b.service];
+            });
             // set the dimensions of the canvas
             let margin = { top: 0, right: 0, bottom: 0, left: 0 },
                 width = 324 - margin.left - margin.right,
@@ -143,7 +151,7 @@ export default {
                 .range([innerRadius, 10]) // Domain will be defined later.
                 .domain([0, 10]);
 
-            // Add the bars
+            //* Add the positive bars
             svg.append("g")
                 .selectAll("path")
                 .data(results)
@@ -154,7 +162,7 @@ export default {
                 .attr(
                     "d",
                     d3
-                        .arc() // imagine your doing a part of a donut plot
+                        .arc() // imagine you're doing a part of a donut plot
                         .innerRadius(innerRadius)
                         .outerRadius(function(d) {
                             if (d.mean > 0) {
@@ -173,6 +181,7 @@ export default {
                         .padRadius(innerRadius)
                 );
 
+            //* Add the labels
             svg.append("g")
                 .selectAll("g")
                 .data(results)
@@ -216,7 +225,7 @@ export default {
                 .style("font-family", "Nunito")
                 .attr("alignment-baseline", "middle");
 
-            // Add the second series
+            //* Add the negative bars
             svg.append("g")
                 .selectAll("path")
                 .data(results)
@@ -226,7 +235,7 @@ export default {
                 .attr(
                     "d",
                     d3
-                        .arc() // imagine your doing a part of a donut plot
+                        .arc() // imagine you're doing a part of a donut plot
                         .innerRadius(function() {
                             return ybis(0);
                         })

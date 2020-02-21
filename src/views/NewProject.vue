@@ -37,7 +37,7 @@
                         :no-close-on-esc="true"
                         :ok-only="true"
                     >
-                        <p>Project created!</p>
+                        <p style="text-align: center;">Project created!</p>
                     </b-modal>
                 </b-col>
             </b-row>
