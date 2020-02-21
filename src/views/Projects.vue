@@ -17,12 +17,12 @@
 
                         <b-row>
                             <div class="col-md-6">
-                                <router-link to="/newproject" tag="b-button" style="background-color:DarkSeaGreen;"
+                                <router-link to="/newProject" tag="b-button" style="background-color:DarkSeaGreen;"
                                     >Create new project</router-link
                                 >
                             </div>
                             <div class="col-md-6 col-md-offset-6">
-                                <router-link to="/existingproject" tag="b-button" style="background-color:DarkSeaGreen;"
+                                <router-link to="/editProject" tag="b-button" style="background-color:DarkSeaGreen;"
                                     >Edit existing project</router-link
                                 >
                             </div>

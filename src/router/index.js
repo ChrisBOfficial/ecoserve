@@ -17,18 +17,18 @@ const routes = [
         component: () => import("@/views/About.vue")
     },
     {
-        path: "/project",
-        name: "project",
-        component: () => import("@/views/Project.vue")
+        path: "/projects",
+        name: "projects",
+        component: () => import("@/views/Projects.vue")
     },
     {
-        path: "/newproject",
-        name: "newproject",
+        path: "/newProject",
+        name: "newProject",
         component: () => import("@/views/NewProject.vue")
     },
     {
-        path: "/existingproject",
-        name: "existingproject",
+        path: "/editProject",
+        name: "editProject",
         component: () => import("@/views/ExistingProject.vue")
     },
     {

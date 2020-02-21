@@ -9,7 +9,7 @@
                             <router-link class="nav-link" to="/about">ABOUT</router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link class="nav-link" to="/project">PROJECTS</router-link>
+                            <router-link class="nav-link" to="/projects">PROJECTS</router-link>
                         </li>
                         <li class="nav-item">
                             <router-link class="nav-link" to="/contact">CONTACT</router-link>
