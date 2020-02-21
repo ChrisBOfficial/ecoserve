@@ -100,7 +100,7 @@ export default {
             });
             return values / total;
         },
-        circleChart(results, location) {
+        circleChart(category, results, location) {
             // Sort services according to project settings
             results.sort((a, b) => {
                 return this.blockOrdering[a.service] - this.blockOrdering[b.service];
@@ -108,8 +108,8 @@ export default {
 
             // set the dimensions of the canvas
             let margin = { top: 0, right: 0, bottom: 0, left: 0 },
-                width = 324 - margin.left - margin.right,
-                height = 324 - margin.top - margin.bottom,
+                width = 360 - margin.left - margin.right,
+                height = 360 - margin.top - margin.bottom,
                 innerRadius = 81,
                 outerRadius = 148.5; // the outerRadius goes from the middle of the SVG area to the border, hard coded the radius
             let numTicks = 11; //needs one more than 10 (20% chunks) to get the 0% line
@@ -278,6 +278,13 @@ export default {
                 .style("stroke", "#CCC")
                 .style("opacity", 0.5)
                 .style("fill", "none");
+
+            svg.append("text")
+                .text(category)
+                .attr("transform", "translate(" + (width / -5 + category.length) + "," + (height / 2 - 5) + ")")
+                .style("font-size", "0.9rem")
+                .style("font-weight", 800)
+                .style("font-family", "Nunito");
         },
         makeCharts() {
             // Sort aggregate data alphabetically by category, and remove categories according to project settings
@@ -315,7 +322,7 @@ export default {
             chars.style(
                 "fill",
                 function(d) {
-                    this.circleChart(d.values, this.$el);
+                    this.circleChart(d.type, d.values, this.$el);
                 }.bind(this)
             );
             /* let content = chars.append("div").attr("class", "charContent");
