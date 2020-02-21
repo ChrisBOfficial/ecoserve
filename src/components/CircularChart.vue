@@ -35,7 +35,6 @@ export default {
         })
     },
     mounted() {
-        // this.showToast();
         this.surveyId = this.$route.query.id.split("+")[1];
         this.loadProject(this.$route.query.id).then(() => {
             // Determine service order according to project settings
@@ -56,9 +55,13 @@ export default {
             this.surveyId,
             function() {
                 if (Date.now() - this.lastUpdate >= 500) {
-                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).then(() => {
-                        this.makeCharts();
-                    });
+                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" })
+                        .then(() => {
+                            this.makeCharts();
+                        })
+                        .catch(() => {
+                            this.showToast();
+                        });
                     this.lastUpdate = Date.now();
                 }
             }.bind(this)
@@ -407,13 +410,12 @@ export default {
                 }); */
         },
         showToast() {
-            this.$bvToast.toast("Error in getting survey responses", {
+            this.$bvToast.toast("Bad data in survey response, will manually re-fetch in 30 seconds", {
                 title: "Warning",
                 toaster: "b-toaster-bottom-right",
                 variant: "danger",
                 solid: true,
-                autoHideDelay: 3000,
-                noHoverPause: true,
+                autoHideDelay: 5000,
                 noCloseButton: true
             });
         }
