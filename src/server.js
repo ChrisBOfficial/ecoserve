@@ -22,6 +22,7 @@ if (port === 3000 || process.env.NODE_ENV === "development") {
     console.log("IN PRODUCTION");
     distDirectory = "dist";
     Pipelines = require("./pipelines.js");
+    app.use(history()); // Middleware for HTML5 history mode
 }
 
 // Initialize MongoDB connection using Admin user if provided, TestUser otherwise
@@ -37,7 +38,6 @@ dbClient.connect(err => {
 
 // Add express configurations
 app.use(cors()); // Allow interaction with Vue serve and Qualtrics Web Listeners
-app.use(history()); // Middleware for HTML5 history mode
 app.use(express.urlencoded({ extended: true })); // Middleware for handling raw POST data
 app.use(express.json()); // Support JSON payloads in POST requests
 app.use(express.static(path.join(__dirname, distDirectory))); // Serve files in dist folder for all HTTP requests
