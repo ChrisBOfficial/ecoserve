@@ -128,7 +128,7 @@ export default {
                 hooked: false
             };
             this.saveProject(payload);
-            this.$router.push("project");
+            this.$router.push("projects");
         }
     }
 };

@@ -34,23 +34,19 @@ export default {
             project: state => state.projects.project
         })
     },
-    watch: {
-        circleAggregate: function(newData) {
-            this.makeCharts(newData);
-        }
-    },
     mounted() {
         // this.showToast();
         this.surveyId = this.$route.query.id.split("+")[1];
         this.loadProject(this.$route.query.id).then(() => {
+            // Determine service order according to project settings
             for (let i = 0; i < this.project.blocks.length; i++) {
                 this.blockOrdering[this.project.blocks[i].title] = i;
             }
-        });
-
-        this.loading = true;
-        this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).then(() => {
-            this.loading = false;
+            this.loading = true;
+            this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).then(() => {
+                this.loading = false;
+                this.makeCharts();
+            });
         });
 
         this.createHook(this.surveyId);
@@ -60,7 +56,9 @@ export default {
             this.surveyId,
             function() {
                 if (Date.now() - this.lastUpdate >= 500) {
-                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" });
+                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).then(() => {
+                        this.makeCharts();
+                    });
                     this.lastUpdate = Date.now();
                 }
             }.bind(this)
@@ -100,9 +98,11 @@ export default {
             return values / total;
         },
         circleChart(results, location) {
+            // Sort services according to project settings
             results.sort((a, b) => {
                 return this.blockOrdering[a.service] - this.blockOrdering[b.service];
             });
+
             // set the dimensions of the canvas
             let margin = { top: 0, right: 0, bottom: 0, left: 0 },
                 width = 324 - margin.left - margin.right,
@@ -276,8 +276,25 @@ export default {
                 .style("opacity", 0.5)
                 .style("fill", "none");
         },
-        makeCharts(chartData) {
-            const sortedData = JSON.parse(JSON.stringify(chartData)).sort((a, b) => a.type.localeCompare(b.type));
+        makeCharts() {
+            // Sort aggregate data alphabetically by category, and remove categories according to project settings
+            const sortedData = this.circleAggregate.sort((a, b) => a.type.localeCompare(b.type));
+            // Abandon hope all ye who enter here
+            for (let [i, data] of sortedData.entries()) {
+                for (let j = 0; j < data.values.length; j++) {
+                    if (!this.project.blocks.some(e => e.title === data.values[j].service)) {
+                        sortedData[i].values.splice(j, 1);
+                        j--;
+                    } else {
+                        for (const block of this.project.blocks) {
+                            if (block.title === data.values[j].service && !block.visuals.includes("Bullseyes")) {
+                                sortedData[i].values.splice(j, 1);
+                                j--;
+                            }
+                        }
+                    }
+                }
+            }
 
             d3.selectAll("svg").remove();
             // let avrg = this.avg(this.data);

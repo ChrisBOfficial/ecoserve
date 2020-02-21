@@ -12,7 +12,7 @@
                 </b-row>
                 <b-row>
                     <b-button v-on:click="selectProject" style="background-color:DarkSeaGreen;">
-                        Choose project
+                        Edit project
                     </b-button>
                 </b-row>
             </b-container>
@@ -209,7 +209,7 @@ export default {
             }
         },
         exitEditing: function() {
-            this.$router.push("project");
+            this.$router.push("projects");
         },
         deleteProject: function() {
             const payload = {

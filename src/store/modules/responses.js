@@ -186,11 +186,7 @@ export default {
             commit("setHookLoadStatus", 1);
             ResponsesAPI.registerHook(data)
                 .then(response => {
-                    if (response.data) {
-                        console.log(response.data);
-                    } else {
-                        console.log(response);
-                    }
+                    console.log(response.data);
                     commit("setHookLoadStatus", 2);
                 })
                 .catch(error => {
