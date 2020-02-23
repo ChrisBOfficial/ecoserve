@@ -8,7 +8,7 @@
 import Loading from "@/components/Loading.vue";
 import { mapState, mapActions } from "vuex";
 const io = require("socket.io-client");
-const d3 = Object.assign({}, require("d3"), require("d3-scale"));
+const d3 = Object.assign({}, require("d3"), require("d3-scale"), require("d3-selection"));
 
 export default {
     name: "CircularChart",
@@ -99,7 +99,7 @@ export default {
                 width = 360,
                 height = 360,
                 innerRadius = 90,
-                outerRadius = 165; // the outerRadius goes from the middle of the SVG area to the border, hard coded the radius
+                outerRadius = 165;
             let numTicks = 11; //needs one more than 10 (20% chunks) to get the 0% line
             let sdat = [];
 
@@ -107,27 +107,26 @@ export default {
                 sdat[i] = (outerRadius / numTicks) * i;
             }
 
-            // X scale: common for 2 data series
+            // X scale
             let x = d3
                 .scaleBand()
-                .range([0, 2 * Math.PI]) // X axis goes from 0 to 2pi = all around the circle. If I stop at 1Pi, it will be around a half circle
-                .align(0) // This does nothing
+                .range([0, 2 * Math.PI])
                 .domain(
                     results.map(function(d) {
                         return d.service;
                     })
-                ); // The domain of the X axis is the list of impacts.
+                ); // The domain of the X axis is the list of services
 
-            // Y scale outer variable
+            // Y scale
             let y = d3
                 .scaleRadial()
-                .range([innerRadius, outerRadius]) // Domain will be define later.
+                .range([innerRadius, outerRadius])
                 .domain([0, 10]); // Domain of Y is from 0 to the max seen in the data
 
             // Second barplot Scales
             let ybis = d3
                 .scaleRadial()
-                .range([innerRadius, 10]) // Domain will be defined later.
+                .range([innerRadius, 10])
                 .domain([0, 10]);
 
             //* Add the SVG element
@@ -137,17 +136,45 @@ export default {
                 .attr("class", "circleChart")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
-                .on("mouseenter", function() {
+                // Gray highlight to hint clickability
+                .on("mouseover", function() {
                     let svg = d3.select(this);
-                    svg.append("rect")
-                        .attr("class", "selectedHighlight")
-                        .attr("width", "100%")
-                        .attr("height", "100%")
-                        .attr("fill", "gray")
-                        .attr("opacity", 0.04);
+                    if (svg.select(".selectedHighlight").empty()) {
+                        svg.append("rect")
+                            .attr("class", "selectedHighlight")
+                            .attr("width", "100%")
+                            .attr("height", "100%")
+                            .attr("fill", "gray")
+                            .attr("opacity", 0.05);
+                    }
                 })
                 .on("mouseleave", function() {
                     d3.selectAll(".selectedHighlight").remove();
+                })
+                .on("click", function() {
+                    let svg = d3.select(this);
+                    let label = svg.select(".nutritionLabel");
+
+                    // Only add nutrition label if none are present
+                    if (label.empty()) {
+                        svg.append("rect")
+                            .attr("class", "nutritionLabel")
+                            .attr("width", "100%")
+                            .attr("height", "100%")
+                            .attr("fill", "white")
+                            .attr("stroke", "black")
+                            .attr("stroke-width", 5);
+                        // Re-add highlight
+                        svg.select(".selectedHighlight").remove();
+                        svg.append("rect")
+                            .attr("class", "selectedHighlight")
+                            .attr("width", "100%")
+                            .attr("height", "100%")
+                            .attr("fill", "gray")
+                            .attr("opacity", 0.03);
+                    } else {
+                        label.remove();
+                    }
                 })
                 .append("g")
                 .attr("class", "circleContainer")
@@ -165,7 +192,7 @@ export default {
                 .attr(
                     "d",
                     d3
-                        .arc() // imagine you're doing a part of a donut plot
+                        .arc()
                         .innerRadius(innerRadius)
                         .outerRadius(function(d) {
                             if (d.mean > 0) {
@@ -195,7 +222,7 @@ export default {
                 .attr(
                     "d",
                     d3
-                        .arc() // imagine you're doing a part of a donut plot
+                        .arc()
                         .innerRadius(function() {
                             return ybis(0);
                         })
@@ -216,7 +243,7 @@ export default {
                         .padRadius(innerRadius)
                 );
 
-            svg.selectAll(".circle-tick").remove(); // Make ticks visible in bars
+            svg.selectAll(".circle-tick").remove(); // Makes ticks visible within bars
             //* Add tick marks
             let circleAxes = svg
                 .selectAll(".circle-tick")
@@ -279,7 +306,7 @@ export default {
                 .style("font-family", "Nunito")
                 .attr("alignment-baseline", "middle");
 
-            //! Used to calculate text width for centering labels, not actually rendered
+            //! Used to calculate text width for centering labels, not intended to be rendered
             let textWidth = 0;
             svg.append("text")
                 .text(category)
