@@ -525,12 +525,6 @@ a {
     max-height: 100%;
     margin: 0 -200%;
 }
-.bioLink {
-    margin-top: 20px;
-}
-.bioLink a {
-    color: rgba(202, 173, 45, 1);
-}
 
 .imageHolder {
     position: relative;

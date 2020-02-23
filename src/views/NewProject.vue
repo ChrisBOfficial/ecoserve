@@ -74,7 +74,7 @@ export default {
             projectBlocks: state => state.projects.projectBlocks
         })
     },
-    created: function() {
+    created() {
         window.scrollTo(0, 0);
         this.setSurvey({});
         this.setProjectBlocks([]);
@@ -89,7 +89,7 @@ export default {
             setSurvey: "surveys/setSurvey",
             setProjectBlocks: "projects/setProjectBlocks"
         }),
-        validateForm: function(bvModalEvt) {
+        validateForm(bvModalEvt) {
             let invalid = false;
             this.validateErrors = [];
             let blocks = JSON.parse(JSON.stringify(this.projectBlocks));
@@ -118,7 +118,7 @@ export default {
                 return true;
             }
         },
-        createProject: function() {
+        createProject() {
             const payload = {
                 name: this.title,
                 description: this.description,
@@ -136,6 +136,4 @@ export default {
 
 <style scoped>
 @import "../assets/grayscale.css";
-@import "https://fonts.googleapis.com/css?family=Varela+Round";
-@import "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i";
 </style>

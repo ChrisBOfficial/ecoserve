@@ -31,7 +31,7 @@ export default {
             blocks: state => state.surveys.blocks
         })
     },
-    created: function() {
+    created() {
         this.loadSurveys();
     },
     methods: {
@@ -39,7 +39,7 @@ export default {
             loadSurveys: "surveys/loadSurveys",
             loadSurvey: "surveys/loadSurvey"
         }),
-        selectSurvey: function(selected) {
+        selectSurvey(selected) {
             this.loadSurvey(selected.id);
         }
     }
@@ -48,6 +48,4 @@ export default {
 
 <style scoped>
 @import "../assets/grayscale.css";
-@import "https://fonts.googleapis.com/css?family=Varela+Round";
-@import "https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i";
 </style>
