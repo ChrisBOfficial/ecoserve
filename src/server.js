@@ -33,7 +33,7 @@ const uri =
 const dbClient = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 dbClient.connect(err => {
     if (err) throw new Error(err);
-    console.log("MongoDB connected");
+    console.log("Connected to database");
 });
 
 // Add express configurations

@@ -137,6 +137,18 @@ export default {
                 .attr("class", "circleChart")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
+                .on("mouseenter", function() {
+                    let svg = d3.select(this);
+                    svg.append("rect")
+                        .attr("class", "selectedHighlight")
+                        .attr("width", "100%")
+                        .attr("height", "100%")
+                        .attr("fill", "gray")
+                        .attr("opacity", 0.04);
+                })
+                .on("mouseleave", function() {
+                    d3.selectAll(".selectedHighlight").remove();
+                })
                 .append("g")
                 .attr("class", "circleContainer")
                 .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
@@ -326,97 +338,6 @@ export default {
                     this.circleChart(d, this.$el);
                 }.bind(this)
             );
-
-            /* let content = chars.append("div").attr("class", "charContent");
-            content.append("h2").text(function(d, i) {
-                return d.label;
-            });
-
-            chars.classed("size1", true);
-
-            chars.on(
-                "click",
-                function(d, i) {
-                    if (this.className.split(" ").indexOf("open") > -1) {
-                        d3.select(this).classed("open", false);
-                    } else {
-                        let gridColumns = window.getComputedStyle(this.parentElement).gridTemplateColumns.split(" ");
-                        let gridRows = window.getComputedStyle(this.parentElement).gridTemplateRows.split(" ");
-                        let numColumns = gridColumns.length;
-                        let numRows = gridRows.length;
-                        let xPosInGrid =
-                            this.getBoundingClientRect().left - this.parentElement.getBoundingClientRect().left;
-                        let yPosInGrid =
-                            this.getBoundingClientRect().top - this.parentElement.getBoundingClientRect().top;
-                        let gridRowHeight =
-                            parseFloat(gridRows[0]) +
-                            parseFloat(window.getComputedStyle(this.parentElement).gridRowGap);
-                        let gridColumnWidth =
-                            parseFloat(gridColumns[0]) +
-                            parseFloat(window.getComputedStyle(this.parentElement).gridColumnGap);
-                        let thisRow = Math.round(yPosInGrid / gridRowHeight) + 1;
-                        let thisColumn = Math.round(xPosInGrid / gridColumnWidth) + 1;
-                        let thisPortrait = this.getElementsByClassName("portrait")[0];
-                        if (thisPortrait) thisPortrait.setAttribute("src", thisPortrait.getAttribute("data-src"));
-                        chars.classed("open", false);
-                        chars.style("grid-row-start", "auto");
-                        chars.style("grid-column-start", "auto");
-                        d3.select(this).classed("open", true);
-                        let divWidth = parseFloat(window.getComputedStyle(this).gridColumnEnd.split(" ")[1]);
-                        let divHeight = parseFloat(window.getComputedStyle(this).gridRowEnd.split(" ")[1]);
-                        if (thisRow + divHeight > numRows) thisRow = 1 + numRows - divHeight;
-                        if (thisColumn + divWidth > numColumns) thisColumn = 1 + numColumns - divWidth;
-                        d3.select(this).style("grid-row-start", thisRow);
-                        d3.select(this).style("grid-column-start", thisColumn);
-                    }
-                }.bind(this)
-            );
-
-            let details = content.append("div").attr("class", "details");
-            let bio = details.append("div").attr("class", "bio");
-            bio.append("h3").text(function(d, i) {
-                return d.label;
-            });
-            bio.filter(function(d) {
-                return d.services.length > 0;
-            })
-                .append("h4")
-                .text("Services: ");
-            bio.filter(function(d) {
-                return d.services.length > 0;
-            })
-                .append("span")
-                .text(function(d, i) {
-                    return d.services;
-                });
-            bio.filter(function(d) {
-                return d.impact.length > 0;
-            })
-                .append("h4")
-                .text("Mean: ");
-            bio.filter(function(d) {
-                return d.impact.length > 0;
-            })
-                .append("span")
-                .text(function(d, i) {
-                    return d.impact;
-                });
-
-            let imageHolder = details.append("div").attr("class", "imageHolder");
-            imageHolder
-                .filter(function(d) {
-                    return d.confidence.length > 0;
-                })
-                .append("h4")
-                .text("Confidence: ");
-            imageHolder
-                .filter(function(d) {
-                    return d.confidence.length > 0;
-                })
-                .append("span")
-                .text(function(d, i) {
-                    return d.confidence;
-                }); */
         },
         showToast() {
             this.$bvToast.toast("Bad data in survey response, will manually re-fetch in 30 seconds", {
