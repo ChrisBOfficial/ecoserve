@@ -88,48 +88,26 @@ export default {
             getAggregate: "responses/getAggregateData",
             loadProject: "projects/loadProject"
         }),
-        avg(data) {
-            var values = 0;
-            var total = 0;
-            var holder = 0;
-            console.log(data);
-            data.forEach(d => {
-                holder = data[d].meanl;
-                values = values + holder;
-                total = ++total;
-            });
-            return values / total;
-        },
-        circleChart(category, results, location) {
+        circleChart(data, location) {
+            let category = data.type;
+            let results = data.values;
             // Sort services according to project settings
             results.sort((a, b) => {
                 return this.blockOrdering[a.service] - this.blockOrdering[b.service];
             });
 
-            // set the dimensions of the canvas
-            let margin = { top: 0, right: 0, bottom: 0, left: 0 },
-                width = 360 - margin.left - margin.right,
-                height = 360 - margin.top - margin.bottom,
-                innerRadius = 81,
-                outerRadius = 148.5; // the outerRadius goes from the middle of the SVG area to the border, hard coded the radius
+            // Set dimensions
+            let margin = { top: 0, right: 0, bottom: 40, left: 0 },
+                width = 360,
+                height = 360,
+                innerRadius = 90,
+                outerRadius = 165; // the outerRadius goes from the middle of the SVG area to the border, hard coded the radius
             let numTicks = 11; //needs one more than 10 (20% chunks) to get the 0% line
             let sdat = [];
 
             for (let i = 0; i <= numTicks; i++) {
                 sdat[i] = (outerRadius / numTicks) * i;
             }
-
-            // add the SVG element
-            //var correctedlocation = "#"
-            // correctedlocation = correctedlocation.concat(location)
-            let svg = d3
-                .select(location)
-                .append("svg")
-                .attr("width", width + margin.left + margin.right)
-                .attr("height", height + margin.top + margin.bottom)
-                .attr("class", "circleChart")
-                .append("g")
-                .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
 
             // X scale: common for 2 data series
             let x = d3
@@ -154,8 +132,20 @@ export default {
                 .range([innerRadius, 10]) // Domain will be defined later.
                 .domain([0, 10]);
 
+            //* Add the SVG element
+            let svg = d3
+                .select(location)
+                .append("svg")
+                .attr("class", "circleChart")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("class", "circleContainer")
+                .attr("transform", "translate(" + (width / 2 + margin.left) + "," + (height / 2 + margin.top) + ")");
+
             //* Add the positive bars
             svg.append("g")
+                .attr("class", "positiveBars")
                 .selectAll("path")
                 .data(results)
                 .enter()
@@ -184,8 +174,59 @@ export default {
                         .padRadius(innerRadius)
                 );
 
-            //* Add the labels
+            //* Add the negative bars
             svg.append("g")
+                .attr("class", "negativeBars")
+                .selectAll("path")
+                .data(results)
+                .enter()
+                .append("path")
+                .attr("fill", "#ff2400")
+                .attr(
+                    "d",
+                    d3
+                        .arc() // imagine you're doing a part of a donut plot
+                        .innerRadius(function() {
+                            return ybis(0);
+                        })
+                        .outerRadius(function(d) {
+                            if (d.mean < 0) {
+                                return ybis(d.mean * -1);
+                            } else {
+                                return ybis(0);
+                            }
+                        })
+                        .startAngle(function(d) {
+                            return x(d.service);
+                        })
+                        .endAngle(function(d) {
+                            return x(d.service) + x.bandwidth();
+                        })
+                        .padAngle(0.01)
+                        .padRadius(innerRadius)
+                );
+
+            svg.selectAll(".circle-tick").remove(); // Make ticks visible in bars
+            //* Add tick marks
+            let circleAxes = svg
+                .selectAll(".circle-tick")
+                .data(sdat)
+                .enter()
+                .append("svg:g")
+                .attr("class", "circle-tick");
+
+            //* Add radial tick lines
+            circleAxes
+                .append("svg:circle")
+                .attr("r", String)
+                .attr("class", "circle")
+                .style("stroke", "#CCC")
+                .style("opacity", 0.5)
+                .style("fill", "none");
+
+            //* Add the service labels
+            svg.append("g")
+                .attr("class", "labels")
                 .selectAll("g")
                 .data(results)
                 .enter()
@@ -228,60 +269,23 @@ export default {
                 .style("font-family", "Nunito")
                 .attr("alignment-baseline", "middle");
 
-            //* Add the negative bars
-            svg.append("g")
-                .selectAll("path")
-                .data(results)
-                .enter()
-                .append("path")
-                .attr("fill", "#ff2400")
-                .attr(
-                    "d",
-                    d3
-                        .arc() // imagine you're doing a part of a donut plot
-                        .innerRadius(function() {
-                            return ybis(0);
-                        })
-                        .outerRadius(function(d) {
-                            if (d.mean < 0) {
-                                return ybis(d.mean * -1);
-                            } else {
-                                return ybis(0);
-                            }
-                        })
-                        .startAngle(function(d) {
-                            return x(d.service);
-                        })
-                        .endAngle(function(d) {
-                            return x(d.service) + x.bandwidth();
-                        })
-                        .padAngle(0.01)
-                        .padRadius(innerRadius)
-                );
-
-            // Adding tick marks
-            let circleAxes;
-            svg.selectAll(".circle-ticks").remove();
-
-            circleAxes = svg
-                .selectAll(".circle-ticks")
-                .data(sdat)
-                .enter()
-                .append("svg:g")
-                .attr("class", "circle-ticks");
-
-            // radial tick lines
-            circleAxes
-                .append("svg:circle")
-                .attr("r", String)
-                .attr("class", "circle")
-                .style("stroke", "#CCC")
-                .style("opacity", 0.5)
-                .style("fill", "none");
-
+            //! Used to calculate text width for centering labels, not actually rendered
+            let textWidth = 0;
             svg.append("text")
                 .text(category)
-                .attr("transform", "translate(" + (width / -5 + category.length) + "," + (height / 2 - 5) + ")")
+                .attr("opacity", 0.0)
+                .style("font-size", "0.9rem")
+                .style("font-weight", 800)
+                .style("font-family", "Nunito")
+                .each(function() {
+                    textWidth = this.getComputedTextLength();
+                    this.remove();
+                });
+
+            //* Add the category label
+            svg.append("text")
+                .text(category)
+                .attr("transform", "translate(" + textWidth / -2 + "," + (height / 2 + 20) + ")")
                 .style("font-size", "0.9rem")
                 .style("font-weight", 800)
                 .style("font-family", "Nunito");
@@ -307,7 +311,6 @@ export default {
             }
 
             d3.selectAll("svg").remove();
-            // let avrg = this.avg(this.data);
             let grid = d3
                 .select("body")
                 .append("div")
@@ -322,9 +325,10 @@ export default {
             chars.style(
                 "fill",
                 function(d) {
-                    this.circleChart(d.type, d.values, this.$el);
+                    this.circleChart(d, this.$el);
                 }.bind(this)
             );
+
             /* let content = chars.append("div").attr("class", "charContent");
             content.append("h2").text(function(d, i) {
                 return d.label;
