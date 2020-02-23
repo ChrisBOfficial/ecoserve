@@ -1,22 +1,20 @@
 <template>
-    <body class="lParent">
-        <div v-if="loading" class="loadingio-spinner-pulse">
-            <div class="ldio-container">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-        </div>
+    <body>
+        <Loading v-if="loading" />
     </body>
 </template>
 
 <script>
+import Loading from "@/components/Loading.vue";
 import { mapState, mapActions } from "vuex";
 const io = require("socket.io-client");
 const d3 = Object.assign({}, require("d3"), require("d3-scale"));
 
 export default {
     name: "CircularChart",
+    components: {
+        Loading
+    },
     data() {
         return {
             socket: {},
@@ -221,10 +219,10 @@ export default {
                 .attr("r", String)
                 .attr("class", "circle")
                 .style("stroke", "#CCC")
-                .style("opacity", 0.5)
+                .style("opacity", 0.65)
                 .style("fill", "none");
 
-            //* Add the service labels
+            //* Add the radial labels
             svg.append("g")
                 .attr("class", "labels")
                 .selectAll("g")
@@ -264,8 +262,8 @@ export default {
                         ? "rotate(180)"
                         : "rotate(0)";
                 })
-                .style("font-size", "0.75rem")
-                .style("font-weight", 400)
+                .style("font-size", "0.85rem")
+                .style("font-weight", 500)
                 .style("font-family", "Nunito")
                 .attr("alignment-baseline", "middle");
 
@@ -282,7 +280,7 @@ export default {
                     this.remove();
                 });
 
-            //* Add the category label
+            //* Add the chart label
             svg.append("text")
                 .text(category)
                 .attr("transform", "translate(" + textWidth / -2 + "," + (height / 2 + 20) + ")")
@@ -573,94 +571,5 @@ a {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
-}
-
-@keyframes ldio-container-1 {
-    0% {
-        top: 36px;
-        height: 128px;
-    }
-    50% {
-        top: 60px;
-        height: 80px;
-    }
-    100% {
-        top: 60px;
-        height: 80px;
-    }
-}
-@keyframes ldio-container-2 {
-    0% {
-        top: 42px;
-        height: 116px;
-    }
-    50% {
-        top: 60px;
-        height: 80px;
-    }
-    100% {
-        top: 60px;
-        height: 80px;
-    }
-}
-@keyframes ldio-container-3 {
-    0% {
-        top: 48px;
-        height: 104px;
-    }
-    50% {
-        top: 60px;
-        height: 80px;
-    }
-    100% {
-        top: 60px;
-        height: 80px;
-    }
-}
-.ldio-container div {
-    position: absolute;
-    width: 30px;
-}
-.ldio-container div:nth-child(1) {
-    left: 35px;
-    background: #4f7abe;
-    animation: ldio-container-1 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-    animation-delay: -0.2s;
-}
-.ldio-container div:nth-child(2) {
-    left: 85px;
-    background: #0a7142;
-    animation: ldio-container-2 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-    animation-delay: -0.1s;
-}
-.ldio-container div:nth-child(3) {
-    left: 135px;
-    background: darkseagreen;
-    animation: ldio-container-3 1s cubic-bezier(0, 0.5, 0.5, 1) infinite;
-    animation-delay: undefineds;
-}
-
-#lParent {
-    position: relative;
-}
-.loadingio-spinner-pulse {
-    width: 200px;
-    height: 200px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin: -100px 0 0 -100px;
-    overflow: hidden;
-}
-.ldio-container {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform: translateZ(0) scale(1);
-    backface-visibility: hidden;
-    transform-origin: 0 0; /* see note above */
-}
-.ldio-container div {
-    box-sizing: content-box;
 }
 </style>

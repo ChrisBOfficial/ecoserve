@@ -8,7 +8,7 @@
                 <div class="col-md-6 mt-md-0 mt-3">
                     <!-- Content -->
                     <h5>A tool for visualizing Qualtrics survey responses</h5>
-                    <p>EcoServe</p>
+                    <p>ecoserve</p>
                 </div>
             </div>
         </div>
