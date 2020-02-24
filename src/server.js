@@ -254,13 +254,10 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
             });
         });
     } else if (pipeline === "circlechart") {
-        collection.aggregate(Pipelines.circlechartPipeline(surveyId), function(err, cursor) {
+        collection.findOne({ surveyId: surveyId }, function(err, result) {
             if (err) throw new Error(err);
-
-            cursor.toArray(function(err, docs) {
-                if (err) throw new Error(err);
-                res.send(docs);
-            });
+            let data = Pipelines.circlechartPipeline(result);
+            res.send(data);
         });
     } else if (pipeline === "label") {
         return;

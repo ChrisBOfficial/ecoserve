@@ -330,8 +330,8 @@ export default {
         makeCharts() {
             // Sort aggregate data alphabetically by category, and remove categories according to project settings
             const sortedData = this.circleAggregate.sort((a, b) => a.type.localeCompare(b.type));
-            // Abandon hope all ye who enter here
             for (let [i, data] of sortedData.entries()) {
+                // Abandon hope all ye who enter here
                 for (let j = 0; j < data.values.length; j++) {
                     if (!this.project.blocks.some(e => e.title === data.values[j].service)) {
                         sortedData[i].values.splice(j, 1);

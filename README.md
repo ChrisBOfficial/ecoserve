@@ -20,3 +20,7 @@
 **Coach:** CJ O'Hara
 
 **Sponsor Contact:** Dillon Fogarty
+
+# Technologies used
+
+<img src="resources/Logos.png" align="middle" />

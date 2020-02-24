@@ -515,7 +515,6 @@
   QID:1,sub:1,question:1,subqmatch:1,impactor:1,service:1,col:1,v:1,
   questioneq: {$cond: [{$eq: ['$QID','$question']},1,0]},
   subquestioneq: {$cond: [{$eq: ['$sub','$subqmatch']},1,0]}
-
 }}, {$match: {
   subquestioneq:1,
   questioneq:1,
@@ -528,7 +527,7 @@
 }}, {$group: {
   _id: {type: "$_id.impactor"},
   values: {
-    $push: {service:"$_id.service", mean: {$subtract: ["$mean",6]}}
+    $push: {service:"$_id.service", mean: "$mean"}
   }
 }}, {$project: {
   _id:0,
