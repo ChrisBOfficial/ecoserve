@@ -63,6 +63,14 @@ const routes = [
         path: "/contact",
         name: "contact",
         component: () => import("@/views/Contact.vue")
+    },
+    {
+        path: "/verify",
+        name: "verify",
+        meta: {
+            title: "User verification"
+        },
+        component: () => import("@/views/Verify.vue")
     }
 ];
 

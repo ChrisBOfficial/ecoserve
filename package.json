@@ -29,6 +29,7 @@
         "test": "mocha --exit; vue-cli-service test:unit"
     },
     "dependencies": {
+        "aws-amplify": "^2.2.5",
         "axios": "^0.19.1",
         "bootstrap": "^4.4.1",
         "bootstrap-vue": "^2.1.0",
