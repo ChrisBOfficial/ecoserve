@@ -48,7 +48,7 @@ export default {
 
         this.createHook(this.surveyId);
         this.lastUpdate = Date.now();
-        this.socket = io(this.socketUrl);
+        this.socket = io(this.socketUrl + ":8081");
         this.socket.on(
             this.surveyId,
             function() {
@@ -145,7 +145,7 @@ export default {
                             .attr("width", "100%")
                             .attr("height", "100%")
                             .attr("fill", "gray")
-                            .attr("opacity", 0.05);
+                            .attr("opacity", 0.04);
                     }
                 })
                 .on("mouseleave", function() {
@@ -171,7 +171,7 @@ export default {
                             .attr("width", "100%")
                             .attr("height", "100%")
                             .attr("fill", "gray")
-                            .attr("opacity", 0.03);
+                            .attr("opacity", 0.04);
                     } else {
                         label.remove();
                     }

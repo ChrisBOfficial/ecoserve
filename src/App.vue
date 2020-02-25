@@ -1,7 +1,8 @@
 <template>
     <div id="app">
         <!-- Dynamically loaded views -->
-        <router-view />
+        <router-view v-if="secure" />
+        <p v-else>Connection is not secure, please use https://ecoserve-app.com</p>
     </div>
 </template>
 
@@ -9,7 +10,16 @@
 import store from "./store";
 
 export default {
-    store
+    store,
+    data() {
+        return {
+            secure: window.location.protocol === "https" || process.env.NODE_ENV === "development" ? true : false
+        };
+    },
+    created() {
+        console.log(window.location.protocol);
+        console.log(process.env.NODE_ENV);
+    }
 };
 </script>
 
