@@ -68,7 +68,7 @@ const routes = [
         path: "/verify",
         name: "verify",
         meta: {
-            title: "User verification"
+            title: "Account verification"
         },
         component: () => import("@/views/Verify.vue")
     }

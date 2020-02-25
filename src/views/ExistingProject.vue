@@ -19,7 +19,7 @@
 
             <b-container v-show="projectPicked">
                 <b-row class="h-100">
-                    <h1 aria-placeholder="CREATE NEW PROJECT">{{ title }}</h1>
+                    <h1>{{ title }}</h1>
                 </b-row>
                 <b-row>
                     <h4>Survey: "{{ this.selectedSurvey.name }}"</h4>
