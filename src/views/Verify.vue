@@ -27,8 +27,30 @@
                         </div>
                         <br />
                         <div class="row-3 text-center">
-                            <b-button style="background-color:DarkSeaGreen; max-width: 25%;">Register</b-button>
+                            <b-button @click="register" style="background-color:DarkSeaGreen; max-width: 25%;"
+                                >Register</b-button
+                            >
                         </div>
+                        <br />
+                        <p style="text-align: center; color: red;" v-for="error in validateErrors" :key="error">
+                            {{ error }}
+                        </p>
+                        <br />
+                        <h4 class="font-weight-medium">How to find your token</h4>
+                        <p>1. Login to Qualtrics</p>
+                        <p>2. Go to Account Settings in the user dropdown</p>
+                        <img
+                            src="../assets/accountSettings.png"
+                            height="60%"
+                            width="60%"
+                            style="margin-bottom: 20px;"
+                        />
+                        <p>3. Go to Qualtrics IDs</p>
+                        <img src="../assets/exampleId.png" height="70%" width="70%" style="margin-bottom: 30px;" />
+                        <h4 class="font-weight-medium">How to find your Datacenter</h4>
+                        <p>1. Login to your Qualtrics account</p>
+                        <p>2. Use the hostname found in the location bar</p>
+                        <img src="../assets/exampleDatacenter.png" />
                     </div>
                 </div>
             </div>
@@ -59,7 +81,8 @@ export default {
     data() {
         return {
             qualtricsToken: "",
-            qualtricsDatacenter: ""
+            qualtricsDatacenter: "",
+            validateErrors: []
         };
     },
     async mounted() {
@@ -69,6 +92,30 @@ export default {
             "custom:Data-Center": process.env.VUE_APP_Q_DATA_CENTER
         });
         console.log(result); */
+    },
+    methods: {
+        validateInput() {
+            let valid = true;
+            this.validateErrors = [];
+            if (this.qualtricsToken === "") {
+                this.validateErrors.push("Please enter a Qualtrics API token");
+                valid = false;
+            }
+            if (this.qualtricsDatacenter === "") {
+                this.validateErrors.push("Please enter a Qualtrics Datacenter ID");
+                valid = false;
+            }
+            if (/\.$/.test(this.qualtricsDatacenter)) {
+                this.validateErrors.push('Datacenter ID cannot end with "."');
+                valid = false;
+            }
+            return valid;
+        },
+        register() {
+            if (this.validateInput()) {
+                return;
+            }
+        }
     }
 };
 </script>
