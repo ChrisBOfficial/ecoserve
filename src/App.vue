@@ -13,12 +13,8 @@ export default {
     store,
     data() {
         return {
-            secure: window.location.protocol === "https" || process.env.NODE_ENV === "development" ? true : false
+            secure: window.location.protocol === "https:" || process.env.NODE_ENV === "development" ? true : false
         };
-    },
-    created() {
-        console.log(window.location.protocol);
-        console.log(process.env.NODE_ENV);
     }
 };
 </script>
