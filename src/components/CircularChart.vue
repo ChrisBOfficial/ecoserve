@@ -48,13 +48,14 @@ export default {
 
         this.createHook(this.surveyId);
         this.lastUpdate = Date.now();
-        this.socket = io(this.socketUrl + ":8081");
+        this.socket = io(this.socketUrl, { transports: ["polling"] });
         this.socket.on(
             this.surveyId,
             function() {
                 if (Date.now() - this.lastUpdate >= 500) {
                     this.getAggregate({ id: this.surveyId, pipeline: "circlechart" })
                         .then(() => {
+                            console.log("Response received");
                             this.makeCharts();
                         })
                         .catch(() => {

@@ -197,6 +197,7 @@ export default {
                 const payload = {
                     previousId: this.previousProjectId,
                     data: {
+                        accountToken: window.axios.defaults.headers["x-api-token"],
                         name: this.title,
                         description: this.description,
                         surveyId: this.selected.surveyId,
@@ -213,7 +214,8 @@ export default {
         },
         deleteProject() {
             const payload = {
-                projectId: this.title + "+" + this.selected.surveyId
+                projectId: this.title + "+" + this.selected.surveyId,
+                accountToken: window.axios.defaults.headers["x-api-token"]
             };
             this.removeProject(payload);
             this.exitEditing();

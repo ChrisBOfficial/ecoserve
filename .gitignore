@@ -47,3 +47,6 @@ pids
 
 # DynamoDB Local files
 .dynamodb/
+
+# AWS Amplify credentials
+**/amplifyConf.js

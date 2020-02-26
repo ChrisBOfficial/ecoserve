@@ -120,6 +120,7 @@ export default {
         },
         createProject() {
             const payload = {
+                accountToken: window.axios.defaults.headers["x-api-token"],
                 name: this.title,
                 description: this.description,
                 surveyId: this.survey.id,

@@ -61,7 +61,7 @@ app.route("/api/surveys").get((req, res) => {
     } else {
         specifier = req.query.surveyId;
     }
-    let targetUrl = "https://" + process.env.VUE_APP_Q_DATA_CENTER + ".qualtrics.com/API/v3/surveys/" + specifier;
+    let targetUrl = "https://" + req.headers["q-data-center"] + ".qualtrics.com/API/v3/surveys/" + specifier;
     let options = {
         method: "GET",
         url: targetUrl,
@@ -88,7 +88,7 @@ app.route("/api/surveys/responses")
             let progressStatus = "inProgress";
             let baseUrl =
                 "https://" +
-                process.env.VUE_APP_Q_DATA_CENTER +
+                req.headers["q-data-center"] +
                 ".qualtrics.com/API/v3/surveys/" +
                 surveyId +
                 "/export-responses/";
@@ -197,17 +197,17 @@ app.route("/api/surveys/responses")
     })
     .post((req, res) => {
         const surveyId = req.query.surveyId;
+        const accountToken = req.headers["x-api-token"];
         let hooked;
 
         // Check if webhook exists, update if it doesn't
         const collection = dbClient.db("DB1").collection("Projects");
 
-        collection.findOne({ surveyId: surveyId }, function(err, result) {
+        collection.findOne({ surveyId: surveyId, accountToken: accountToken }, function(err, result) {
             if (err) throw new Error(err);
             hooked = result.hooked;
             if (!hooked) {
-                let baseUrl =
-                    "https://" + process.env.VUE_APP_Q_DATA_CENTER + ".qualtrics.com/API/v3/eventsubscriptions/";
+                let baseUrl = "https://" + req.headers["q-data-center"] + ".qualtrics.com/API/v3/eventsubscriptions/";
                 let dataString = {
                     topics: "surveyengine.completedResponse." + surveyId,
                     publicationUrl: req.protocol + "://" + req.get("HOST") + "/api/listener?surveyId=" + surveyId,
@@ -225,9 +225,11 @@ app.route("/api/surveys/responses")
                 request(options, function(error, response, body) {
                     if (error) throw new Error(error);
                     if (response.statusCode == 200) {
-                        collection.updateMany({ surveyId: surveyId }, { $set: { hooked: true } }).catch(error => {
-                            throw new Error(error);
-                        });
+                        collection
+                            .updateMany({ surveyId: surveyId, accountToken: accountToken }, { $set: { hooked: true } })
+                            .catch(error => {
+                                throw new Error(error);
+                            });
                     }
 
                     res.send(body);
@@ -278,15 +280,19 @@ app.route("/api/projects")
     .get((req, res) => {
         const projectName = req.query.name;
         const id = req.query.id;
+        const accountToken = req.headers["x-api-token"];
         const collection = dbClient.db("DB1").collection("Projects");
 
         if (projectName === undefined && id === undefined) {
-            collection.find({}).toArray(function(err, docs) {
+            collection.find({ accountToken: accountToken }).toArray(function(err, docs) {
                 if (err) throw new Error(err);
                 res.send(docs);
             });
-        } else {
-            collection.findOne({ projectId: projectName + "+" + id }, function(err, result) {
+        } else if (projectName !== undefined && id !== undefined) {
+            collection.findOne({ projectId: projectName + "+" + id, accountToken: accountToken }, function(
+                err,
+                result
+            ) {
                 if (err) throw new Error(err);
                 res.send(result);
             });
@@ -295,7 +301,7 @@ app.route("/api/projects")
     .post((req, res) => {
         let options = {
             method: "GET",
-            url: "https://" + process.env.VUE_APP_Q_DATA_CENTER + ".qualtrics.com/API/v3/surveys/" + req.body.surveyId,
+            url: "https://" + req.headers["q-data-center"] + ".qualtrics.com/API/v3/surveys/" + req.body.surveyId,
             headers: {
                 "X-API-TOKEN": req.headers["x-api-token"]
             }
@@ -351,17 +357,23 @@ app.route("/api/projects")
             });
     })
     .put((req, res) => {
+        const accountToken = req.headers["x-api-token"];
         const collection = dbClient.db("DB1").collection("Projects");
 
-        collection.updateOne({ projectId: req.body.previousId }, { $set: req.body.data }, function(err) {
-            if (err) throw new Error(err);
-            res.sendStatus(200);
-        });
+        collection.updateOne(
+            { projectId: req.body.previousId, accountToken: accountToken },
+            { $set: req.body.data },
+            function(err) {
+                if (err) throw new Error(err);
+                res.sendStatus(200);
+            }
+        );
     })
     .delete((req, res) => {
+        const accountToken = req.headers["x-api-token"];
         const collection = dbClient.db("DB1").collection("Projects");
 
-        collection.deleteOne({ projectId: req.body.projectId }, function(err, result) {
+        collection.deleteOne({ projectId: req.body.projectId, accountToken: accountToken }, function(err, result) {
             if (err) throw new Error(err);
             res.send({ deletedCount: result.deletedCount });
         });

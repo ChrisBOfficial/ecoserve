@@ -16,10 +16,11 @@
                         <li class="nav-item">
                             <router-link class="nav-link" to="/contact">CONTACT</router-link>
                         </li>
-                        <li class="nav-item">
-                            <router-link class="nav-link" to="/">LOGIN</router-link>
+                        <li v-if="!authorized" class="nav-item">
+                            <a class="nav-link" :href="loginLink">LOGIN</a>
                         </li>
                     </ul>
+                    <a v-if="authorized" class="nav-link" href="#" @click="logout">LOGOUT</a>
                 </div>
             </div>
         </nav>
@@ -27,7 +28,25 @@
 </template>
 
 <script>
+import Credentials from "../api/amplifyConf";
+import { mapState, mapActions } from "vuex";
+
 export default {
-    name: "Header"
+    name: "Header",
+    data() {
+        return {
+            loginLink: Credentials.COGNITO_TOKEN_URL
+        };
+    },
+    computed: {
+        ...mapState({
+            authorized: state => state.users.authorized
+        })
+    },
+    methods: {
+        ...mapActions({
+            logout: "users/logout"
+        })
+    }
 };
 </script>

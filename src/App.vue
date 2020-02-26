@@ -7,6 +7,7 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
 import store from "./store";
 
 export default {
@@ -15,6 +16,30 @@ export default {
         return {
             secure: window.location.protocol === "https:" || process.env.NODE_ENV === "development" ? true : false
         };
+    },
+    computed: {
+        ...mapState({
+            attributes: state => state.users.attributes
+        })
+    },
+    async created() {
+        await this.fetchUser();
+        if (
+            Object.prototype.hasOwnProperty.call(this.attributes, "custom:Qualtrics-API-Key") &&
+            Object.prototype.hasOwnProperty.call(this.attributes, "custom:Data-Center")
+        ) {
+            console.log(window.location);
+            window.axios.defaults.headers["x-api-token"] = this.attributes["custom:Qualtrics-API-Key"];
+            window.axios.defaults.headers["q-data-center"] = this.attributes["custom:Data-Center"];
+            if (typeof this.$router.path === "undefined") {
+                this.$router.push("/");
+            }
+        }
+    },
+    methods: {
+        ...mapActions({
+            fetchUser: "users/fetchUser"
+        })
     }
 };
 </script>
