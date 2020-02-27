@@ -79,7 +79,7 @@ app.route("/api/surveys").get((req, res) => {
     });
 });
 
-//* Endpoint for survey response data
+//* Endpoint for survey response data and realtime hooks
 app.route("/api/surveys/responses")
     .get((req, res) => {
         async function respond(req, res) {
