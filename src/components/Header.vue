@@ -21,6 +21,13 @@
                         </li>
                     </ul>
                     <a v-if="authorized" class="nav-link" href="#" @click="logout">LOGOUT</a>
+                    <a v-if="authorized" class="nav-link" href="#" style="padding: 2px 0px 0px 3px;"
+                        ><img
+                            src="../assets/settings.png"
+                            alt="Settings"
+                            title="Settings"
+                            style="max-width: 25px; max-height: 25px;"
+                    /></a>
                 </div>
             </div>
         </nav>

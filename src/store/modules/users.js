@@ -15,23 +15,29 @@ export default {
 
     actions: {
         async fetchUser({ commit, dispatch }) {
-            try {
-                const user = await Auth.currentAuthenticatedUser();
-                let { attributes } = user;
-                commit("attributes", attributes);
-                const expires =
-                    user.getSignInUserSession().getIdToken().payload.exp - Math.floor(new Date().getTime() / 1000);
-                console.log("Token expires in " + expires + " seconds");
-                setTimeout(async () => {
-                    console.log("Renewing token");
-                    await dispatch("fetchUser");
-                }, expires * 1000);
-                commit("user", user);
-            } catch (err) {
-                console.log("Bad user fetch");
-                commit("attributes", {});
-                commit("user", null);
-            }
+            return new Promise((resolve, reject) => {
+                Auth.currentAuthenticatedUser()
+                    .then(current => {
+                        const user = current;
+                        let { attributes } = user;
+                        commit("attributes", attributes);
+                        const expires =
+                            user.getSignInUserSession().getIdToken().payload.exp -
+                            Math.floor(new Date().getTime() / 1000);
+                        console.log("Token expires in " + expires + " seconds");
+                        setTimeout(async () => {
+                            console.log("Renewing token");
+                            await dispatch("fetchUser");
+                        }, expires * 1000);
+                        commit("user", user);
+                        resolve();
+                    })
+                    .catch(() => {
+                        commit("attributes", {});
+                        commit("user", null);
+                        reject();
+                    });
+            });
         },
         async updateUser({ commit, state }, data) {
             await Auth.updateUserAttributes(state.user, {

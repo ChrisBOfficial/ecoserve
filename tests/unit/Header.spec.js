@@ -11,12 +11,17 @@ localVue.use(VueRouter);
 localVue.use(BootstrapVue);
 
 describe("Header", () => {
+    let state;
     let store;
     beforeEach(() => {
+        state = {
+            authorized: false
+        };
+
         store = new Vuex.Store({
             modules: {
                 userModule: {
-                    state: userModule.state,
+                    state: state,
                     actions: userModule.actions
                 }
             }

@@ -23,18 +23,24 @@ export default {
         })
     },
     async created() {
-        await this.fetchUser();
-        if (
-            Object.prototype.hasOwnProperty.call(this.attributes, "custom:Qualtrics-API-Key") &&
-            Object.prototype.hasOwnProperty.call(this.attributes, "custom:Data-Center")
-        ) {
-            console.log(window.location);
-            window.axios.defaults.headers["x-api-token"] = this.attributes["custom:Qualtrics-API-Key"];
-            window.axios.defaults.headers["q-data-center"] = this.attributes["custom:Data-Center"];
-            if (typeof this.$router.path === "undefined") {
+        this.fetchUser()
+            .then(() => {
+                if (
+                    Object.prototype.hasOwnProperty.call(this.attributes, "custom:Qualtrics-API-Key") &&
+                    Object.prototype.hasOwnProperty.call(this.attributes, "custom:Data-Center")
+                ) {
+                    window.axios.defaults.headers["x-api-token"] = this.attributes["custom:Qualtrics-API-Key"];
+                    window.axios.defaults.headers["q-data-center"] = this.attributes["custom:Data-Center"];
+                    if (window.location.href.includes("/auth/verify")) {
+                        this.$router.push("/");
+                    }
+                } else {
+                    this.$router.push("/auth/verify");
+                }
+            })
+            .catch(() => {
                 this.$router.push("/");
-            }
-        }
+            });
     },
     methods: {
         ...mapActions({
