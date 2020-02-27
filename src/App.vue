@@ -1,8 +1,7 @@
 <template>
     <div id="app">
         <!-- Dynamically loaded views -->
-        <router-view v-if="secure" />
-        <p v-else>Connection is not secure, please use https://ecoserve-app.com</p>
+        <router-view />
     </div>
 </template>
 
@@ -12,33 +11,33 @@ import store from "./store";
 
 export default {
     store,
-    data() {
-        return {
-            secure: window.location.protocol === "https:" || process.env.NODE_ENV === "development" ? true : false
-        };
-    },
     computed: {
         ...mapState({
             attributes: state => state.users.attributes
         })
     },
     async created() {
+        // Check if session is signed in
         this.fetchUser()
             .then(() => {
                 if (
                     Object.prototype.hasOwnProperty.call(this.attributes, "custom:Qualtrics-API-Key") &&
                     Object.prototype.hasOwnProperty.call(this.attributes, "custom:Data-Center")
                 ) {
+                    // If signed in and Qualtrics credentials exist, set axios headers
                     window.axios.defaults.headers["x-api-token"] = this.attributes["custom:Qualtrics-API-Key"];
                     window.axios.defaults.headers["q-data-center"] = this.attributes["custom:Data-Center"];
                     if (window.location.href.includes("/auth/verify")) {
+                        // If Qualtrics credentials exist, redirect to home from verify page
                         this.$router.push("/");
                     }
                 } else {
+                    // If signed in and Qualtrics credentials don't exist, redirect to verify page
                     this.$router.push("/auth/verify");
                 }
             })
             .catch(() => {
+                // If not signed in, redirect to home
                 this.$router.push("/");
             });
     },

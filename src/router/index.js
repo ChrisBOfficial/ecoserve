@@ -73,6 +73,15 @@ const routes = [
             title: "Account verification"
         },
         component: () => import("@/views/Verify.vue")
+    },
+    {
+        path: "/auth/settings",
+        name: "settings",
+        meta: {
+            title: "ecoserve - Settings",
+            requiresAuth: true
+        },
+        component: () => import("@/views/Settings.vue")
     }
 ];
 
@@ -82,21 +91,26 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, _, next) => {
-    document.title = to.meta.title;
     if (to.meta.requiresAuth) {
         Auth.currentAuthenticatedUser()
             .then(() => {
+                // If user is signed in, continue
+                document.title = to.meta.title;
                 next();
             })
             .catch(() => {
                 if (User.state.authorized || process.env.NODE_ENV === "development") {
+                    document.title = to.meta.title;
                     next();
                 } else {
+                    // If not signed in, stop and redirect to sign-in page
                     next(false);
                     window.location.assign(Credentials.COGNITO_TOKEN_URL);
                 }
             });
     } else {
+        // Continue if page doesn't require auth
+        document.title = to.meta.title;
         next();
     }
 });

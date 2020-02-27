@@ -3,7 +3,12 @@
         <nav class="navbar navbar-expand-lg navbar-light fixed-top navbar-shrink" id="mainNav">
             <div class="container">
                 <router-link class="navbar-brand" to="/"
-                    ><img src="../assets/ecoserve-lower.png" height="100" width="100" style="margin:-28px 0px"
+                    ><img
+                        src="../assets/ecoserve-lower.png"
+                        height="100"
+                        width="100"
+                        title="Home"
+                        style="margin:-28px 0px"
                 /></router-link>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
@@ -21,13 +26,13 @@
                         </li>
                     </ul>
                     <a v-if="authorized" class="nav-link" href="#" @click="logout">LOGOUT</a>
-                    <a v-if="authorized" class="nav-link" href="#" style="padding: 2px 0px 0px 3px;"
+                    <router-link v-if="authorized" class="nav-link" to="/auth/settings" style="padding: 2px;"
                         ><img
-                            src="../assets/settings.png"
+                            src="../assets/settingsGear.png"
                             alt="Settings"
                             title="Settings"
                             style="max-width: 25px; max-height: 25px;"
-                    /></a>
+                    /></router-link>
                 </div>
             </div>
         </nav>

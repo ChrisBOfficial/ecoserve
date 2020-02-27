@@ -18,18 +18,17 @@ export default {
             return new Promise((resolve, reject) => {
                 Auth.currentAuthenticatedUser()
                     .then(current => {
-                        const user = current;
-                        let { attributes } = user;
+                        let { attributes } = current;
                         commit("attributes", attributes);
                         const expires =
-                            user.getSignInUserSession().getIdToken().payload.exp -
+                            current.getSignInUserSession().getIdToken().payload.exp -
                             Math.floor(new Date().getTime() / 1000);
                         console.log("Token expires in " + expires + " seconds");
                         setTimeout(async () => {
                             console.log("Renewing token");
                             await dispatch("fetchUser");
                         }, expires * 1000);
-                        commit("user", user);
+                        commit("user", current);
                         resolve();
                     })
                     .catch(() => {

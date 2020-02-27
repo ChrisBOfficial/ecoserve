@@ -15,7 +15,9 @@ describe("Header", () => {
     let store;
     beforeEach(() => {
         state = {
-            authorized: false
+            users: {
+                authorized: false
+            }
         };
 
         store = new Vuex.Store({
