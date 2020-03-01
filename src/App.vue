@@ -13,7 +13,8 @@ export default {
     store,
     async created() {
         // Sleep to let Amplify add user to localStorage
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, 250));
+
         // Check if session is signed in
         this.fetchUser()
             .then(attributes => {
@@ -33,14 +34,17 @@ export default {
                     this.$router.push("/auth/verify");
                 }
             })
-            .catch(() => {
-                if (window.location.href.includes("/auth/verify")) {
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
-                } else {
-                    // If not signed in, redirect to home
-                    this.$router.push("/");
+            .catch(err => {
+                console.error(err);
+                if (process.env.NODE_ENV === "production") {
+                    if (window.location.href.includes("/auth/verify")) {
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    } else {
+                        // If not signed in, redirect to home
+                        this.$router.push("/");
+                    }
                 }
             });
     },

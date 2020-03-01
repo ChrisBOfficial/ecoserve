@@ -2,7 +2,6 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import BootstrapVue from "bootstrap-vue";
 import { Auth } from "aws-amplify";
-import User from "../store/modules/users";
 import Credentials from "../api/amplifyConf";
 
 Vue.use(VueRouter);
@@ -90,7 +89,13 @@ const router = new VueRouter({
     routes
 });
 
-router.beforeEach((to, _, next) => {
+router.beforeEach((to, from, next) => {
+    // Prevent manual access of verify page
+    if (to.path === "/auth/verify" && from.name === null && process.env.NODE_ENV === "production") {
+        next(false);
+        router.push("/");
+    }
+
     if (to.meta.requiresAuth) {
         Auth.currentAuthenticatedUser()
             .then(() => {
@@ -99,7 +104,7 @@ router.beforeEach((to, _, next) => {
                 next();
             })
             .catch(() => {
-                if (User.state.authorized || process.env.NODE_ENV === "development") {
+                if (process.env.NODE_ENV === "development") {
                     document.title = to.meta.title;
                     next();
                 } else {
