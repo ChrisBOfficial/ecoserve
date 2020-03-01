@@ -16,6 +16,7 @@
                 </b-tab>
                 <b-tab title="Circular Charts">
                     <CircularChart />
+                    <b-button>Download Chart</b-button>
                 </b-tab>
             </b-tabs>
         </div>
