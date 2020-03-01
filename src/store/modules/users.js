@@ -29,12 +29,12 @@ export default {
                             await dispatch("fetchUser");
                         }, expires * 1000);
                         commit("user", current);
-                        resolve();
+                        resolve(attributes);
                     })
-                    .catch(() => {
+                    .catch(err => {
                         commit("attributes", {});
                         commit("user", null);
-                        reject();
+                        reject(err);
                     });
             });
         },

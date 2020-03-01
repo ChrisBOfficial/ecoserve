@@ -6,27 +6,24 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions } from "vuex";
 import store from "./store";
 
 export default {
     store,
-    computed: {
-        ...mapState({
-            attributes: state => state.users.attributes
-        })
-    },
     async created() {
+        // Sleep to let Amplify add user to localStorage
+        await new Promise(r => setTimeout(r, 1000));
         // Check if session is signed in
         this.fetchUser()
-            .then(() => {
+            .then(attributes => {
                 if (
-                    Object.prototype.hasOwnProperty.call(this.attributes, "custom:Qualtrics-API-Key") &&
-                    Object.prototype.hasOwnProperty.call(this.attributes, "custom:Data-Center")
+                    Object.prototype.hasOwnProperty.call(attributes, "custom:Qualtrics-API-Key") &&
+                    Object.prototype.hasOwnProperty.call(attributes, "custom:Data-Center")
                 ) {
                     // If signed in and Qualtrics credentials exist, set axios headers
-                    window.axios.defaults.headers["x-api-token"] = this.attributes["custom:Qualtrics-API-Key"];
-                    window.axios.defaults.headers["q-data-center"] = this.attributes["custom:Data-Center"];
+                    window.axios.defaults.headers["x-api-token"] = attributes["custom:Qualtrics-API-Key"];
+                    window.axios.defaults.headers["q-data-center"] = attributes["custom:Data-Center"];
                     if (window.location.href.includes("/auth/verify")) {
                         // If Qualtrics credentials exist, redirect to home from verify page
                         this.$router.push("/");
@@ -37,8 +34,14 @@ export default {
                 }
             })
             .catch(() => {
-                // If not signed in, redirect to home
-                this.$router.push("/");
+                if (window.location.href.includes("/auth/verify")) {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    // If not signed in, redirect to home
+                    this.$router.push("/");
+                }
             });
     },
     methods: {

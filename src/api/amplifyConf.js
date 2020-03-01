@@ -11,7 +11,7 @@ const config = {
         scope: ["email", "openid", "aws.cognito.signin.user.admin"],
         redirectSignIn: "https://ecoserve-app.com/auth/verify",
         redirectSignOut: "https://ecoserve-app.com/",
-        responseType: "token"
+        responseType: "code"
     }
 };
 

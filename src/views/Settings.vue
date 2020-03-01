@@ -45,8 +45,9 @@
 <script>
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
-import { mapActions, mapState } from "vuex";
+import { mapActions } from "vuex";
 import Credentials from "../api/amplifyConf";
+import { Auth } from "aws-amplify";
 
 export default {
     name: "Verify",
@@ -61,14 +62,11 @@ export default {
             validateErrors: []
         };
     },
-    computed: {
-        ...mapState({
-            attributes: state => state.users.attributes
-        })
-    },
-    created() {
-        this.qualtricsToken = this.attributes["custom:Qualtrics-API-Key"];
-        this.qualtricsDatacenter = this.attributes["custom:Data-Center"];
+    async created() {
+        let user = await Auth.currentAuthenticatedUser();
+        let { attributes } = user;
+        this.qualtricsToken = attributes["custom:Qualtrics-API-Key"];
+        this.qualtricsDatacenter = attributes["custom:Data-Center"];
     },
     methods: {
         ...mapActions({
@@ -93,6 +91,8 @@ export default {
         },
         async update() {
             if (this.validateInput()) {
+                window.axios.defaults.headers["x-api-token"] = this.qualtricsToken;
+                window.axios.defaults.headers["q-data-center"] = this.qualtricsDatacenter;
                 await this.updateUser({
                     apiToken: this.qualtricsToken,
                     centerId: this.qualtricsDatacenter
