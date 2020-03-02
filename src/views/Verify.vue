@@ -112,6 +112,7 @@ export default {
         }
     },
     created() {
+        window.scrollTo(0, 0);
         if (process.env.NODE_ENV === "production") {
             Auth.currentAuthenticatedUser().then(current => {
                 const { attributes } = current;

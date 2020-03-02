@@ -208,3 +208,15 @@ a:hover {
 .nav-link img:hover {
     opacity: 0.5;
 }
+
+#homeLink:hover {
+    opacity: 0.6;
+}
+
+#footerCopy:hover {
+    cursor: default;
+}
+#footerLink:hover {
+    cursor: pointer;
+    color: lightgray;
+}

@@ -13,7 +13,7 @@ export default {
     store,
     async created() {
         // Sleep to let Amplify add user to localStorage
-        await new Promise(r => setTimeout(r, 250));
+        await new Promise(r => setTimeout(r, 500));
 
         // Check if session is signed in
         this.fetchUser()
@@ -36,16 +36,6 @@ export default {
             })
             .catch(err => {
                 console.error(err);
-                if (process.env.NODE_ENV === "production") {
-                    if (window.location.href.includes("/auth/verify")) {
-                        setTimeout(() => {
-                            window.location.reload();
-                        }, 1000);
-                    } else {
-                        // If not signed in, redirect to home
-                        this.$router.push("/");
-                    }
-                }
             });
     },
     methods: {
@@ -56,7 +46,6 @@ export default {
 };
 </script>
 
-<!--CSS Styling-->
 <style scoped>
 @import "./assets/style.css";
 @import "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css";

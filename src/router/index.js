@@ -25,6 +25,27 @@ const routes = [
         component: () => import("@/views/About.vue")
     },
     {
+        path: "/contact",
+        name: "contact",
+        component: () => import("@/views/Contact.vue")
+    },
+    {
+        path: "/guidelines",
+        name: "guidelines",
+        meta: {
+            title: "ecoserve - Guidelines"
+        },
+        component: () => import("@/views/Guidelines.vue")
+    },
+    {
+        path: "/security",
+        name: "security",
+        meta: {
+            title: "ecoserve - Security"
+        },
+        component: () => import("@/views/Security.vue")
+    },
+    {
         path: "/projects",
         name: "projects",
         meta: {
@@ -61,11 +82,6 @@ const routes = [
         component: () => import("@/views/Dashboard.vue")
     },
     {
-        path: "/contact",
-        name: "contact",
-        component: () => import("@/views/Contact.vue")
-    },
-    {
         path: "/auth/verify",
         name: "verify",
         meta: {
@@ -89,13 +105,7 @@ const router = new VueRouter({
     routes
 });
 
-router.beforeEach((to, from, next) => {
-    // Prevent manual access of verify page
-    if (to.path === "/auth/verify" && from.name === null && process.env.NODE_ENV === "production") {
-        next(false);
-        router.push("/");
-    }
-
+router.beforeEach((to, _, next) => {
     if (to.meta.requiresAuth) {
         Auth.currentAuthenticatedUser()
             .then(() => {
@@ -103,7 +113,8 @@ router.beforeEach((to, from, next) => {
                 document.title = to.meta.title;
                 next();
             })
-            .catch(() => {
+            .catch(err => {
+                console.error(err);
                 if (process.env.NODE_ENV === "development") {
                     document.title = to.meta.title;
                     next();
