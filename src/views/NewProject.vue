@@ -3,7 +3,7 @@
         <Header />
         <b-container>
             <b-row class="h-100">
-                <h1 aria-placeholder="CREATE NEW PROJECT">{{ title }}</h1>
+                <h1>{{ title }}</h1>
             </b-row>
             <b-row>
                 <b-form-input v-model="title" placeholder="Enter Project Title"></b-form-input>
@@ -120,6 +120,7 @@ export default {
         },
         createProject() {
             const payload = {
+                accountToken: window.axios.defaults.headers["x-api-token"],
                 name: this.title,
                 description: this.description,
                 surveyId: this.survey.id,

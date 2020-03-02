@@ -19,7 +19,7 @@
 
             <b-container v-show="projectPicked">
                 <b-row class="h-100">
-                    <h1 aria-placeholder="CREATE NEW PROJECT">{{ title }}</h1>
+                    <h1>{{ title }}</h1>
                 </b-row>
                 <b-row>
                     <h4>Survey: "{{ this.selectedSurvey.name }}"</h4>
@@ -130,6 +130,7 @@ export default {
         }
     },
     created() {
+        window.scrollTo(0, 0);
         this.loadProjects();
     },
     methods: {
@@ -197,6 +198,7 @@ export default {
                 const payload = {
                     previousId: this.previousProjectId,
                     data: {
+                        accountToken: window.axios.defaults.headers["x-api-token"],
                         name: this.title,
                         description: this.description,
                         surveyId: this.selected.surveyId,
@@ -213,7 +215,8 @@ export default {
         },
         deleteProject() {
             const payload = {
-                projectId: this.title + "+" + this.selected.surveyId
+                projectId: this.title + "+" + this.selected.surveyId,
+                accountToken: window.axios.defaults.headers["x-api-token"]
             };
             this.removeProject(payload);
             this.exitEditing();

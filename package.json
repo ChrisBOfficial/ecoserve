@@ -19,7 +19,6 @@
     "scripts": {
         "build": "vue-cli-service build",
         "deploy": "npm run build && cd resources && ./prep-deploy.sh",
-        "deploy-windows": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command npm run build; cd resources; ./prep-deploy.ps1",
         "prestart": "npm install",
         "devstart": "NODE_ENV=development nodemon src/server.js",
         "start": "node src/server.js",
@@ -29,6 +28,8 @@
         "test": "mocha --exit; vue-cli-service test:unit"
     },
     "dependencies": {
+        "aws-amplify": "^2.2.5",
+        "aws-sdk": "^2.625.0",
         "axios": "^0.19.1",
         "bootstrap": "^4.4.1",
         "bootstrap-vue": "^2.1.0",

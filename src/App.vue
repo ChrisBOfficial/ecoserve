@@ -6,14 +6,46 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import store from "./store";
 
 export default {
-    store
+    store,
+    async created() {
+        // Sleep to let Amplify add user to localStorage
+        await new Promise(r => setTimeout(r, 500));
+
+        // Check if session is signed in
+        this.fetchUser()
+            .then(attributes => {
+                if (
+                    Object.prototype.hasOwnProperty.call(attributes, "custom:Qualtrics-API-Key") &&
+                    Object.prototype.hasOwnProperty.call(attributes, "custom:Data-Center")
+                ) {
+                    // If signed in and Qualtrics credentials exist, set axios headers
+                    window.axios.defaults.headers["x-api-token"] = attributes["custom:Qualtrics-API-Key"];
+                    window.axios.defaults.headers["q-data-center"] = attributes["custom:Data-Center"];
+                    if (window.location.href.includes("/auth/verify")) {
+                        // If Qualtrics credentials exist, redirect to home from verify page
+                        this.$router.push("/");
+                    }
+                } else {
+                    // If signed in and Qualtrics credentials don't exist, redirect to verify page
+                    this.$router.push("/auth/verify");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+            });
+    },
+    methods: {
+        ...mapActions({
+            fetchUser: "users/fetchUser"
+        })
+    }
 };
 </script>
 
-<!--CSS Styling-->
 <style scoped>
 @import "./assets/style.css";
 @import "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css";

@@ -1,6 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import BootstrapVue from "bootstrap-vue";
+import { Auth } from "aws-amplify";
+import Credentials from "../api/amplifyConf";
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -23,10 +25,32 @@ const routes = [
         component: () => import("@/views/About.vue")
     },
     {
+        path: "/contact",
+        name: "contact",
+        component: () => import("@/views/Contact.vue")
+    },
+    {
+        path: "/guidelines",
+        name: "guidelines",
+        meta: {
+            title: "ecoserve - Guidelines"
+        },
+        component: () => import("@/views/Guidelines.vue")
+    },
+    {
+        path: "/security",
+        name: "security",
+        meta: {
+            title: "ecoserve - Security"
+        },
+        component: () => import("@/views/Security.vue")
+    },
+    {
         path: "/projects",
         name: "projects",
         meta: {
-            title: "ecoserve - Projects"
+            title: "ecoserve - Projects",
+            requiresAuth: true
         },
         component: () => import("@/views/Projects.vue")
     },
@@ -34,7 +58,8 @@ const routes = [
         path: "/newProject",
         name: "newProject",
         meta: {
-            title: "ecoserve - Create Project"
+            title: "ecoserve - Create Project",
+            requiresAuth: true
         },
         component: () => import("@/views/NewProject.vue")
     },
@@ -42,7 +67,8 @@ const routes = [
         path: "/editProject",
         name: "editProject",
         meta: {
-            title: "ecoserve - Edit Project"
+            title: "ecoserve - Edit Project",
+            requiresAuth: true
         },
         component: () => import("@/views/ExistingProject.vue")
     },
@@ -50,19 +76,27 @@ const routes = [
         path: "/dashboard",
         name: "dashboard",
         meta: {
-            title: "ecoserve - Dashboard"
+            title: "ecoserve - Dashboard",
+            requiresAuth: true
         },
         component: () => import("@/views/Dashboard.vue")
     },
     {
-        path: "/workspace",
-        name: "workspace",
-        component: () => import("@/views/Workspace.vue")
+        path: "/auth/verify",
+        name: "verify",
+        meta: {
+            title: "Account verification"
+        },
+        component: () => import("@/views/Verify.vue")
     },
     {
-        path: "/contact",
-        name: "contact",
-        component: () => import("@/views/Contact.vue")
+        path: "/auth/settings",
+        name: "settings",
+        meta: {
+            title: "ecoserve - Settings",
+            requiresAuth: true
+        },
+        component: () => import("@/views/Settings.vue")
     }
 ];
 
@@ -72,8 +106,29 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, _, next) => {
-    document.title = to.meta.title;
-    next();
+    if (to.meta.requiresAuth) {
+        Auth.currentAuthenticatedUser()
+            .then(() => {
+                // If user is signed in, continue
+                document.title = to.meta.title;
+                next();
+            })
+            .catch(err => {
+                console.error(err);
+                if (process.env.NODE_ENV === "development") {
+                    document.title = to.meta.title;
+                    next();
+                } else {
+                    // If not signed in, stop and redirect to sign-in page
+                    next(false);
+                    window.location.assign(Credentials.COGNITO_TOKEN_URL);
+                }
+            });
+    } else {
+        // Continue if page doesn't require auth
+        document.title = to.meta.title;
+        next();
+    }
 });
 
 export default router;

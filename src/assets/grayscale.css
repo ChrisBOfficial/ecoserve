@@ -204,3 +204,19 @@ a:hover {
 .text-primary {
     color: #64a19d !important;
 }
+
+.nav-link img:hover {
+    opacity: 0.5;
+}
+
+#homeLink:hover {
+    opacity: 0.6;
+}
+
+#footerCopy:hover {
+    cursor: default;
+}
+#footerLink:hover {
+    cursor: pointer;
+    color: lightgray;
+}
