@@ -16,7 +16,7 @@
                 </b-tab>
                 <b-tab title="Circular Charts">
                     <CircularChart />
-                    <b-button>Download Chart</b-button>
+                    <b-button @click="downloadImage">Download Chart</b-button>
                 </b-tab>
             </b-tabs>
         </div>
@@ -30,6 +30,7 @@ import Footer from "@/components/Footer.vue";
 import BarChart from "@/components/BarChart.vue";
 import CircularChart from "@/components/CircularChart.vue";
 const d3 = Object.assign({}, require("d3"), require("d3-scale"));
+const FileSaver = require('file-saver')
 
 export default {
     name: "dashboard",
@@ -230,6 +231,72 @@ export default {
                 .style("fill", function(d) {
                     return d.color;
                 });
+        },
+
+        downloadImage (){
+            
+            var format = 'png'
+
+            var svgElementNodes = d3.selectAll('svg')._groups[0]
+            console.log(svgElementNodes)
+            console.log(svgElementNodes[0])
+            var svgElements = Array.from(svgElementNodes)
+            
+            var serializer = new XMLSerializer();
+            
+            //Formatting each elements in svgElements array 
+            svgElements.forEach(function(element, index){
+                var svgString = serializer.serializeToString(this[index])
+                svgString = svgString.replace(/(\w+)?:?xlink=/g, 'xmlns:xlink='); // Fix root xlink without namespace
+	            svgString = svgString.replace(/NS\d+:href/g, 'xlink:href'); // Safari NS namespace fix
+
+                this[index] = svgString
+            }, svgElements)
+
+            //Async image loading using Promise
+            const loadImage = svgString => {
+                
+                var imgsrc = 'data:image/svg+xml;base64,'+ btoa( unescape( encodeURIComponent( svgString ) ) ); // Convert SVG string to data URL
+
+                return new Promise((resolve,reject) => {
+                    //var data = (new XMLSerializer()).serializeToString(url);
+                    //var DOMURL = window.URL || window.webkitURL || window;
+        
+                    var image = new Image()
+                    image.onload = () => resolve(image)
+                    image.onerror = () => reject(new Error('load image fail'))
+                    image.src = imgsrc 
+
+
+                })
+            }
+
+            //Function to draw image 
+            const depict = options => {
+                var canvas = document.createElement("canvas");
+                var ctx = canvas.getContext("2d")
+
+                canvas.width = 2400
+                canvas.height = 2400
+                
+                var myOptions = Object.assign({}, options)
+                
+                return loadImage(myOptions).then(image => {
+                    ctx.fillStyle = 'white'
+                    ctx.fillRect(0, 0, canvas.width, canvas.height)
+                    ctx.drawImage(image, 0, 0)
+
+                    //download image
+                    canvas.toBlob(function(blob){
+		                FileSaver.saveAs( blob, 'CircularChart.png' ); // FileSaver.js function
+                    })
+                })
+            }
+
+
+            svgElements.forEach(depict)
+
+            
         }
     }
 };
