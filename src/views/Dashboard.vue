@@ -235,7 +235,8 @@ export default {
 
         downloadImage (){
             
-            var format = 'png'
+            var width = 2400,
+                height = 2400
 
             var svgElementNodes = d3.selectAll('svg')._groups[0]
             console.log(svgElementNodes)
@@ -253,8 +254,13 @@ export default {
                 this[index] = svgString
             }, svgElements)
 
+            console.log(svgElements)
+
             //Async image loading using Promise
             const loadImage = svgString => {
+                    
+                var format = 'png';
+
                 
                 var imgsrc = 'data:image/svg+xml;base64,'+ btoa( unescape( encodeURIComponent( svgString ) ) ); // Convert SVG string to data URL
 
@@ -273,18 +279,19 @@ export default {
 
             //Function to draw image 
             const depict = options => {
+                console.log('Create context.')
                 var canvas = document.createElement("canvas");
                 var ctx = canvas.getContext("2d")
 
-                canvas.width = 2400
-                canvas.height = 2400
+                canvas.width = width
+                canvas.height = height
                 
-                var myOptions = Object.assign({}, options)
-                
-                return loadImage(myOptions).then(image => {
+                console.log('Attempting to download image')
+                return loadImage(options).then(image => {
                     ctx.fillStyle = 'white'
-                    ctx.fillRect(0, 0, canvas.width, canvas.height)
-                    ctx.drawImage(image, 0, 0)
+                    ctx.fillRect(0, 0, width, height)
+                    ctx.drawImage(image, 0, 0, width, height)
+                    console.log('Downloading image.')
 
                     //download image
                     canvas.toBlob(function(blob){
