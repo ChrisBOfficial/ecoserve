@@ -31,6 +31,7 @@ import BarChart from "@/components/BarChart.vue";
 import CircularChart from "@/components/CircularChart.vue";
 const d3 = Object.assign({}, require("d3"), require("d3-scale"));
 const FileSaver = require('file-saver')
+const JSZip = require('jszip')
 
 export default {
     name: "dashboard",
@@ -235,12 +236,12 @@ export default {
 
         downloadImage (){
             
+            var zip = new JSZip()
+            
             var width = 2400,
-                height = 2400
+                height = 2700
 
             var svgElementNodes = d3.selectAll('svg')._groups[0]
-            console.log(svgElementNodes)
-            console.log(svgElementNodes[0])
             var svgElements = Array.from(svgElementNodes)
             
             var serializer = new XMLSerializer();
@@ -254,7 +255,6 @@ export default {
                 this[index] = svgString
             }, svgElements)
 
-            console.log(svgElements)
 
             //Async image loading using Promise
             const loadImage = svgString => {
@@ -279,31 +279,40 @@ export default {
 
             //Function to draw image 
             const depict = options => {
-                console.log('Create context.')
                 var canvas = document.createElement("canvas");
                 var ctx = canvas.getContext("2d")
 
                 canvas.width = width
                 canvas.height = height
+
+                console.log(options)
                 
-                console.log('Attempting to download image')
                 return loadImage(options).then(image => {
                     ctx.fillStyle = 'white'
                     ctx.fillRect(0, 0, width, height)
                     ctx.drawImage(image, 0, 0, width, height)
-                    console.log('Downloading image.')
+                    var fileName = this.extractContent(options) +".png"
+                    //console.log(fileName)
 
-                    //download image
+                    //save to zip file 
                     canvas.toBlob(function(blob){
-		                FileSaver.saveAs( blob, 'CircularChart.png' ); // FileSaver.js function
+                        FileSaver.saveAs( blob, fileName); // FileSaver.js function
+                        //zip.file(blob, fileName)
                     })
                 })
             }
 
 
             svgElements.forEach(depict)
+            FileSaver.saveAs(zip, "CircularChart")
 
             
+        },
+        extractContent(s) {
+            var span = document.createElement('span');
+            span.innerHTML = s;
+            console.log(span.textContent)
+            return span.textContent || span.innerText;
         }
     }
 };
