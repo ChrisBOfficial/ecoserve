@@ -4,6 +4,7 @@
             <div class="container">
                 <router-link class="navbar-brand" to="/"
                     ><img
+                        id="homeLink"
                         src="../assets/ecoserve-lower.png"
                         height="100"
                         width="100"
@@ -16,10 +17,10 @@
                             <router-link class="nav-link" to="/about">ABOUT</router-link>
                         </li>
                         <li class="nav-item">
-                            <router-link class="nav-link" to="/projects">PROJECTS</router-link>
-                        </li>
-                        <li class="nav-item">
                             <router-link class="nav-link" to="/contact">CONTACT</router-link>
+                        </li>
+                        <li v-if="authorized" class="nav-item">
+                            <router-link class="nav-link" to="/projects">PROJECTS</router-link>
                         </li>
                         <li v-if="!authorized" class="nav-item">
                             <a class="nav-link" :href="loginLink">LOGIN</a>

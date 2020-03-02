@@ -46,6 +46,9 @@ export default {
     components: {
         Header,
         Footer
+    },
+    created() {
+        window.scrollTo(0, 0);
     }
 };
 </script>

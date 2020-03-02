@@ -46,7 +46,6 @@ export default {
 };
 </script>
 
-<!--CSS Styling-->
 <style scoped>
 @import "./assets/style.css";
 @import "https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css";
