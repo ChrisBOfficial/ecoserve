@@ -324,6 +324,7 @@ export default {
             svg.append("text")
                 .text(category)
                 .attr("transform", "translate(" + textWidth / -2 + "," + (height / 2 + 20) + ")")
+                .attr("class", "chartName")
                 .style("font-size", "0.9rem")
                 .style("font-weight", 800)
                 .style("font-family", "Nunito");
