@@ -57,8 +57,11 @@ export default {
             projects: state => state.projects.projects
         })
     },
-    created() {
+    async created() {
         window.scrollTo(0, 0);
+        if (!window.axios.defaults.headers["x-api-token"] && !window.axios.defaults.headers["q-data-center"]) {
+            await new Promise(r => setTimeout(r, 550));
+        }
         this.loadProjects();
         this.setBlocks([]);
     },

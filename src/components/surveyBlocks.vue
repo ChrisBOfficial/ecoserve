@@ -31,7 +31,10 @@ export default {
             blocks: state => state.surveys.blocks
         })
     },
-    created() {
+    async created() {
+        if (!window.axios.defaults.headers["x-api-token"] && !window.axios.defaults.headers["q-data-center"]) {
+            await new Promise(r => setTimeout(r, 550));
+        }
         this.loadSurveys();
     },
     methods: {
