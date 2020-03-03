@@ -21,7 +21,7 @@ export default {
             lastUpdate: 0,
             surveyId: "",
             intervalId: Number,
-            loading: false,
+            loading: true,
             blockOrdering: {}
         };
     },
@@ -39,9 +39,9 @@ export default {
             for (let i = 0; i < this.project.blocks.length; i++) {
                 this.blockOrdering[this.project.blocks[i].title] = i;
             }
-            this.loading = true;
             this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).then(() => {
                 this.loading = false;
+                this.$emit("done-loading");
                 this.makeCharts();
             });
         });
