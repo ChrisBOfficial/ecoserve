@@ -54,7 +54,7 @@ export default {
       .style("fill", "black")
       .attr("dx", "-.8em")
       .attr("dy", "-.55em")
-      .attr("transform", "translate(0,"+ y(d3.min(data, d => d.mean))/2 +") rotate(-45)" ); //y(d3.min(data, d => d.mean))/2
+      .attr("transform", "translate(0,"+ (y(d3.min(data, d => d.mean))- y(0)) +") rotate(-45)" ); //y(d3.min(data, d => d.mean))/2
 
   elem.append("g")
       .attr("class", "y axis")
