@@ -284,8 +284,6 @@ export default {
 
                 canvas.width = width
                 canvas.height = height
-
-                console.log(options)
                 
                 return loadImage(options).then(image => {
                     ctx.fillStyle = 'white'
@@ -297,14 +295,25 @@ export default {
                     //save to zip file 
                     canvas.toBlob(function(blob){
                         FileSaver.saveAs( blob, fileName); // FileSaver.js function
-                        //zip.file(blob, fileName)
+                        zip.file(blob, fileName)
                     })
                 })
             }
 
 
-            svgElements.forEach(depict)
-            FileSaver.saveAs(zip, "CircularChart")
+            
+
+
+            svgElements.forEach(depict).then(
+            //not working correctly 
+            zip.generateAsync({type:"blob"})
+            .then(function (zip) {
+                console.log("Download zip")
+                FileSaver.saveAs(zip, "charts.zip")
+            })
+            )
+
+            
 
             
         },
