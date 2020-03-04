@@ -12,7 +12,7 @@
                             <h1>{{ question._id }}</h1>
 
                             <b-container>
-                                <BarChart xKey="subquestion" yKey="mean" conf="confidence" :data="question.data" />
+                                <BarChart />
                             </b-container>
                         </b-tab>
                     </b-tabs>
