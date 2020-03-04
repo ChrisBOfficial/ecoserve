@@ -29,7 +29,6 @@
                     <b-form-input v-model="description" placeholder="Enter Project Description"></b-form-input>
                 </b-row>
                 <b-row>
-                    <h2>Visualization Dashboard</h2>
                     <visualization-dashboard
                         v-bind:existing-visualizations="visualizations"
                         v-bind:existing-blocks="existingBlocks"

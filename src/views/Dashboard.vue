@@ -6,7 +6,7 @@
                 <b-tab title="Circular Charts" active>
                     <CircularChart ref="circularRef" v-on:done-loading="circularLoading = false" />
                 </b-tab>
-                <b-tab title="Bar Graphs">
+                <b-tab title="Bar Graphs" lazy>
                     <b-tabs vertical lazy>
                         <b-tab v-for="question in barChartData" :key="question._id" :title="question._id">
                             <h1>{{ question._id }}</h1>
@@ -18,13 +18,13 @@
                     </b-tabs>
                 </b-tab>
             </b-tabs>
-            <b-button
-                v-if="!circularLoading"
-                @click="downloadImage"
-                style="max-width: 20%; background-color: darkseagreen; margin: 5rem 1rem; float:right;"
-                >Download Images</b-button
-            >
         </div>
+        <b-button
+            v-if="!circularLoading"
+            @click="downloadImage"
+            style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
+            >Download Images</b-button
+        >
         <Footer />
     </div>
 </template>

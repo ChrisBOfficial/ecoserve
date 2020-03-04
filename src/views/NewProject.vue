@@ -19,7 +19,6 @@
                 <survey-blocks />
             </b-row>
             <b-row>
-                <h2>Visualization Dashboard</h2>
                 <visualization-dashboard />
             </b-row>
 

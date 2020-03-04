@@ -2,7 +2,7 @@
     <div>
         <Header />
         <section style="min-height:100vh;">
-            <div class="container h-100" style="padding: 15vh 0vh 0vh 0vh;">
+            <div class="container h-100" style="padding: 25vh 0vh 0vh 0vh;">
                 <div class="row h-100">
                     <div class="col text-center align-items-center">
                         <img src="@/assets/profile.png" alt="Team profile" class="contact-profile" />

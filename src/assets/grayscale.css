@@ -210,10 +210,6 @@ a:hover {
     opacity: 0.5;
 }
 
-#homeLink:hover {
-    opacity: 0.6;
-}
-
 #footerCopy:hover {
     cursor: default;
 }
