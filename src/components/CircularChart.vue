@@ -21,7 +21,7 @@ export default {
             lastUpdate: 0,
             surveyId: "",
             intervalId: Number,
-            loading: false,
+            loading: true,
             blockOrdering: {}
         };
     },
@@ -39,9 +39,9 @@ export default {
             for (let i = 0; i < this.project.blocks.length; i++) {
                 this.blockOrdering[this.project.blocks[i].title] = i;
             }
-            this.loading = true;
             this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).then(() => {
                 this.loading = false;
+                this.$emit("done-loading");
                 this.makeCharts();
             });
         });
@@ -158,6 +158,8 @@ export default {
 
                     // Only add nutrition label if none are present
                     if (label.empty()) {
+                        svg.append("g")  
+                        /*
                         svg.append("rect")
                             .attr("class", "nutritionLabel")
                             .attr("width", "100%")
@@ -165,6 +167,43 @@ export default {
                             .attr("fill", "white")
                             .attr("stroke", "black")
                             .attr("stroke-width", 5);
+                        svg.selectAll('rect')
+                        .data(data)
+                        .enter("rect")
+                        */
+                    
+                    let thead = svg.append( "thead" );
+                    let tbody = svg.append( "tbody" );
+                             
+
+                // append the header row
+                thead.append( "tr" )
+                    .selectAll( "tr" )
+                    .data( data )
+                    .enter()
+                    .append( "th" )
+                    .text( function ( data ) { return d.service; } );
+
+                // create a row for each object in the data
+                var rows = tbody.selectAll( "tr" )
+                    .data( data )
+                    .enter()
+                    .append( "tr" );
+
+                // create a cell in each row for each column
+                var cells = rows.selectAll( "td" )
+                    .data( function ( row ) {
+                        return columns.map( function ( column ) {
+                            return { column: column, mean: row[column] };
+                        } );
+                    } )
+                    .enter()
+                    .append( "td" )
+                    .attr( "style", "font-family: 'Lato'" )
+                    .attr("style", "padding: 2px;")
+                        .html( function ( d ) {
+                            return d.mean;
+                        })
                         // Re-add highlight
                         svg.select(".selectedHighlight").remove();
                         svg.append("rect")

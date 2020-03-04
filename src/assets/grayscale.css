@@ -1,6 +1,7 @@
 #mainNav {
     min-height: 56px;
     background-color: #fff;
+    box-shadow: 0px 0px 4px gray;
 }
 
 #mainNav .navbar-brand {
