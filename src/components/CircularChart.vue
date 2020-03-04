@@ -21,7 +21,7 @@ export default {
             lastUpdate: 0,
             surveyId: "",
             intervalId: Number,
-            loading: false,
+            loading: true,
             blockOrdering: {}
         };
     },
@@ -39,9 +39,9 @@ export default {
             for (let i = 0; i < this.project.blocks.length; i++) {
                 this.blockOrdering[this.project.blocks[i].title] = i;
             }
-            this.loading = true;
             this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).then(() => {
                 this.loading = false;
+                this.$emit("done-loading");
                 this.makeCharts();
             });
         });
@@ -363,6 +363,7 @@ export default {
             svg.append("text")
                 .text(category)
                 .attr("transform", "translate(" + textWidth / -2 + "," + (height / 2 + 20) + ")")
+                .attr("class", "chartName")
                 .style("font-size", "0.9rem")
                 .style("font-weight", 800)
                 .style("font-family", "Nunito");

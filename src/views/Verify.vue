@@ -111,20 +111,26 @@ export default {
             return this.validateErrors.length > 0;
         }
     },
-    created() {
+    async created() {
         window.scrollTo(0, 0);
         if (process.env.NODE_ENV === "production") {
-            Auth.currentAuthenticatedUser().then(current => {
-                const { attributes } = current;
-                if (
-                    Object.prototype.hasOwnProperty.call(attributes, "custom:Qualtrics-API-Key") &&
-                    Object.prototype.hasOwnProperty.call(attributes, "custom:Data-Center")
-                ) {
-                    this.verifyFurther = false;
-                } else {
-                    this.verifyFurther = true;
-                }
-            });
+            Auth.currentAuthenticatedUser()
+                .then(current => {
+                    const { attributes } = current;
+                    if (
+                        Object.prototype.hasOwnProperty.call(attributes, "custom:Qualtrics-API-Key") &&
+                        Object.prototype.hasOwnProperty.call(attributes, "custom:Data-Center")
+                    ) {
+                        this.verifyFurther = false;
+                    } else {
+                        this.verifyFurther = true;
+                    }
+                })
+                .catch(() => {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 500);
+                });
         } else {
             this.verifyFurther = true;
         }

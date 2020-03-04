@@ -2,8 +2,11 @@
     <div>
         <Header />
         <div style="min-height:100vh;">
-            <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;" lazy>
-                <b-tab title="Bar Graphs" active>
+            <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;">
+                <b-tab title="Circular Charts" active>
+                    <CircularChart ref="circularRef" v-on:done-loading="circularLoading = false" />
+                </b-tab>
+                <b-tab title="Bar Graphs">
                     <b-tabs vertical lazy>
                         <b-tab v-for="question in barChartData" :key="question._id" :title="question._id">
                             <h1>{{ question._id }}</h1>
@@ -14,10 +17,13 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
-                <b-tab title="Circular Charts">
-                    <CircularChart />
-                </b-tab>
             </b-tabs>
+            <b-button
+                v-if="!circularLoading"
+                @click="downloadImage"
+                style="max-width: 20%; background-color: darkseagreen; margin: 5rem 1rem; float:right;"
+                >Download Images</b-button
+            >
         </div>
         <Footer />
     </div>
@@ -29,6 +35,8 @@ import Footer from "@/components/Footer.vue";
 import BarChart from "@/components/BarChart.vue";
 import CircularChart from "@/components/CircularChart.vue";
 const d3 = Object.assign({}, require("d3"), require("d3-scale"));
+const FileSaver = require("file-saver");
+const JSZip = require("jszip");
 
 export default {
     name: "dashboard",
@@ -193,7 +201,8 @@ export default {
                 { service: "Forage", mean: 1.6315789473684212 },
                 { service: "Livestock", mean: -1.5135135135135131 },
                 { service: "Water", mean: 1.4594594594594596 }
-            ]
+            ],
+            circularLoading: true
         };
     },
     created() {
@@ -229,6 +238,78 @@ export default {
                 .style("fill", function(d) {
                     return d.color;
                 });
+        },
+
+        downloadImage() {
+            var zip = new JSZip();
+
+            var width = 2400,
+                height = 2700;
+
+            var svgElementNodes = d3.selectAll("svg")._groups[0];
+            var svgElements = Array.from(svgElementNodes);
+
+            var serializer = new XMLSerializer();
+
+            //Formatting each elements in svgElements array
+            svgElements.forEach(function(element, index) {
+                var svgString = serializer.serializeToString(this[index]);
+                svgString = svgString.replace(/(\w+)?:?xlink=/g, "xmlns:xlink="); // Fix root xlink without namespace
+                svgString = svgString.replace(/NS\d+:href/g, "xlink:href"); // Safari NS namespace fix
+
+                this[index] = svgString;
+            }, svgElements);
+
+            //Async image loading using Promise
+            const loadImage = svgString => {
+                var format = "png";
+
+                var imgsrc = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString))); // Convert SVG string to data URL
+
+                return new Promise((resolve, reject) => {
+                    //var data = (new XMLSerializer()).serializeToString(url);
+                    //var DOMURL = window.URL || window.webkitURL || window;
+
+                    var image = new Image();
+                    image.onload = () => resolve(image);
+                    image.onerror = () => reject(new Error("load image fail"));
+                    image.src = imgsrc;
+                });
+            };
+
+            //Function to draw image
+            const depict = options => {
+                var canvas = document.createElement("canvas");
+                var ctx = canvas.getContext("2d");
+
+                canvas.width = width;
+                canvas.height = height;
+
+                console.log(options);
+
+                return loadImage(options).then(image => {
+                    ctx.fillStyle = "white";
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.drawImage(image, 0, 0, width, height);
+                    var fileName = this.extractContent(options) + ".png";
+                    //console.log(fileName)
+
+                    //save to zip file
+                    canvas.toBlob(function(blob) {
+                        FileSaver.saveAs(blob, fileName); // FileSaver.js function
+                        //zip.file(blob, fileName)
+                    });
+                });
+            };
+
+            svgElements.forEach(depict);
+            FileSaver.saveAs(zip, "CircularChart");
+        },
+        extractContent(s) {
+            var span = document.createElement("span");
+            span.innerHTML = s;
+            console.log(span.textContent);
+            return span.textContent || span.innerText;
         }
     }
 };

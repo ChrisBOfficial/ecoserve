@@ -1,3 +1,8 @@
 module.exports = {
-    productionSourceMap: false
+    productionSourceMap: false,
+
+    css: {
+      sourceMap: true,
+      extract: false
+    }
 };

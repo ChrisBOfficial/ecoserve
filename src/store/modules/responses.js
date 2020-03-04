@@ -158,7 +158,6 @@ export default {
 
         barchartAggregate: [],
         circleAggregate: [],
-        labelAggregate: [],
 
         url: socketUrl
     },
