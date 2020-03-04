@@ -158,7 +158,7 @@ export default {
 
                     // Only add nutrition label if none are present
                     if (label.empty()) {
-                        svg.append("g")  
+                        svg.append("g");
                         /*
                         svg.append("rect")
                             .attr("class", "nutritionLabel")
@@ -171,39 +171,43 @@ export default {
                         .data(data)
                         .enter("rect")
                         */
-                    
-                    let thead = svg.append( "thead" );
-                    let tbody = svg.append( "tbody" );
-                             
 
-                // append the header row
-                thead.append( "tr" )
-                    .selectAll( "tr" )
-                    .data( data )
-                    .enter()
-                    .append( "th" )
-                    .text( function ( data ) { return d.service; } );
+                        let thead = svg.append("thead");
+                        let tbody = svg.append("tbody");
 
-                // create a row for each object in the data
-                var rows = tbody.selectAll( "tr" )
-                    .data( data )
-                    .enter()
-                    .append( "tr" );
+                        // append the header row
+                        thead
+                            .append("tr")
+                            .selectAll("tr")
+                            .data(data)
+                            .enter()
+                            .append("th")
+                            .text(function(data) {
+                                return d.service;
+                            });
 
-                // create a cell in each row for each column
-                var cells = rows.selectAll( "td" )
-                    .data( function ( row ) {
-                        return columns.map( function ( column ) {
-                            return { column: column, mean: row[column] };
-                        } );
-                    } )
-                    .enter()
-                    .append( "td" )
-                    .attr( "style", "font-family: 'Lato'" )
-                    .attr("style", "padding: 2px;")
-                        .html( function ( d ) {
-                            return d.mean;
-                        })
+                        // create a row for each object in the data
+                        var rows = tbody
+                            .selectAll("tr")
+                            .data(data)
+                            .enter()
+                            .append("tr");
+
+                        // create a cell in each row for each column
+                        var cells = rows
+                            .selectAll("td")
+                            .data(function(row) {
+                                return columns.map(function(column) {
+                                    return { column: column, mean: row[column] };
+                                });
+                            })
+                            .enter()
+                            .append("td")
+                            .attr("style", "font-family: 'Lato'")
+                            .attr("style", "padding: 2px;")
+                            .html(function(d) {
+                                return d.mean;
+                            });
                         // Re-add highlight
                         svg.select(".selectedHighlight").remove();
                         svg.append("rect")
