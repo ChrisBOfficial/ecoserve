@@ -17,20 +17,15 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
+                <b-button
+                    v-if="!circularLoading"
+                    @click="downloadZip"
+                style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
+                    Download Images
+                </b-button>
             </b-tabs>
-            <b-button
-                v-if="!circularLoading"
-                @click="downloadZip"
-                style="max-width: 20%; background-color: darkseagreen; margin: 5rem 1rem; float:right;"
-                >Download Images</b-button
-            >
         </div>
-        <b-button
-            v-if="!circularLoading"
-            @click="downloadImage"
-            style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
-            >Download Images</b-button
-        >
+        
         <Footer />
     </div>
 </template>
@@ -275,8 +270,6 @@ export default {
                     var imgsrc = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString))); // Convert SVG string to data URL
 
                     return new Promise((resolve, reject) => {
-                    //var data = (new XMLSerializer()).serializeToString(url);
-                    //var DOMURL = window.URL || window.webkitURL || window;
 
                         var image = new Image();
                         image.onload = () => resolve(image);
@@ -302,10 +295,8 @@ export default {
 
                         //save to zip file
                         canvas.toBlob(function(blob) {
-                            FileSaver.saveAs(blob, fileName); // FileSaver.js function
+                            //FileSaver.saveAs(blob, fileName); // FileSaver.js function
                             vm.circularZip.file(fileName, blob)
-                            //console.log(vm.circularZip)
-                            //console.log(Object.keys(vm.circularZip.files).length )
                         })
                     })
                 }
