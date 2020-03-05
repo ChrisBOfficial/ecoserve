@@ -213,6 +213,9 @@ a:hover {
 #footerCopy:hover {
     cursor: default;
 }
+#footerLink {
+    color: white;
+}
 #footerLink:hover {
     cursor: pointer;
     color: lightgray;

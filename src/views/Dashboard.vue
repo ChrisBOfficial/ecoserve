@@ -28,14 +28,15 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
+                <b-button
+                    v-if="!circularLoading"
+                    @click="downloadZip"
+                style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
+                    Download Images
+                </b-button>
             </b-tabs>
         </div>
-        <b-button
-            v-if="!circularLoading"
-            @click="downloadImage"
-            style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
-            >Download Images</b-button
-        >
+        
         <Footer />
     </div>
 </template>
@@ -59,6 +60,7 @@ export default {
     },
     data() {
         return {
+            circularZip: new JSZip(),
             values: [20, 50, 60, 40, 30],
             speciesList: ["Roses", "Tulips", "Daisies", "Narcissuses", "Wallaby"],
             barChartData: [
@@ -252,75 +254,87 @@ export default {
         },
 
         downloadImage() {
-            var zip = new JSZip();
+            var vm = this
 
             var width = 2400,
-                height = 2700;
+                height = 2700
 
-            var svgElementNodes = d3.selectAll("svg")._groups[0];
-            var svgElements = Array.from(svgElementNodes);
+            return new Promise( resolve => {
+                var svgElementNodes = d3.selectAll("svg")._groups[0]
+                var svgElements = Array.from(svgElementNodes)
 
-            var serializer = new XMLSerializer();
+                var serializer = new XMLSerializer()
 
-            //Formatting each elements in svgElements array
-            svgElements.forEach(function(element, index) {
-                var svgString = serializer.serializeToString(this[index]);
-                svgString = svgString.replace(/(\w+)?:?xlink=/g, "xmlns:xlink="); // Fix root xlink without namespace
-                svgString = svgString.replace(/NS\d+:href/g, "xlink:href"); // Safari NS namespace fix
+                //Formatting each elements in svgElements array
+                svgElements.forEach(function(element, index) {
+                    var svgString = serializer.serializeToString(this[index])
+                    svgString = svgString.replace(/(\w+)?:?xlink=/g, "xmlns:xlink=") // Fix root xlink without namespace
+                    svgString = svgString.replace(/NS\d+:href/g, "xlink:href") // Safari NS namespace fix
 
-                this[index] = svgString;
-            }, svgElements);
+                    this[index] = svgString
+                }, svgElements)
 
-            //Async image loading using Promise
-            const loadImage = svgString => {
-                var format = "png";
+                //Async image loading using Promise
+                const loadImage = svgString => {
+                    var format = "png";
 
-                var imgsrc = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString))); // Convert SVG string to data URL
+                    var imgsrc = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString))); // Convert SVG string to data URL
 
-                return new Promise((resolve, reject) => {
-                    //var data = (new XMLSerializer()).serializeToString(url);
-                    //var DOMURL = window.URL || window.webkitURL || window;
+                    return new Promise((resolve, reject) => {
 
-                    var image = new Image();
-                    image.onload = () => resolve(image);
-                    image.onerror = () => reject(new Error("load image fail"));
-                    image.src = imgsrc;
-                });
-            };
+                        var image = new Image();
+                        image.onload = () => resolve(image);
+                        image.onerror = () => reject(new Error("load image fail"))
+                        image.src = imgsrc
+                    })
+                }
 
-            //Function to draw image
-            const depict = options => {
-                var canvas = document.createElement("canvas");
-                var ctx = canvas.getContext("2d");
+                //Function to draw image
+                const depict = options => {
+                    var canvas = document.createElement("canvas")
+                    var ctx = canvas.getContext("2d")
 
-                canvas.width = width;
-                canvas.height = height;
 
-                console.log(options);
+                    canvas.width = width
+                    canvas.height = height
+                
+                    return loadImage(options).then(image => {
+                        ctx.fillStyle = "white"
+                        ctx.fillRect(0, 0, width, height)
+                        ctx.drawImage(image, 0, 0, width, height)
+                        var fileName = this.extractContent(options) + ".png"
 
-                return loadImage(options).then(image => {
-                    ctx.fillStyle = "white";
-                    ctx.fillRect(0, 0, width, height);
-                    ctx.drawImage(image, 0, 0, width, height);
-                    var fileName = this.extractContent(options) + ".png";
-                    //console.log(fileName)
+                        //save to zip file
+                        canvas.toBlob(function(blob) {
+                            //FileSaver.saveAs(blob, fileName); // FileSaver.js function
+                            vm.circularZip.file(fileName, blob)
+                        })
+                    })
+                }
 
-                    //save to zip file
-                    canvas.toBlob(function(blob) {
-                        FileSaver.saveAs(blob, fileName); // FileSaver.js function
-                        //zip.file(blob, fileName)
-                    });
-                });
-            };
+                svgElements.forEach(depict)
 
-            svgElements.forEach(depict);
-            FileSaver.saveAs(zip, "CircularChart");
+                resolve()
+            })
+
         },
+
         extractContent(s) {
             var span = document.createElement("span");
             span.innerHTML = s;
             console.log(span.textContent);
             return span.textContent || span.innerText;
+        },
+
+        async downloadZip() {
+            var vm = this
+            const zip = await vm.downloadImage()
+            //console.log(Object.keys(vm.circularZip.files).length)
+            vm.circularZip.generateAsync({type: 'blob'})
+            .then(function(content){
+                console.log("Downloading zip")
+                FileSaver.saveAs(content, "CircularChart.zip")
+            })
         }
     }
 };
