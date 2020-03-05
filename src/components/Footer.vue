@@ -4,7 +4,7 @@
             <div class="row" style="color: white;">
                 <div id="footerCopy" class="col-md-6 mt-md-0 mt-3">
                     <h5>A tool for visualizing survey responses</h5>
-                    <p>ecoserve</p>
+                    <p>support@ecoserve-app.com</p>
                 </div>
                 <div class="col-md-6 mt-md-0 mt-3 text-md-right">
                     <p id="footerLink" @click="footerRoute('guidelines')">Survey guidelines</p>

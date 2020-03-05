@@ -5,6 +5,7 @@ const request = require("request");
 const path = require("path");
 const unzip = require("unzip-stream");
 const util = require("util");
+const helmet = require("helmet");
 // const fs = require('fs');
 const requestPromise = util.promisify(request);
 const app = express();
@@ -37,6 +38,27 @@ dbClient.connect(err => {
 });
 
 // Add express configurations
+app.use(helmet()); // Enables various HTTP security headers
+app.use(
+    helmet.featurePolicy({
+        features: {
+            accelerometer: ["'none'"],
+            ambientLightSensor: ["'none"],
+            autoplay: ["'none"],
+            camera: ["'none"],
+            geolocation: ["'none"],
+            gyroscope: ["'none"],
+            magnetometer: ["'none"],
+            microphone: ["'none"],
+            payment: ["'none"],
+            speaker: ["'none"],
+            usb: ["'none"],
+            vibrate: ["'none"]
+        }
+    })
+);
+app.use(helmet.permittedCrossDomainPolicies()); // Prevents Adobe Flash and Acrobat hijacking
+app.use(helmet.referrerPolicy({ policy: "same-origin" })); // Hides Referer header from other sites
 app.use(cors()); // Allow interaction with Vue serve and Qualtrics Web Listeners
 app.use(express.urlencoded({ extended: true })); // Middleware for handling raw POST data
 app.use(express.json()); // Support JSON payloads in POST requests
