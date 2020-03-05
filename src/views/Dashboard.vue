@@ -17,6 +17,17 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
+                <b-tab title="" disabled>
+                    <b-tabs vertical>
+                        <b-tab v-for="question in barChartData" :key="question._id" :title="question._id">
+                            <h1>{{ question._id }}</h1>
+
+                            <b-container>
+                                <BarChart />
+                            </b-container>
+                        </b-tab>
+                    </b-tabs>
+                </b-tab>
             </b-tabs>
         </div>
         <b-button
