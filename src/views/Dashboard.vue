@@ -17,6 +17,17 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
+                <b-tab title="" disabled>
+                    <b-tabs vertical>
+                        <b-tab v-for="question in barChartData" :key="question._id" :title="question._id">
+                            <h1>{{ question._id }}</h1>
+
+                            <b-container>
+                                <BarChart />
+                            </b-container>
+                        </b-tab>
+                    </b-tabs>
+                </b-tab>
                 <b-button
                     v-if="!circularLoading"
                     @click="downloadZip"
@@ -25,7 +36,7 @@
                 </b-button>
             </b-tabs>
         </div>
-        
+
         <Footer />
     </div>
 </template>
@@ -243,25 +254,25 @@ export default {
         },
 
         downloadImage() {
-            var vm = this
+            var vm = this;
 
             var width = 2400,
-                height = 2700
+                height = 2700;
 
-            return new Promise( resolve => {
-                var svgElementNodes = d3.selectAll("svg")._groups[0]
-                var svgElements = Array.from(svgElementNodes)
+            return new Promise(resolve => {
+                var svgElementNodes = d3.selectAll("svg")._groups[0];
+                var svgElements = Array.from(svgElementNodes);
 
-                var serializer = new XMLSerializer()
+                var serializer = new XMLSerializer();
 
                 //Formatting each elements in svgElements array
                 svgElements.forEach(function(element, index) {
-                    var svgString = serializer.serializeToString(this[index])
-                    svgString = svgString.replace(/(\w+)?:?xlink=/g, "xmlns:xlink=") // Fix root xlink without namespace
-                    svgString = svgString.replace(/NS\d+:href/g, "xlink:href") // Safari NS namespace fix
+                    var svgString = serializer.serializeToString(this[index]);
+                    svgString = svgString.replace(/(\w+)?:?xlink=/g, "xmlns:xlink="); // Fix root xlink without namespace
+                    svgString = svgString.replace(/NS\d+:href/g, "xlink:href"); // Safari NS namespace fix
 
-                    this[index] = svgString
-                }, svgElements)
+                    this[index] = svgString;
+                }, svgElements);
 
                 //Async image loading using Promise
                 const loadImage = svgString => {
@@ -270,42 +281,39 @@ export default {
                     var imgsrc = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString))); // Convert SVG string to data URL
 
                     return new Promise((resolve, reject) => {
-
                         var image = new Image();
                         image.onload = () => resolve(image);
-                        image.onerror = () => reject(new Error("load image fail"))
-                        image.src = imgsrc
-                    })
-                }
+                        image.onerror = () => reject(new Error("load image fail"));
+                        image.src = imgsrc;
+                    });
+                };
 
                 //Function to draw image
                 const depict = options => {
-                    var canvas = document.createElement("canvas")
-                    var ctx = canvas.getContext("2d")
+                    var canvas = document.createElement("canvas");
+                    var ctx = canvas.getContext("2d");
 
+                    canvas.width = width;
+                    canvas.height = height;
 
-                    canvas.width = width
-                    canvas.height = height
-                
                     return loadImage(options).then(image => {
-                        ctx.fillStyle = "white"
-                        ctx.fillRect(0, 0, width, height)
-                        ctx.drawImage(image, 0, 0, width, height)
-                        var fileName = this.extractContent(options) + ".png"
+                        ctx.fillStyle = "white";
+                        ctx.fillRect(0, 0, width, height);
+                        ctx.drawImage(image, 0, 0, width, height);
+                        var fileName = this.extractContent(options) + ".png";
 
                         //save to zip file
                         canvas.toBlob(function(blob) {
                             //FileSaver.saveAs(blob, fileName); // FileSaver.js function
-                            vm.circularZip.file(fileName, blob)
-                        })
-                    })
-                }
+                            vm.circularZip.file(fileName, blob);
+                        });
+                    });
+                };
 
-                svgElements.forEach(depict)
+                svgElements.forEach(depict);
 
-                resolve()
-            })
-
+                resolve();
+            });
         },
 
         extractContent(s) {
@@ -316,14 +324,13 @@ export default {
         },
 
         async downloadZip() {
-            var vm = this
-            const zip = await vm.downloadImage()
+            var vm = this;
+            const zip = await vm.downloadImage();
             //console.log(Object.keys(vm.circularZip.files).length)
-            vm.circularZip.generateAsync({type: 'blob'})
-            .then(function(content){
-                console.log("Downloading zip")
-                FileSaver.saveAs(content, "CircularChart.zip")
-            })
+            vm.circularZip.generateAsync({ type: "blob" }).then(function(content) {
+                console.log("Downloading zip");
+                FileSaver.saveAs(content, "CircularChart.zip");
+            });
         }
     }
 };

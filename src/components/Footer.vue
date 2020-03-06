@@ -11,7 +11,7 @@
                 <div class="col-md-2 mt-md-0 mt-3 text-md-right" style="padding-bottom: 24px;">
                     <p id="footerLink" @click="footerRoute('guidelines')">Survey guidelines</p>
                     <p id="footerLink" @click="footerRoute('security')">Security</p>
-                    <a id="footerLink" href="./privacyPolicy.pdf" target="_blank">Privacy policy</a>
+                    <a id="footerLink" href="./etc/privacyPolicy.pdf" target="_blank">Privacy policy</a>
                 </div>
             </div>
         </div>
