@@ -21,8 +21,8 @@ export default {
     //var width = +svg.attr('width');
     //var height = +svg.attr('height');
     var data = [
-            {"plant": "Canada Thistle", "mean": -4.5526315789473686, "conf": 4, "bottom": -4, "top": -3},
-			{"plant": "leafy_spurge", "mean":2.8461538461538462, "conf": 2, "bottom": -2, "top": -1},
+            {"plant": "Canada Thistle", "mean": -4.5526315789473686, "bottom": -4, "top": -3},
+			{"plant": "leafy_spurge", "mean":2.8461538461538462, "bottom": -2, "top": -1},
 			{"plant":"musk_thistle", "mean":-2.717948717948718, "conf": 1},
 			{"plant":"plumeless_thistle","mean":-1.4594594594594596, "conf": 0, "bottom": 1, "top": 2},
 			{"plant":"sericea_lespedeza","mean":-2, "conf": -1, "bottom": -2.5, "top": -.33},
@@ -87,10 +87,14 @@ export default {
               else if ((d.conf <= 0 ) && (d.conf > -2)){
                   return "#FF5733";
               }
-              else {
+              else if (d.conf <= -2) {
                   return "#C70039";
               }
+              else{
+                  return "green"
+              }
           })
+          /*
           .attr('stroke', (d) => {
               if (d.conf > 2){
                   return "blue";
@@ -105,6 +109,7 @@ export default {
                   return "black";
               }
           })
+          */
           .attr('x', d => x(d.plant))
           .attr('class', d => d.plant)
           .attr('y', (d) => (d.mean <= 0) ? y(0) : y(d.mean))
@@ -123,11 +128,11 @@ export default {
           // We add attr here
           .attr('fill', "grey")
           .attr('stroke',"black")
-          .attr('fill-opacity', .5)
-          .attr('x', d => x(d.plant)+2)
+          .attr('fill-opacity', 0)
+          .attr('x', d => x(d.plant)+10)
           .attr('class', d => d.plant)
           .attr('y', (d) => y(d.top))
-          .attr('width', (x.bandwidth()-4))
+          .attr('width', (x.bandwidth())-20)
           .transition()
                 .delay((d, i) => {
                     return i * 150;
