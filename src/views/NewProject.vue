@@ -22,20 +22,7 @@
                 <visualization-dashboard />
             </b-row>
 
-            <b-row align-h="center">
-                <b-col class="col-4">
-                    <b-button @click="downloadJSON" style="background-color:DarkSeaGreen;">Download Empty File</b-button>
-                </b-col>
-            </b-row>
-
-            <b-row align-h="center">
-                <b-col class="col-4">
-                    <label>File
-                        <input type="file" id="file" ref="file" v-on:change="uploadJSON"/>
-                    </label>
-                    <button v-on:click="submitFile">Submit</button>
-                </b-col>
-            </b-row>
+            
 
             <b-row align-h="center">
                 <b-col class="col-4">
@@ -161,11 +148,8 @@ export default {
             document.body.appendChild(jsonElement)
             jsonElement.click()
             jsonElement.remove()
-        },
-        uploadJSON(){
-            this.file = this.$refs.file.files[0]
-            console.log(this.file)
-        },
+        }
+        
         /** 
         submitFile(){
             let formData = new FormData()
@@ -186,25 +170,7 @@ export default {
             })
         }
         */
-       submitFile(){
-            const vm = this
-            var reader = new FileReader()
-            reader.readAsText(vm.file)
-            reader.onload = function(e){
-                console.log("Load successfully")
-                vm.comparisonData = reader.result
-                console.log(vm.comparisonData)
-                console.log(e)
-            }
-            reader.onerror = function(e){
-                console.log("Error")
-                console.log(e)
-            }
-
-            //for(var i = 0; i < vm.file.length; i++){
-            //   console.log(reader.readAsText(file[i]))
-            //}
-       }
+        
     }
 };
 </script>

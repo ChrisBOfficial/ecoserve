@@ -35,6 +35,21 @@
                 REMOVE VISUALIZATION
             </b-button>
         </b-row>
+
+        <b-row align-h="center">
+                <b-col class="col-4">
+                    <b-button @click="downloadJSON" style="background-color:DarkSeaGreen;">Download Empty File</b-button>
+                </b-col>
+        </b-row>
+
+        <b-row align-h="center">
+            <b-col class="col-4">
+                <label>File
+                    <input type="file" id="file" ref="file" v-on:change="uploadJSON"/>
+                </label>
+                <button v-on:click="submitFile">Submit</button>
+            </b-col>
+        </b-row>
     </b-container>
 </template>
 
@@ -141,6 +156,29 @@ export default {
 
             this.saveProjectBlocks(this.allBlocks);
             this.removeData = "";
+        },
+        uploadJSON(){
+            this.file = this.$refs.file.files[0]
+            console.log(this.file)
+        },
+        submitFile(){
+            const vm = this
+            var reader = new FileReader()
+            reader.readAsText(vm.file)
+            reader.onload = function(e){
+                console.log("Load successfully")
+                vm.comparisonData = reader.result
+                console.log(vm.comparisonData)
+                console.log(e)
+            }
+            reader.onerror = function(e){
+                console.log("Error")
+                console.log(e)
+            }
+
+            //for(var i = 0; i < vm.file.length; i++){
+            //   console.log(reader.readAsText(file[i]))
+            //}
         }
     }
 };
