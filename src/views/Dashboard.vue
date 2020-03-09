@@ -261,7 +261,11 @@ export default {
 
             return new Promise(resolve => {
                 var svgElementNodes = d3.selectAll("svg")._groups[0];
+                //console.log(d3.selectAll("svg"))
                 var svgElements = Array.from(svgElementNodes);
+                var svgLabels = document.getElementsByClassName("chartName")
+                var numGraphs = 0
+                //console.log(svgLabels)
 
                 var serializer = new XMLSerializer();
 
@@ -300,11 +304,16 @@ export default {
                         ctx.fillStyle = "white";
                         ctx.fillRect(0, 0, width, height);
                         ctx.drawImage(image, 0, 0, width, height);
-                        var fileName = this.extractContent(options) + ".png";
+                        var fileName = ""
+                        try{
+                            fileName = svgLabels[numGraphs].textContent.toString() + ".png";
+                        }catch(err){
+                            fileName = "BarChart.png"
+                        }
+                        numGraphs += 1;
 
                         //save to zip file
                         canvas.toBlob(function(blob) {
-                            //FileSaver.saveAs(blob, fileName); // FileSaver.js function
                             vm.circularZip.file(fileName, blob);
                         });
                     });
@@ -316,17 +325,9 @@ export default {
             });
         },
 
-        extractContent(s) {
-            var span = document.createElement("span");
-            span.innerHTML = s;
-            console.log(span.textContent);
-            return span.textContent || span.innerText;
-        },
-
         async downloadZip() {
             var vm = this;
             const zip = await vm.downloadImage();
-            //console.log(Object.keys(vm.circularZip.files).length)
             vm.circularZip.generateAsync({ type: "blob" }).then(function(content) {
                 console.log("Downloading zip");
                 FileSaver.saveAs(content, "CircularChart.zip");

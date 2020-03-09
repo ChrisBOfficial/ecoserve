@@ -22,6 +22,8 @@
                 <visualization-dashboard />
             </b-row>
 
+            
+
             <b-row align-h="center">
                 <b-col class="col-4">
                     <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center>CREATE PROJECT</b-button>
@@ -52,6 +54,7 @@ import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import surveyBlocks from "@/components/surveyBlocks.vue";
 import { mapActions, mapState, mapMutations } from "vuex";
+const axios = require('axios').default
 
 export default {
     components: {
@@ -64,7 +67,9 @@ export default {
         return {
             title: "",
             description: "",
-            validateErrors: []
+            validateErrors: [],
+            file:"",
+            comparisonData: {}
         };
     },
     computed: {
@@ -130,6 +135,28 @@ export default {
             this.saveProject(payload);
             this.$router.push("projects");
         }
+        
+        /** 
+        submitFile(){
+            let formData = new FormData()
+            formData.append('file', this.file)
+            
+
+            axios.post('/single-file',
+                formData,
+                {
+                    headers:{
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            ).then(function(){
+                console.log('Upload Success')
+            }).catch(function(){
+                console.log('Upload failure')
+            })
+        }
+        */
+        
     }
 };
 </script>
