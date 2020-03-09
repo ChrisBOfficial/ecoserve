@@ -38,7 +38,6 @@
                 </div>
             </section>
 
-            <!-- Image Showcases -->
             <section class="showcase">
                 <div class="container-fluid p-0">
                     <div class="row no-gutters">
