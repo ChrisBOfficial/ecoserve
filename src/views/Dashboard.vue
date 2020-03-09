@@ -309,7 +309,6 @@ export default {
 
                         //save to zip file
                         canvas.toBlob(function(blob) {
-                            //FileSaver.saveAs(blob, fileName); // FileSaver.js function
                             vm.circularZip.file(fileName, blob);
                         });
                     });
@@ -321,17 +320,9 @@ export default {
             });
         },
 
-        extractContent(s) {
-            var span = document.createElement("span");
-            span.innerHTML = s;
-            console.log(span.textContent);
-            return span.textContent || span.innerText;
-        },
-
         async downloadZip() {
             var vm = this;
             const zip = await vm.downloadImage();
-            //console.log(Object.keys(vm.circularZip.files).length)
             vm.circularZip.generateAsync({ type: "blob" }).then(function(content) {
                 console.log("Downloading zip");
                 FileSaver.saveAs(content, "CircularChart.zip");
