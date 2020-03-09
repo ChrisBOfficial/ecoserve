@@ -179,6 +179,20 @@ export default {
             //for(var i = 0; i < vm.file.length; i++){
             //   console.log(reader.readAsText(file[i]))
             //}
+        },
+        downloadJSON() {
+            //var json = JSON.parse({})
+            //var data = JSON.stringify(json)
+            //var fs = require('fs')
+            //fs.writeFile("file.json", data)
+            var exportObj = {}
+            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj))
+            var jsonElement = document.createElement('a')
+            jsonElement.setAttribute("href", dataStr)
+            jsonElement.setAttribute("download", "comparison.json")
+            document.body.appendChild(jsonElement)
+            jsonElement.click()
+            jsonElement.remove()
         }
     }
 };
