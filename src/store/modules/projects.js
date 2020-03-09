@@ -77,7 +77,7 @@ export default {
                     throw new Error(error);
                 });
         },
-        // Delete a proejct in MongoDB
+        // Delete a project in MongoDB
         deleteProject({ commit, dispatch }, data) {
             commit("setProjectsLoadStatus", 1);
             ProjectsAPI.deleteProject(data)
