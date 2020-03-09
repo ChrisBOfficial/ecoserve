@@ -261,7 +261,11 @@ export default {
 
             return new Promise(resolve => {
                 var svgElementNodes = d3.selectAll("svg")._groups[0];
+                //console.log(d3.selectAll("svg"))
                 var svgElements = Array.from(svgElementNodes);
+                var svgLabels = document.getElementsByClassName("chartName")
+                var numGraphs = 0
+                //console.log(svgLabels)
 
                 var serializer = new XMLSerializer();
 
@@ -300,7 +304,8 @@ export default {
                         ctx.fillStyle = "white";
                         ctx.fillRect(0, 0, width, height);
                         ctx.drawImage(image, 0, 0, width, height);
-                        var fileName = this.extractContent(options) + ".png";
+                        var fileName = svgLabels[numGraphs].textContent.toString() + ".png";
+                        numGraphs += 1;
 
                         //save to zip file
                         canvas.toBlob(function(blob) {
