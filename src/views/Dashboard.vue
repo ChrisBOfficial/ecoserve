@@ -304,7 +304,12 @@ export default {
                         ctx.fillStyle = "white";
                         ctx.fillRect(0, 0, width, height);
                         ctx.drawImage(image, 0, 0, width, height);
-                        var fileName = svgLabels[numGraphs].textContent.toString() + ".png";
+                        var fileName = ""
+                        try{
+                            fileName = svgLabels[numGraphs].textContent.toString() + ".png";
+                        }catch(err){
+                            fileName = "BarChart.png"
+                        }
                         numGraphs += 1;
 
                         //save to zip file
