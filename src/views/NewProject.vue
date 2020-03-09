@@ -24,6 +24,12 @@
 
             <b-row align-h="center">
                 <b-col class="col-4">
+                    <b-button @click="downloadJSON" style="background-color:DarkSeaGreen;">Download Comparison JSON</b-button>
+                </b-col>
+            </b-row>
+
+            <b-row align-h="center">
+                <b-col class="col-4">
                     <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center>CREATE PROJECT</b-button>
                     <b-modal
                         id="modal-center"
@@ -129,6 +135,20 @@ export default {
             };
             this.saveProject(payload);
             this.$router.push("projects");
+        },
+        downloadJSON() {
+            //var json = JSON.parse({})
+            //var data = JSON.stringify(json)
+            //var fs = require('fs')
+            //fs.writeFile("file.json", data)
+            var exportObj = {}
+            var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj))
+            var jsonElement = document.createElement('a')
+            jsonElement.setAttribute("href", dataStr)
+            jsonElement.setAttribute("download", "comparison.json")
+            document.body.appendChild(jsonElement)
+            jsonElement.click()
+            jsonElement.remove()
         }
     }
 };
