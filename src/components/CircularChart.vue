@@ -147,10 +147,12 @@ export default {
                             .attr("height", "100%")
                             .attr("fill", "gray")
                             .attr("opacity", 0.04);
-                    }
-                })
+
+                        
+                        }})
+
                 .on("mouseleave", function() {
-                    d3.selectAll(".selectedHighlight").remove();
+                    d3.selectAll(".selectedHighlight").remove();                    
                 })
                 .on("click", function() {
                     let svg = d3.select(this);
@@ -158,8 +160,7 @@ export default {
 
                     // Only add nutrition label if none are present
                     if (label.empty()) {
-                        svg.append("g");
-                        /*
+                        
                         svg.append("rect")
                             .attr("class", "nutritionLabel")
                             .attr("width", "100%")
@@ -170,54 +171,72 @@ export default {
                         svg.selectAll('rect')
                         .data(data)
                         .enter("rect")
-                        */
+                        
 
-                        let thead = svg.append("thead");
-                        let tbody = svg.append("tbody");
+                       var data1 = [
+            {"plant": "Canada Thistle", "mean": -4.5526315789473686, "bottom": -4, "top": -3},
+			{"plant": "leafy_spurge", "mean":2.8461538461538462, "bottom": -2, "top": -1},
+			{"plant":"musk_thistle", "mean":-2.717948717948718, "conf": 1},
+			{"plant":"plumeless_thistle","mean":-1.4594594594594596, "conf": 0, "bottom": 1, "top": 2},
+			{"plant":"sericea_lespedeza","mean":-2, "conf": -1, "bottom": -2.5, "top": -.33},
+			{"plant":"spotted_diffuse_knapweed","mean":1.6315789473684212, "conf": -2, "bottom": 2, "top": 2.5},
+			{"plant":"russian_olive","mean":-1.5135135135135131, "conf": -4, "bottom": -1, "top": 0},
+			{"plant":"scotch_thistle","mean":-1.4594594594594596, "conf": 3, "bottom": 1.33, "top": 3.54},
+			{"plant":"eastern_redcedar","mean":3.0526315789473686, "conf": -3, "bottom": -4, "top": 3},
+            {"plant":"smooth_brome","mean":-2.189189189189189, "conf": 20, "bottom": 0, "top": 2} 	
+            ];
+                        var data2 = [
+                            "plant","mean", "conf"
+                        ];
 
+
+                        var table = svg.append("svg:foreignObject")
+                            .attr("style","width: 100%")
+                            .attr("height", "400")
+                            
+                            .attr("class", "nutritionTable" )
+                            .append("xhtml:body")
+                            .append("table")
+                            .attr("class", "table-bordered")
+                            .attr("style", "overflow-x:auto")
+                            ;
+                        var thead = table.append('thead')
+		                var	tbody = table.append('tbody');
+                            
                         // append the header row
-                        thead
-                            .append("tr")
-                            .selectAll("tr")
-                            .data(data)
-                            .enter()
-                            .append("th")
-                            .text(function(data) {
-                                return d.service;
-                            });
-
+		                thead.append('tr')
+		                    .selectAll('th')
+		                    .data(data2).enter()
+		                    .append('th')
+                            .text(d => { return d; });
+                            
                         // create a row for each object in the data
-                        var rows = tbody
-                            .selectAll("tr")
-                            .data(data)
+                        var rows = tbody.selectAll( "tr" )
+                            .data( data1 )
                             .enter()
-                            .append("tr");
+                            .append( "tr" );                        
 
                         // create a cell in each row for each column
-                        var cells = rows
-                            .selectAll("td")
-                            .data(function(row) {
-                                return columns.map(function(column) {
-                                    return { column: column, mean: row[column] };
-                                });
-                            })
+                        var cells = rows.selectAll( "td" )
+                            .data( function ( data1 ) {
+                                return data2.map( function ( column ) {
+                                    return { column: column, value: data1[column] };
+                                } );
+                            } )
                             .enter()
-                            .append("td")
-                            .attr("style", "font-family: 'Lato'")
+                            .append( "td" )
+                            .attr("class", (d) =>{
+                                return d[data2];
+                             })
+                            .attr( "style", "font-family: 'Lato'" )
                             .attr("style", "padding: 2px;")
-                            .html(function(d) {
-                                return d.mean;
-                            });
-                        // Re-add highlight
-                        svg.select(".selectedHighlight").remove();
-                        svg.append("rect")
-                            .attr("class", "selectedHighlight")
-                            .attr("width", "100%")
-                            .attr("height", "100%")
-                            .attr("fill", "gray")
-                            .attr("opacity", 0.04);
+                            .text( function ( d,i ) {
+                                return d.value;
+                            } );
+                    
                     } else {
                         label.remove();
+                        d3.selectAll(".nutritionTable").remove();
                     }
                 })
                 .append("g")
@@ -304,6 +323,13 @@ export default {
                 .style("stroke", "#CCC")
                 .style("opacity", 0.65)
                 .style("fill", "none");
+            circleAxes
+                .append("svg:circle")
+                .attr("r", (outerRadius / numTicks)*1 )
+                .attr("class", "circle")
+                .style("stroke", "#CCC")
+                .style("opacity", 0.65)
+                .style("fill", "grey");
 
             //* Add the radial labels
             svg.append("g")
