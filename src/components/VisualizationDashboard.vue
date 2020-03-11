@@ -184,17 +184,16 @@ export default {
             let exportObj = [];
             const sq = this.survey.questions;
             const l1 = Object.keys(sq);
-            const l2 = Object.keys(sq[l1[0]]);
-            const l3 = Object.keys(sq[l1[0]][l2[6]]);
             for (let i in l1){
-                let topTemp = [];
-                let qName = sq[l1[i]][l2[3]];
-                for (let j in l3){
-                    let objTemp = {subName: sq[l1[i]][l2[6]][l3[j]]['description'], min: 0, max: 0};
-                    topTemp.push(objTemp);
+                let l3 = sq[l1[i]]['subQuestions'];
+                let tt = [];
+                let qn = sq[l1[i]]['questionName'];
+                for (let key in l3){
+                    let ot = {subname: l3[key]['description'], max: 0, min: 0};
+                    tt.push(ot);
                 }
-                let bottomTemp = {questionName: qName, data: topTemp};
-                exportObj.push(bottomTemp);
+                let bt = {questionName: qn, data: tt};
+                exportObj.push(bt);
             }
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj))
             var jsonElement = document.createElement('a')
