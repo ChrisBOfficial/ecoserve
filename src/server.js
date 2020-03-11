@@ -280,6 +280,7 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
     } else if (pipeline === "circlechart") {
         collection.findOne({ surveyId: surveyId }, function(err, result) {
             if (err) throw new Error(err);
+
             let data = Pipelines.circlechartPipeline(result);
             res.send(data);
         });
