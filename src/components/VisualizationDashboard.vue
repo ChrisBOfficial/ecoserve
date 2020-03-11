@@ -181,11 +181,20 @@ export default {
             //}
         },
         downloadJSON() {
-            //var json = JSON.parse({})
-            //var data = JSON.stringify(json)
-            //var fs = require('fs')
-            //fs.writeFile("file.json", data)
-            var exportObj = {}
+            let exportObj = [];
+            const sq = this.survey.questions;
+            const l1 = Object.keys(sq);
+            for (let i in l1){
+                let l3 = sq[l1[i]]['subQuestions'];
+                let tt = [];
+                let qn = sq[l1[i]]['questionName'];
+                for (let key in l3){
+                    let ot = {subname: l3[key]['description'], max: 0, min: 0};
+                    tt.push(ot);
+                }
+                let bt = {questionName: qn, data: tt};
+                exportObj.push(bt);
+            }
             var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj))
             var jsonElement = document.createElement('a')
             jsonElement.setAttribute("href", dataStr)
@@ -194,6 +203,7 @@ export default {
             jsonElement.click()
             jsonElement.remove()
         }
+
     }
 };
 </script>
