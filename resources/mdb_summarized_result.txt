@@ -3,7 +3,7 @@
 [
   {
     '$match': {
-      'surveyId': 'SV_b78ghjEDgpEZU3j'
+      'surveyId': 'SV_3Oz10c0ZYX2W2mp'
     }
   }, {
     '$unwind': {
@@ -13,7 +13,8 @@
     '$project': {
       'totals': {
         '$objectToArray': '$responses.values'
-      }
+      },
+      'descriptions': 1
     }
   }, {
     '$unwind': {
@@ -23,51 +24,135 @@
     '$match': {
       'totals.k': {
         '$regex': new RegExp('^Q')
+      },
+      'totals.v': {
+        '$type': 'number'
+      },
+      'totals.k': {
+        '$regex': '_'
       }
+    }
+  }, {
+    '$unwind': {
+      'path': '$descriptions'
+    }
+  }, {
+    '$match': {
+      'descriptions.title': {
+        '$regex': '_'
+      }
+    }
+  }, {
+    '$project': {
+      'QID': {
+        '$arrayElemAt': [
+          {
+            '$split': [
+              '$totals.k', '#'
+            ]
+          }, 0
+        ]
+      },
+      'sub': {
+        '$arrayElemAt': [
+          {
+            '$split': [
+              '$totals.k', '_'
+            ]
+          }, 1
+        ]
+      },
+      'col': {
+        '$substr': [
+          '$totals.k', {
+            '$subtract': [
+              {
+                '$strLenCP': '$totals.k'
+              }, 3
+            ]
+          }, 1
+        ]
+      },
+      'v': '$totals.v',
+      'service': {
+        '$arrayElemAt': [
+          {
+            '$split': [
+              '$descriptions.title', '#'
+            ]
+          }, 0
+        ]
+      },
+      'question': '$descriptions.question',
+      'subqmatch': {
+        '$arrayElemAt': [
+          {
+            '$split': [
+              '$descriptions.subQuestion', '.'
+            ]
+          }, 2
+        ]
+      },
+      'impactor': {
+        '$arrayElemAt': [
+          {
+            '$split': [
+              '$descriptions.title', '_'
+            ]
+          }, 1
+        ]
+      },
+      'descriptions': 1
+    }
+  }, {
+    '$project': {
+      'QID': 1,
+      'sub': 1,
+      'question': 1,
+      'subqmatch': 1,
+      'impactor': 1,
+      'service': 1,
+      'col': 1,
+      'v': 1,
+      'questioneq': {
+        '$cond': [
+          {
+            '$eq': [
+              '$QID', '$question'
+            ]
+          }, 1, 0
+        ]
+      },
+      'subquestioneq': {
+        '$cond': [
+          {
+            '$eq': [
+              '$sub', '$subqmatch'
+            ]
+          }, 1, 0
+        ]
+      }
+    }
+  }, {
+    '$match': {
+      'subquestioneq': 1,
+      'questioneq': 1
     }
   }, {
     '$group': {
       '_id': {
-        'QID': {
-          '$arrayElemAt': [
-            {
-              '$split': [
-                '$totals.k', '#'
-              ]
-            }, 0
-          ]
-        }, 
-        'subquestion': {
-          '$substr': [
-            '$totals.k', {
-              '$subtract': [
-                {
-                  '$strLenCP': '$totals.k'
-                }, 1
-              ]
-            }, 1
-          ]
-        }, 
-        'type': {
-          '$substr': [
-            '$totals.k', {
-              '$subtract': [
-                {
-                  '$strLenCP': '$totals.k'
-                }, 3
-              ]
-            }, 1
-          ]
-        }
-      }, 
+        'QID': '$service',
+        'subquestion': '$impactor',
+        'col': '$col'
+      },
       'mean': {
-        '$avg': '$totals.v'
-      }, 
+        '$avg': '$v'
+      },
       'count': {
         '$sum': 1
-      }, 
+      },
       'sd': {
-        '$stdDevPop': '$totals.v'
+        '$stdDevPop': '$v'
       }
     }
   }, {
@@ -82,98 +167,99 @@
     }
   }, {
     '$project': {
-      '_id': '$_id.QID', 
-      'subquestion': '$_id.subquestion', 
+      '_id': '$_id.QID',
+      'subquestion': '$_id.subquestion',
       'confidence': {
         '$switch': {
           'branches': [
             {
               'case': {
                 '$eq': [
-                  '$_id.type', '2'
+                  '$_id.col', '2'
                 ]
-              }, 
+              },
               'then': '$mean'
             }, {
               'case': {
                 '$eq': [
-                  '$_id.type', '1'
+                  '$_id.col', '1'
                 ]
-              }, 
+              },
               'then': null
             }
-          ], 
+          ],
           'default': null
         }
-      }, 
+      },
       'mean': {
         '$switch': {
           'branches': [
             {
               'case': {
                 '$eq': [
-                  '$_id.type', '2'
+                  '$_id.col', '2'
                 ]
-              }, 
+              },
               'then': null
             }, {
               'case': {
                 '$eq': [
-                  '$_id.type', '1'
+                  '$_id.col', '1'
                 ]
-              }, 
+              },
               'then': '$mean'
             }
-          ], 
+          ],
           'default': '$mean'
         }
-      }, 
+      },
       'se': {
         '$switch': {
           'branches': [
             {
               'case': {
                 '$eq': [
-                  '$_id.type', '2'
+                  '$_id.col', '2'
                 ]
-              }, 
+              },
               'then': null
             }, {
               'case': {
                 '$eq': [
-                  '$_id.type', '1'
+                  '$_id.col', '1'
                 ]
-              }, 
+              },
               'then': '$se'
             }
-          ], 
+          ],
           'default': '$se'
         }
-      }, 
-      'type': '$_id.type'
+      },
+      'type': '$_id.col'
     }
   }, {
     '$group': {
       '_id': {
-        'QID': '$_id', 
+        'QID': '$_id',
         'subquestion': '$subquestion'
-      }, 
+      },
       'confidence': {
         '$avg': '$confidence'
-      }, 
+      },
       'mean': {
         '$avg': '$mean'
-      }, 
+      },
       'se': {
         '$avg': '$se'
       }
     }
   }, {
     '$group': {
-      '_id': '$_id.QID', 
+      '_id': '$_id.QID',
       'data': {
         '$push': {
-          'subquestion': '$_id.subquestion', 
+          'subquestion': '$_id.subquestion',
+          'confidence_num': '$confidence',
           'confidence': {
             '$switch': {
               'branches': [
@@ -231,76 +317,265 @@
 ##Mongo Shell ##
 
 [{$match: {
-  "surveyId" : "SV_b78ghjEDgpEZU3j"
+  surveyId: 'SV_3Oz10c0ZYX2W2mp'
 }}, {$unwind: {
-  path: "$responses"
-}
-}, {$project: {
-  "totals": {$objectToArray: "$responses.values"}
-}}, {$unwind: {
-  path: "$totals"
-}}, {$match: {
-  "totals.k": {$regex: /^Q/}
-}}, {$group: {
-  _id: {QID: {$arrayElemAt: 
-    [{$split: ['$totals.k', "#"]},0]}, 
-      subquestion: {
-        '$substr': [
-          '$totals.k', {
-            '$subtract': [
-              {'$strLenCP': '$totals.k'}, 1]}, 1]
-      }, type: {
-        '$substr': [
-          '$totals.k', {
-            '$subtract': [
-              {'$strLenCP': '$totals.k'
-              }, 3]}, 1]}}, 
-    mean: {$avg:"$totals.v"}, count: {$sum: 1}, sd: {$stdDevPop: "$totals.v"}
-}}, {$addFields: {
-  se: {$divide: ["$sd", {$sqrt: "$count"}]}
+  path: '$responses'
 }}, {$project: {
-  _id: "$_id.QID", 
-
-    subquestion: "$_id.subquestion", 
-  confidence: {$switch: {
-    branches: [
-      {case: {$eq: ["$_id.type", "2"]}, then: "$mean"},
-      {case: {$eq: ["$_id.type", "1"]}, then: null}
-      ], default: null
-  }},
-  mean: {$switch: {
-    branches: [
-      {case: {$eq: ["$_id.type", "2"]}, then: null},
-      {case: {$eq: ["$_id.type", "1"]}, then: "$mean"}
-      ], default: "$mean"
-  }},
-  se:{$switch: {
-    branches: [
-      {case: {$eq: ["$_id.type", "2"]}, then: null},
-      {case: {$eq: ["$_id.type", "1"]}, then: "$se"}
-      ], default: "$se"
-  }}, type: "$_id.type"
+  totals: {
+    $objectToArray: '$responses.values'
+  },
+  descriptions: 1
+}}, {$unwind: {
+  path: '$totals'
+}}, {$match: {
+  'totals.k': {
+    $regex: RegExp('^Q')
+  },
+  'totals.v': {$type : "number"},
+  'totals.k' : {$regex: '_'}
+}}, {$unwind: {
+  path: '$descriptions'
+}}, {$match: {
+  'descriptions.title': {$regex: '_'}
+}}, {$project: {
+  QID: {$arrayElemAt:
+    [{$split: ['$totals.k', "#"]},0]
+  },
+  sub: {
+    $arrayElemAt:
+    [{$split: ['$totals.k', "_"]},1]
+  },
+  col: {
+    '$substr': [
+      '$totals.k', {
+        '$subtract': [
+          {'$strLenCP': '$totals.k'
+          }, 3]}, 1]
+  },
+  v: "$totals.v",
+  service: {$arrayElemAt:
+    [{$split: ["$descriptions.title","#"]},0]},
+  question: "$descriptions.question",
+  subqmatch: {$arrayElemAt:
+    [{$split: ["$descriptions.subQuestion","."]},2]},
+  impactor: {$arrayElemAt:
+    [{$split: ["$descriptions.title","_"]},1]},
+  descriptions: 1
+}}, {$project: {
+  'QID': 1,
+      'sub': 1,
+      'question': 1,
+      'subqmatch': 1,
+      'impactor': 1,
+      'service': 1,
+      'col': 1,
+      'v': 1,
+      'questioneq': {
+        '$cond': [
+          {
+            '$eq': [
+              '$QID', '$question'
+            ]
+          }, 1, 0
+        ]
+      },
+      'subquestioneq': {
+        '$cond': [
+          {
+            '$eq': [
+              '$sub', '$subqmatch'
+            ]
+          }, 1, 0
+        ]
+      }
+}}, {$match: {
+  'subquestioneq' : 1,
+  'questioneq' : 1
 }}, {$group: {
-  _id: {QID: "$_id",
-  subquestion: "$subquestion"}, 
-  confidence: {$avg: "$confidence"}, 
-  mean: {$avg: "$mean"}, 
-  se: {$avg: "$se"}
+  _id: {
+    QID: '$service',
+    subquestion: '$impactor',
+    col: '$col'
+  },
+  mean: {
+    $avg: '$v'
+  },
+  count: {
+    $sum: 1
+  },
+  sd: {
+    $stdDevPop: '$v'
+  }
+}}, {$addFields: {
+  se: {
+    $divide: [
+      '$sd',
+      {
+        $sqrt: '$count'
+      }
+    ]
+  }
+}}, {$project: {
+  _id: '$_id.QID',
+  subquestion: '$_id.subquestion',
+  confidence: {
+    $switch: {
+      branches: [
+        {
+          'case': {
+            $eq: [
+              '$_id.col',
+              '2'
+            ]
+          },
+          then: '$mean'
+        },
+        {
+          'case': {
+            $eq: [
+              '$_id.col',
+              '1'
+            ]
+          },
+          then: null
+        }
+      ],
+      'default': null
+    }
+  },
+  mean: {
+    $switch: {
+      branches: [
+        {
+          'case': {
+            $eq: [
+              '$_id.col',
+              '2'
+            ]
+          },
+          then: null
+        },
+        {
+          'case': {
+            $eq: [
+              '$_id.col',
+              '1'
+            ]
+          },
+          then: '$mean'
+        }
+      ],
+      'default': '$mean'
+    }
+  },
+  se: {
+    $switch: {
+      branches: [
+        {
+          'case': {
+            $eq: [
+              '$_id.col',
+              '2'
+            ]
+          },
+          then: null
+        },
+        {
+          'case': {
+            $eq: [
+              '$_id.col',
+              '1'
+            ]
+          },
+          then: '$se'
+        }
+      ],
+      'default': '$se'
+    }
+  },
+  type: '$_id.col'
 }}, {$group: {
-  _id: "$_id.QID",
-  data: {$push: {subquestion: "$_id.subquestion", 
-  confidence: {$switch: {
-    branches: [
-      {case: {$lte: ["$confidence", 1]}, then: "none"},
-      {case: {$lte: ["$confidence", 2]}, then: "low"},
-      {case: {$lte: ["$confidence", 3]}, then: "moderate"},
-      {case: {$lte: ["$confidence", 4]}, then: "high"},
-      {case: {$lte: ["$confidence", 5]}, then: "extreme"}
-      ], default: "moderate"
-  }}, mean: {$subtract:["$mean", 6]}, se: "$se"}}
-
-
-    }}]
+  _id: {
+    QID: '$_id',
+    subquestion: '$subquestion'
+  },
+  confidence: {
+    $avg: '$confidence'
+  },
+  mean: {
+    $avg: '$mean'
+  },
+  se: {
+    $avg: '$se'
+  }
+}}, {$group: {
+  _id: '$_id.QID',
+  data: {
+    $push: {
+      subquestion: '$_id.subquestion',
+      confidence_num: '$confidence',
+      confidence: {
+        $switch: {
+          branches: [
+            {
+              'case': {
+                $lte: [
+                  '$confidence',
+                  1
+                ]
+              },
+              then: 'none'
+            },
+            {
+              'case': {
+                $lte: [
+                  '$confidence',
+                  2
+                ]
+              },
+              then: 'low'
+            },
+            {
+              'case': {
+                $lte: [
+                  '$confidence',
+                  3
+                ]
+              },
+              then: 'moderate'
+            },
+            {
+              'case': {
+                $lte: [
+                  '$confidence',
+                  4
+                ]
+              },
+              then: 'high'
+            },
+            {
+              'case': {
+                $lte: [
+                  '$confidence',
+                  5
+                ]
+              },
+              then: 'extreme'
+            }
+          ],
+          'default': 'moderate'
+        }
+      },
+      mean: {
+        $subtract: [
+          '$mean',
+          6
+        ]
+      },
+      se: '$se'
+    }
+  }
+}}]
 
 ##Circular Chart Aggregation Pipeline##
 ##NODE##

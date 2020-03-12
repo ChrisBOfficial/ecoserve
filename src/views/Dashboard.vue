@@ -8,11 +8,11 @@
                 </b-tab>
                 <b-tab title="Bar Graphs" lazy>
                     <b-tabs vertical lazy>
-                        <b-tab v-for="question in barChartData" :key="question._id" :title="question._id">
+                        <b-tab v-for="question in barchartAggregate" :key="question._id" :title="question._id">
                             <h1>{{ question._id }}</h1>
 
                             <b-container>
-                                <BarChart />
+                                <BarChart :ref="question._id" :aggregate-data="question" />
                             </b-container>
                         </b-tab>
                     </b-tabs>
@@ -31,7 +31,8 @@
                 <b-button
                     v-if="!circularLoading"
                     @click="downloadZip"
-                style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
+                    style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
+                >
                     Download ZIP
                 </b-button>
             </b-tabs>
@@ -46,9 +47,11 @@ import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import BarChart from "@/components/BarChart.vue";
 import CircularChart from "@/components/CircularChart.vue";
+import { mapState, mapActions } from "vuex";
 const d3 = Object.assign({}, require("d3"), require("d3-scale"));
 const FileSaver = require("file-saver");
 const JSZip = require("jszip");
+const io = require("socket.io-client");
 
 export default {
     name: "dashboard",
@@ -61,8 +64,6 @@ export default {
     data() {
         return {
             circularZip: new JSZip(),
-            values: [20, 50, 60, 40, 30],
-            speciesList: ["Roses", "Tulips", "Daisies", "Narcissuses", "Wallaby"],
             barChartData: [
                 {
                     _id: "QID23",
@@ -199,60 +200,82 @@ export default {
                     ]
                 }
             ],
-            CircleChartData: [
-                {
-                    service: "Wild Food",
-                    mean: -2.5526315789473686
-                },
-                {
-                    service: "Forest Production",
-                    mean: 2.8461538461538462
-                },
-                { service: "Pollination", mean: -2.717948717948718 },
-                { service: "Ecological Integrity", mean: -1.4594594594594596 },
-                { service: "Biodiversity", mean: -2 },
-                { service: "Forage", mean: 1.6315789473684212 },
-                { service: "Livestock", mean: -1.5135135135135131 },
-                { service: "Water", mean: 1.4594594594594596 }
-            ],
-            circularLoading: true
+            circularLoading: true,
+            socket: {},
+            lastUpdate: 0,
+            surveyId: "",
+            intervalId: Number
         };
+    },
+    computed: {
+        ...mapState({
+            socketUrl: state => state.responses.url,
+            barchartAggregate: state =>
+                // Sort categories alphabetically
+                state.responses.barchartAggregate.sort((a, b) => (a._id > b._id ? 1 : b._id > a._id ? -1 : 0))
+        })
     },
     created() {
         window.scrollTo(0, 0);
     },
     mounted() {
-        this.createGraph();
-    },
+        this.surveyId = this.$route.query.id.split("+")[1];
+        this.getAggregate({ id: this.surveyId, pipeline: "barchart" });
 
-    methods: {
-        createGraph() {
-            var svgContainer = d3
-                .select(".circularGraph")
-                .append()
-                .append("svg")
-                .attr("width", 200)
-                .attr("height", 200);
-            var circles = svgContainer
-                .selectAll("circle")
-                .data(this.tempData)
-                .enter()
-                .append("circle");
-            var circleAttributes = circles
-                .attr("cx", function(d) {
-                    return d.x_axis;
-                })
-                .attr("cy", function(d) {
-                    return d.y_axis;
-                })
-                .attr("r", function(d) {
-                    return d.radius;
-                })
-                .style("fill", function(d) {
-                    return d.color;
+        //* Handle survey updates
+        this.createHook(this.surveyId);
+        this.lastUpdate = Date.now();
+        this.socket = io(this.socketUrl, { transports: ["polling"] });
+        this.socket.on(
+            this.surveyId,
+            function() {
+                if (Date.now() - this.lastUpdate >= 500) {
+                    console.log("Response received");
+                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" })
+                        .then(() => {
+                            console.log("Calling circular chart method");
+                            this.$refs.circularRef.makeCharts();
+                        })
+                        .catch(() => {
+                            this.showToast();
+                        });
+                    this.getAggregate({ id: this.surveyId, pipeline: "barchart" })
+                        .then(() => {
+                            for (const ref in this.$refs) {
+                                if (ref !== "circularRef") {
+                                    console.log("Calling barchart method");
+                                    this.$refs[ref].makeChart();
+                                }
+                            }
+                        })
+                        .catch(() => {
+                            this.showToast();
+                        });
+                    this.lastUpdate = Date.now();
+                }
+            }.bind(this)
+        );
+
+        // Refresh data every 60 seconds to grab any residual responses
+        /* this.intervalId = setInterval(
+            function() {
+                console.log("INTERVAL");
+                this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).catch(err => {
+                    throw new Error(err);
                 });
-        },
-
+            }.bind(this),
+            30000
+        ); */
+    },
+    destroyed() {
+        clearInterval(this.intervalId);
+        this.socket.close();
+    },
+    methods: {
+        ...mapActions({
+            createHook: "responses/createHook",
+            getAggregate: "responses/getAggregateData"
+        }),
         downloadImage() {
             var vm = this;
 
@@ -261,7 +284,11 @@ export default {
 
             return new Promise(resolve => {
                 var svgElementNodes = d3.selectAll("svg")._groups[0];
+                //console.log(d3.selectAll("svg"))
                 var svgElements = Array.from(svgElementNodes);
+                var svgLabels = document.getElementsByClassName("chartName");
+                var numGraphs = 0;
+                //console.log(svgLabels)
 
                 var serializer = new XMLSerializer();
 
@@ -276,8 +303,6 @@ export default {
 
                 //Async image loading using Promise
                 const loadImage = svgString => {
-                    var format = "png";
-
                     var imgsrc = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString))); // Convert SVG string to data URL
 
                     return new Promise((resolve, reject) => {
@@ -300,11 +325,16 @@ export default {
                         ctx.fillStyle = "white";
                         ctx.fillRect(0, 0, width, height);
                         ctx.drawImage(image, 0, 0, width, height);
-                        var fileName = this.extractContent(options) + ".png";
+                        var fileName = "";
+                        try {
+                            fileName = svgLabels[numGraphs].textContent.toString() + ".png";
+                        } catch (err) {
+                            fileName = "BarChart.png";
+                        }
+                        numGraphs += 1;
 
                         //save to zip file
                         canvas.toBlob(function(blob) {
-                            //FileSaver.saveAs(blob, fileName); // FileSaver.js function
                             vm.circularZip.file(fileName, blob);
                         });
                     });
@@ -315,21 +345,22 @@ export default {
                 resolve();
             });
         },
-
-        extractContent(s) {
-            var span = document.createElement("span");
-            span.innerHTML = s;
-            console.log(span.textContent);
-            return span.textContent || span.innerText;
-        },
-
         async downloadZip() {
             var vm = this;
             const zip = await vm.downloadImage();
-            //console.log(Object.keys(vm.circularZip.files).length)
             vm.circularZip.generateAsync({ type: "blob" }).then(function(content) {
                 console.log("Downloading zip");
                 FileSaver.saveAs(content, "CircularChart.zip");
+            });
+        },
+        showToast() {
+            this.$bvToast.toast("Bad data in survey response, will manually re-fetch in 30 seconds", {
+                title: "Warning",
+                toaster: "b-toaster-bottom-right",
+                variant: "danger",
+                solid: true,
+                autoHideDelay: 5000,
+                noCloseButton: true
             });
         }
     }

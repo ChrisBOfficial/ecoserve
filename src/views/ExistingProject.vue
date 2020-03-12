@@ -111,7 +111,8 @@ export default {
             visualizations: [],
             existingBlocks: [],
             validateErrors: [],
-            previousProjectId: ""
+            previousProjectId: "",
+            hookStatus: Boolean
         };
     },
     computed: {
@@ -163,6 +164,7 @@ export default {
                     }
                 }
                 this.previousProjectId = this.selected.projectId;
+                this.hookStatus = this.selected.hooked;
                 this.setSelectedId(this.selected.projectId);
             }
         },
@@ -206,7 +208,7 @@ export default {
                         surveyId: this.selected.surveyId,
                         projectId: this.title + "+" + this.selected.surveyId,
                         blocks: this.projectBlocks,
-                        hooked: false
+                        hooked: this.hookStatus
                     }
                 };
                 this.updateProject(payload);
