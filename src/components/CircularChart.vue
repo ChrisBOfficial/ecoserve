@@ -177,78 +177,81 @@ export default {
                         let bca = [
                             {
                                 "_id": "Forage",
+                                "group_mean": 0.2121,
                                 "data": [
                                     {
                                         "subquestion": "Canada Thistle",
                                         "confidence_num": 2.1818181818181817,
                                         "confidence": "moderate",
-                                        "mean": -6.090909090909091,
+                                        "mean": 0.090909090909091,
                                         "se": 0.458659071917739
                                     },
                                     {
                                         "subquestion": "Leafy Spurge",
                                         "confidence_num": 2.3636363636363638,
                                         "confidence": "low",
-                                        "mean": -6.454545454545454,
+                                        "mean": 0.454545454545454,
                                         "se": 0.43941768720854363
                                     },
                                     {
                                         "subquestion": "Musk Thistle",
                                         "confidence_num": 2.727272727272727,
                                         "confidence": "moderate",
-                                        "mean": -5.818181818181818,
+                                        "mean": 1.818181818181818,
                                         "se": 0.4436715878171751
                                     }
                                 ]
                             },
                             {
                                 "_id": "Familiarity",
+                                "group_mean": 5.1212,
                                 "data": [
                                     {
                                         "subquestion": "Canada Thistle",
                                         "confidence_num": null,
                                         "confidence": "none",
-                                        "mean": -4.090909090909091,
+                                        "mean": 2.090909090909091,
                                         "se": 0.35102083605942647
                                     },
                                     {
                                         "subquestion": "Musk Thistle",
                                         "confidence_num": null,
                                         "confidence": "high",
-                                        "mean": -3.4545454545454546,
+                                        "mean": 3.4545454545454546,
                                         "se": 0.4872529908424355
                                     },
                                     {
                                         "subquestion": "Leafy Spurge",
                                         "confidence_num": null,
                                         "confidence": "extreme",
-                                        "mean": -3.8181818181818183,
+                                        "mean": 3.8181818181818183,
                                         "se": 0.40284487956872533
                                     }
                                 ]
                             },
                             {
                                 "_id": "Livestock",
+                                "group_mean": -0.0833,
                                 "data": [
                                     {
                                         "subquestion": "Canada Thistle",
                                         "confidence_num": 2.25,
                                         "confidence": "moderate",
-                                        "mean": -6.5,
+                                        "mean": -0.5,
                                         "se": 0.7288689868556625
                                     },
                                     {
                                         "subquestion": "Leafy Spurge",
                                         "confidence_num": 2.75,
                                         "confidence": "none",
-                                        "mean": -6,
+                                        "mean": 0,
                                         "se": 0.7499999999999999
                                     },
                                     {
                                         "subquestion": "Musk Thistle",
                                         "confidence_num": 3,
                                         "confidence": "low",
-                                        "mean": -5.75,
+                                        "mean": 0.25,
                                         "se": 0.6789237807000134
                                     }
                                 ]
@@ -256,21 +259,35 @@ export default {
                         ]
                        let nld = [];
                         for (let i in data.values){
-                            let row = {"service": data.values[i].service, "mean": data.values[i].mean};
+                            let row = {"Service": data.values[i].service, "Mean": data.values[i].mean.toPrecision(2)};
                             const index = bca.map(e => e._id).indexOf(data.values[i].service);
+                            let comparator = bca[index].group_mean;
+                            let vsval = (comparator - row.Mean)/comparator;
+                            let vs_peers = function(){
+                                if (Math.abs(vsval) < .20){
+                                    return "Similar";
+                                }
+                                else if (Math.abs(vsval) >=.20 && Math.abs(vsval) < .40){
+                                    return "Better";
+                                }
+                                else {
+                                    return "Much Better";
+                                }
+                            }
+                            row.Vs_Peers = vs_peers();
                             let bca1 = bca[index].data;
                             const index2 = bca1.map(e => e.subquestion).indexOf(data.type);
-                            row.confidence = bca1[index2].confidence;
+                            row.Confidence = bca1[index2].confidence;
                             nld.push(row);
                         }
                         return(nld);
                     }
-                        var data2 = [
-                            "service","mean", "confidence"
+                        let data2 = [
+                            "Service","Mean", "Confidence", "Vs_Peers"
                         ];
 
 
-                        var table = svg.append("svg:foreignObject")
+                        let table = svg.append("svg:foreignObject")
                             .attr("style","width: 100%")
                             .attr("height", "400")
                             
@@ -280,8 +297,8 @@ export default {
                             .attr("class", "table-bordered")
                             .attr("style", "overflow-x:auto")
                             ;
-                        var thead = table.append('thead')
-		                var	tbody = table.append('tbody');
+                        let thead = table.append('thead')
+		                let	tbody = table.append('tbody');
                             
                         // append the header row
 		                thead.append('tr')
