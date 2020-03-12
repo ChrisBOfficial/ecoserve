@@ -264,6 +264,7 @@ const barchartPipeline = function(surveyId) {
         {
             $group: {
                 _id: "$_id.QID",
+                group_mean: {$avg: "$mean"},
                 data: {
                     $push: {
                         subquestion: "$_id.subquestion",
@@ -275,34 +276,34 @@ const barchartPipeline = function(surveyId) {
                                         case: {
                                             $lte: ["$confidence", 1]
                                         },
-                                        then: "none"
+                                        then: "None"
                                     },
                                     {
                                         case: {
                                             $lte: ["$confidence", 2]
                                         },
-                                        then: "low"
+                                        then: "Low"
                                     },
                                     {
                                         case: {
                                             $lte: ["$confidence", 3]
                                         },
-                                        then: "moderate"
+                                        then: "Moderate"
                                     },
                                     {
                                         case: {
                                             $lte: ["$confidence", 4]
                                         },
-                                        then: "high"
+                                        then: "High"
                                     },
                                     {
                                         case: {
                                             $lte: ["$confidence", 5]
                                         },
-                                        then: "extreme"
+                                        then: "Extreme"
                                     }
                                 ],
-                                default: "moderate"
+                                default: "Moderate"
                             }
                         },
                         mean: "$mean",
