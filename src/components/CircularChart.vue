@@ -217,6 +217,7 @@ export default {
                                 ]
                             }
                         ]
+
                        let nld = [];
                         for (let i in data.values){
                             let row = {"Service": data.values[i].service, "Mean": data.values[i].mean.toPrecision(2)};
@@ -330,6 +331,7 @@ export default {
                         .padAngle(0.01)
                         .padRadius(innerRadius)
                 );
+
 
             //* Add the negative bars
             svg.append("g")
