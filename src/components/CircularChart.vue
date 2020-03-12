@@ -7,7 +7,6 @@
 <script>
 import Loading from "@/components/Loading.vue";
 import { mapState, mapActions } from "vuex";
-const io = require("socket.io-client");
 const d3 = Object.assign({}, require("d3"), require("d3-scale"), require("d3-selection"));
 
 export default {
@@ -17,10 +16,7 @@ export default {
     },
     data() {
         return {
-            socket: {},
-            lastUpdate: 0,
             surveyId: "",
-            intervalId: Number,
             loading: true,
             blockOrdering: {}
         };
@@ -45,45 +41,9 @@ export default {
                 this.makeCharts();
             });
         });
-
-        this.createHook(this.surveyId);
-        this.lastUpdate = Date.now();
-        this.socket = io(this.socketUrl, { transports: ["polling"] });
-        this.socket.on(
-            this.surveyId,
-            function() {
-                if (Date.now() - this.lastUpdate >= 500) {
-                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" })
-                        .then(() => {
-                            console.log("Response received");
-                            this.makeCharts();
-                        })
-                        .catch(() => {
-                            this.showToast();
-                        });
-                    this.lastUpdate = Date.now();
-                }
-            }.bind(this)
-        );
-
-        // Refresh data every 60 seconds to grab any residual responses
-        /* this.intervalId = setInterval(
-            function() {
-                console.log("INTERVAL");
-                this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).catch(err => {
-                    throw new Error(err);
-                });
-            }.bind(this),
-            30000
-        ); */
-    },
-    destroyed() {
-        clearInterval(this.intervalId);
-        this.socket.close();
     },
     methods: {
         ...mapActions({
-            createHook: "responses/createHook",
             getAggregate: "responses/getAggregateData",
             loadProject: "projects/loadProject"
         }),
@@ -373,6 +333,7 @@ export default {
                 .style("font-family", "Nunito");
         },
         makeCharts() {
+            console.log("Making circular chart");
             // Sort aggregate data alphabetically by category, and remove categories according to project settings
             const sortedData = this.circleAggregate.sort((a, b) => a.type.localeCompare(b.type));
             for (let [i, data] of sortedData.entries()) {
@@ -410,16 +371,6 @@ export default {
                     this.circleChart(d, this.$el);
                 }.bind(this)
             );
-        },
-        showToast() {
-            this.$bvToast.toast("Bad data in survey response, will manually re-fetch in 30 seconds", {
-                title: "Warning",
-                toaster: "b-toaster-bottom-right",
-                variant: "danger",
-                solid: true,
-                autoHideDelay: 5000,
-                noCloseButton: true
-            });
         }
     }
 };

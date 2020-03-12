@@ -305,9 +305,7 @@ const barchartPipeline = function(surveyId) {
                                 default: "moderate"
                             }
                         },
-                        mean: {
-                            $subtract: ["$mean", 6]
-                        },
+                        mean: "$mean",
                         se: "$se"
                     }
                 }
