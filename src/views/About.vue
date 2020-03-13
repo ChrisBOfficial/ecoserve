@@ -9,7 +9,7 @@
                             <div class="header-content mx-auto">
                                 <h1 class="mb-5">
                                     ecoserve lets you easily visualize your Qualtrics surveys, giving you a way to
-                                    communicate the information you receive
+                                    communicate your information
                                 </h1>
                                 <a :href="loginLink" class="btn btn-outline btn-xl">Start Now</a>
                             </div>
@@ -28,8 +28,7 @@
             <section class="features" id="features">
                 <div class="container">
                     <div class="section-heading text-center">
-                        <h2>Unlimited Possibilities, Unlimited Fun</h2>
-                        <p class="text-muted">Check out what you can do with this!</p>
+                        <h2>Clean Visualizations, Easy Creation</h2>
                     </div>
                     <div class="row">
                         <div class="col-lg-4 my-auto">
@@ -44,19 +43,21 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="feature-item">
-                                            <i class="icon-screen-smartphone text-primary"></i>
-                                            <h3>Device Mockups</h3>
+                                            <i class="icon-layers text-primary"></i>
+                                            <h3>Built on Qualtrics</h3>
                                             <p class="text-muted">
-                                                No Photoshop required!
+                                                Use what you're familiar with and build the surveys you want with
+                                                Qualtrics
                                             </p>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="feature-item">
-                                            <i class="icon-camera text-primary"></i>
-                                            <h3>Flexible Use</h3>
+                                            <i class="icon-book-open text-primary"></i>
+                                            <h3>Easy to Start</h3>
                                             <p class="text-muted">
-                                                Put whatever text you want!
+                                                Our survey creation guidelines make creating compatible surveys easy.
+                                                Click <a href="/guidelines">here</a> for more
                                             </p>
                                         </div>
                                     </div>
@@ -67,16 +68,17 @@
                                             <i class="icon-present text-primary"></i>
                                             <h3>Free to Use</h3>
                                             <p class="text-muted">
-                                                Lorem Ipsum!
+                                                ecoserve is 100% free, you just need a Qualtrics account
                                             </p>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="feature-item">
-                                            <i class="icon-lock-open text-primary"></i>
-                                            <h3>Open Source</h3>
+                                            <i class="icon-lock text-primary"></i>
+                                            <h3>Secure</h3>
                                             <p class="text-muted">
-                                                Yay for placeholders!
+                                                Your data is secure with ecoserve. Click
+                                                <a href="/security">here</a> to learn more
                                             </p>
                                         </div>
                                     </div>
@@ -317,7 +319,7 @@ section.cta .overlay {
     left: -12rem;
     right: 0;
     width: 250%;
-    height: 200%;
+    height: 180%;
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
@@ -328,8 +330,8 @@ section.cta .overlay {
     bottom: 0;
     left: -12rem;
     right: 0;
-    width: 100%;
-    height: 100%;
+    width: 170%;
+    height: 180%;
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
@@ -340,5 +342,9 @@ section.cta .overlay {
 
 .device-mockup.hero > .device {
     background-image: url("../assets/aboutHero.png");
+}
+
+.features .device-mockup.hero > .device {
+    background-image: url("../assets/barchartHero.png");
 }
 </style>
