@@ -17,17 +17,14 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
-                <b-tab title="" disabled>
-                    <b-tabs vertical>
-                        <b-tab v-for="question in barChartData" :key="question._id" :title="question._id">
-                            <h1>{{ question._id }}</h1>
-
-                            <b-container>
-                                <BarChart />
-                            </b-container>
-                        </b-tab>
-                    </b-tabs>
-                </b-tab>
+                <b-tab title="disable" >
+                    <div v-for="question in barchartAggregate" :key="question._id" :title="question._id">
+                        <h3> {{ question._id }} </h3>
+                        <b-container>
+                            <BarChart :ref="question._id" :aggregate-data="question"/>
+                        </b-container>
+                    </div>
+                 </b-tab>
                 <b-button
                     v-if="!circularLoading"
                     @click="downloadZip"
