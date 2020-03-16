@@ -17,7 +17,7 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
-                <b-tab title="disable" >
+                <b-tab title="disable">
                     <div v-for="question in barchartAggregate" :key="question._id" :title="question._id" class="barChartName">
                         <h3> {{ question._id }} </h3>
                         <b-container>
@@ -60,7 +60,7 @@ export default {
     },
     data() {
         return {
-            circularZip: new JSZip(),
+            zipFile: new JSZip(),
             barChartData: [
                 {
                     _id: "QID23",
@@ -305,9 +305,10 @@ export default {
                 var classType = new Array();
 
                 for (var i = 0; i < svgElementNodes.length; i++){
+                    //console.log(svgElementNodes[i].className["baseVal"])
                     classType.push(svgElementNodes[i].className["baseVal"]);
                 }
-                console.log(classType);
+                //console.log(classType);
 
                 var serializer = new XMLSerializer();
 
@@ -326,6 +327,7 @@ export default {
 
                     return new Promise((resolve, reject) => {
                         var image = new Image();
+                        console.log("Loading Image");
                         image.onload = () => resolve(image);
                         image.onerror = () => reject(new Error("load image fail"));
                         image.src = imgsrc;
@@ -357,17 +359,15 @@ export default {
                             ctx.drawImage(image, 0, 0, width_c, height_c);
                         }
 
-                        var fileName = "";
-                        try {
-                            fileName = svgLabels[numGraphs].textContent.toString() + ".png";
-                        } catch (err) {
-                            fileName = "BarChart.png";
-                        }
+                        var fileName = fileName = svgLabels[numGraphs].toString() + ".png";
+    
                         numGraphs += 1;
 
                         //save to zip file
                         canvas.toBlob(function(blob) {
-                            vm.circularZip.file(fileName, blob);
+                            console.log("Save to zip");
+                            vm.zipFile.file(fileName, blob);
+                            //console.log(vm.circularZip);
                         });
                     });
                 };
@@ -380,9 +380,9 @@ export default {
         async downloadZip() {
             var vm = this;
             const zip = await vm.downloadImage();
-            vm.circularZip.generateAsync({ type: "blob" }).then(function(content) {
+            vm.zipFile.generateAsync({ type: "blob" }).then(function(content) {
                 console.log("Downloading zip");
-                FileSaver.saveAs(content, "CircularChart.zip");
+                FileSaver.saveAs(content, "Chart.zip");
             });
         },
         showToast() {
