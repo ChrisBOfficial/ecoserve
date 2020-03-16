@@ -31,7 +31,7 @@
                 <b-button
                     v-if="!circularLoading"
                     @click="downloadZip"
-                style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
+                    style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
                     Download ZIP
                 </b-button>
             </b-tabs>

@@ -5,9 +5,6 @@
             <header class="masthead">
                 <div class="container d-flex h-100 align-items-center">
                     <div class="mx-auto text-center">
-                        <h1 class="font-weight-light" style="color:white; letter-spacing: 0;">
-                            About us
-                        </h1>
                     </div>
                 </div>
             </header>
