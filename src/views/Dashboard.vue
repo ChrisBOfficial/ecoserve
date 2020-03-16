@@ -18,7 +18,7 @@
                     </b-tabs>
                 </b-tab>
                 <b-tab title="disable" >
-                    <div v-for="question in barchartAggregate" :key="question._id" :title="question._id">
+                    <div v-for="question in barchartAggregate" :key="question._id" :title="question._id" class="barChartName">
                         <h3> {{ question._id }} </h3>
                         <b-container>
                             <BarChart :ref="question._id" :aggregate-data="question"/>
@@ -287,9 +287,20 @@ export default {
 
             return new Promise(resolve => {
                 var svgElementNodes = d3.selectAll("svg")._groups[0];
-                //console.log(d3.selectAll("svg"))
                 var svgElements = Array.from(svgElementNodes);
-                var svgLabels = document.getElementsByClassName("chartName");
+                //console.log(svgElements);
+                var svgLabelCircular = document.getElementsByClassName("chartName");
+                var svgLabelBar = document.getElementsByClassName("barChartName");
+                //console.log(svgLabelBar);
+
+                var svgLabels = new Array();
+                for (var i = 0; i < svgLabelCircular.length; i++){
+                    svgLabels.push(svgLabelCircular[i].textContent);
+                }
+                for (var i = 0; i < svgLabelBar.length; i++){
+                    svgLabels.push(svgLabelBar[i].title);
+                }
+                console.log(svgLabels);
                 var numGraphs = 0;
                 var classType = new Array();
 
