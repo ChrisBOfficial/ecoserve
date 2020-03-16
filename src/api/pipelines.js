@@ -15,7 +15,8 @@ const barchartPipeline = function(surveyId) {
             $project: {
                 totals: {
                     $objectToArray: "$responses.values"
-                }
+                },
+                descriptions: 1
             }
         },
         {
@@ -24,53 +25,146 @@ const barchartPipeline = function(surveyId) {
             }
         },
         {
+            $match: {
+                "totals.k": {
+                    $regex: new RegExp("^Q")
+                },
+                "totals.v": {
+                    $type: "number"
+                }
+            }
+        },
+        {
+            $match: {
+                "totals.k": {
+                    $regex: "_"
+                }
+            }
+        },
+        {
+            $unwind: {
+                path: "$descriptions"
+            }
+        },
+        {
+            $match: {
+                "descriptions.title": {
+                    $regex: "_"
+                }
+            }
+        },
+        {
+            $project: {
+                QID: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$totals.k", "#"]
+                        },
+                        0
+                    ]
+                },
+                sub: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$totals.k", "_"]
+                        },
+                        1
+                    ]
+                },
+                col: {
+                    $substr: [
+                        "$totals.k",
+                        {
+                            $subtract: [
+                                {
+                                    $strLenCP: "$totals.k"
+                                },
+                                3
+                            ]
+                        },
+                        1
+                    ]
+                },
+                v: "$totals.v",
+                service: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$descriptions.title", "#"]
+                        },
+                        0
+                    ]
+                },
+                question: "$descriptions.question",
+                subqmatch: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$descriptions.subQuestion", "."]
+                        },
+                        2
+                    ]
+                },
+                impactor: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$descriptions.title", "_"]
+                        },
+                        1
+                    ]
+                },
+                descriptions: 1
+            }
+        },
+        {
+            $project: {
+                QID: 1,
+                sub: 1,
+                question: 1,
+                subqmatch: 1,
+                impactor: 1,
+                service: 1,
+                col: 1,
+                v: 1,
+                questioneq: {
+                    $cond: [
+                        {
+                            $eq: ["$QID", "$question"]
+                        },
+                        1,
+                        0
+                    ]
+                },
+                subquestioneq: {
+                    $cond: [
+                        {
+                            $eq: ["$sub", "$subqmatch"]
+                        },
+                        1,
+                        0
+                    ]
+                }
+            }
+        },
+        {
+            $match: {
+                subquestioneq: 1,
+                questioneq: 1
+            }
+        },
+        {
             $group: {
                 _id: {
-                    QID: {
-                        $arrayElemAt: [
-                            {
-                                $split: ["$totals.k", "#"]
-                            },
-                            0
-                        ]
-                    },
-                    subquestion: {
-                        $substr: [
-                            "$totals.k",
-                            {
-                                $subtract: [
-                                    {
-                                        $strLenCP: "$totals.k"
-                                    },
-                                    1
-                                ]
-                            },
-                            1
-                        ]
-                    },
-                    type: {
-                        $substr: [
-                            "$totals.k",
-                            {
-                                $subtract: [
-                                    {
-                                        $strLenCP: "$totals.k"
-                                    },
-                                    3
-                                ]
-                            },
-                            1
-                        ]
-                    }
+                    QID: "$service",
+                    subquestion: "$impactor",
+                    col: "$col"
                 },
                 mean: {
-                    $avg: "$totals.v"
+                    $avg: "$v"
                 },
                 count: {
                     $sum: 1
                 },
                 sd: {
-                    $stdDevPop: "$totals.v"
+                    $stdDevPop: "$v"
                 }
             }
         },
@@ -95,13 +189,13 @@ const barchartPipeline = function(surveyId) {
                         branches: [
                             {
                                 case: {
-                                    $eq: ["$_id.type", "2"]
+                                    $eq: ["$_id.col", "2"]
                                 },
                                 then: "$mean"
                             },
                             {
                                 case: {
-                                    $eq: ["$_id.type", "1"]
+                                    $eq: ["$_id.col", "1"]
                                 },
                                 then: null
                             }
@@ -114,13 +208,13 @@ const barchartPipeline = function(surveyId) {
                         branches: [
                             {
                                 case: {
-                                    $eq: ["$_id.type", "2"]
+                                    $eq: ["$_id.col", "2"]
                                 },
                                 then: null
                             },
                             {
                                 case: {
-                                    $eq: ["$_id.type", "1"]
+                                    $eq: ["$_id.col", "1"]
                                 },
                                 then: "$mean"
                             }
@@ -133,13 +227,13 @@ const barchartPipeline = function(surveyId) {
                         branches: [
                             {
                                 case: {
-                                    $eq: ["$_id.type", "2"]
+                                    $eq: ["$_id.col", "2"]
                                 },
                                 then: null
                             },
                             {
                                 case: {
-                                    $eq: ["$_id.type", "1"]
+                                    $eq: ["$_id.col", "1"]
                                 },
                                 then: "$se"
                             }
@@ -147,7 +241,7 @@ const barchartPipeline = function(surveyId) {
                         default: "$se"
                     }
                 },
-                type: "$_id.type"
+                type: "$_id.col"
             }
         },
         {
@@ -170,9 +264,11 @@ const barchartPipeline = function(surveyId) {
         {
             $group: {
                 _id: "$_id.QID",
+                group_mean: {$avg: "$mean"},
                 data: {
                     $push: {
                         subquestion: "$_id.subquestion",
+                        confidence_num: "$confidence",
                         confidence: {
                             $switch: {
                                 branches: [
@@ -180,34 +276,34 @@ const barchartPipeline = function(surveyId) {
                                         case: {
                                             $lte: ["$confidence", 1]
                                         },
-                                        then: "none"
+                                        then: "None"
                                     },
                                     {
                                         case: {
                                             $lte: ["$confidence", 2]
                                         },
-                                        then: "low"
+                                        then: "Low"
                                     },
                                     {
                                         case: {
                                             $lte: ["$confidence", 3]
                                         },
-                                        then: "moderate"
+                                        then: "Moderate"
                                     },
                                     {
                                         case: {
                                             $lte: ["$confidence", 4]
                                         },
-                                        then: "high"
+                                        then: "High"
                                     },
                                     {
                                         case: {
                                             $lte: ["$confidence", 5]
                                         },
-                                        then: "extreme"
+                                        then: "Extreme"
                                     }
                                 ],
-                                default: "moderate"
+                                default: "Moderate"
                             }
                         },
                         mean: "$mean",

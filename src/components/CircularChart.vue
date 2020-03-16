@@ -7,7 +7,6 @@
 <script>
 import Loading from "@/components/Loading.vue";
 import { mapState, mapActions } from "vuex";
-const io = require("socket.io-client");
 const d3 = Object.assign({}, require("d3"), require("d3-scale"), require("d3-selection"));
 
 export default {
@@ -17,10 +16,7 @@ export default {
     },
     data() {
         return {
-            socket: {},
-            lastUpdate: 0,
             surveyId: "",
-            intervalId: Number,
             loading: true,
             blockOrdering: {}
         };
@@ -28,6 +24,7 @@ export default {
     computed: {
         ...mapState({
             circleAggregate: state => state.responses.circleAggregate,
+            barchartAggregate: state => state.responses.barchartAggregate,
             socketUrl: state => state.responses.url,
             project: state => state.projects.project
         })
@@ -45,45 +42,9 @@ export default {
                 this.makeCharts();
             });
         });
-
-        this.createHook(this.surveyId);
-        this.lastUpdate = Date.now();
-        this.socket = io(this.socketUrl, { transports: ["polling"] });
-        this.socket.on(
-            this.surveyId,
-            function() {
-                if (Date.now() - this.lastUpdate >= 500) {
-                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" })
-                        .then(() => {
-                            console.log("Response received");
-                            this.makeCharts();
-                        })
-                        .catch(() => {
-                            this.showToast();
-                        });
-                    this.lastUpdate = Date.now();
-                }
-            }.bind(this)
-        );
-
-        // Refresh data every 60 seconds to grab any residual responses
-        /* this.intervalId = setInterval(
-            function() {
-                console.log("INTERVAL");
-                this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).catch(err => {
-                    throw new Error(err);
-                });
-            }.bind(this),
-            30000
-        ); */
-    },
-    destroyed() {
-        clearInterval(this.intervalId);
-        this.socket.close();
     },
     methods: {
         ...mapActions({
-            createHook: "responses/createHook",
             getAggregate: "responses/getAggregateData",
             loadProject: "projects/loadProject"
         }),
@@ -147,10 +108,12 @@ export default {
                             .attr("height", "100%")
                             .attr("fill", "gray")
                             .attr("opacity", 0.04);
-                    }
-                })
+
+                        
+                        }})
+
                 .on("mouseleave", function() {
-                    d3.selectAll(".selectedHighlight").remove();
+                    d3.selectAll(".selectedHighlight").remove();                    
                 })
                 .on("click", function() {
                     let svg = d3.select(this);
@@ -158,8 +121,7 @@ export default {
 
                     // Only add nutrition label if none are present
                     if (label.empty()) {
-                        svg.append("g");
-                        /*
+                        
                         svg.append("rect")
                             .attr("class", "nutritionLabel")
                             .attr("width", "100%")
@@ -170,54 +132,169 @@ export default {
                         svg.selectAll('rect')
                         .data(data)
                         .enter("rect")
-                        */
 
-                        let thead = svg.append("thead");
-                        let tbody = svg.append("tbody");
+                    let data1 = function(){
+                        let bca = [
+                            {
+                                "_id": "Forage",
+                                "group_mean": 0.2121,
+                                "data": [
+                                    {
+                                        "subquestion": "Canada Thistle",
+                                        "confidence_num": 2.1818181818181817,
+                                        "confidence": "moderate",
+                                        "mean": 0.090909090909091,
+                                        "se": 0.458659071917739
+                                    },
+                                    {
+                                        "subquestion": "Leafy Spurge",
+                                        "confidence_num": 2.3636363636363638,
+                                        "confidence": "low",
+                                        "mean": 0.454545454545454,
+                                        "se": 0.43941768720854363
+                                    },
+                                    {
+                                        "subquestion": "Musk Thistle",
+                                        "confidence_num": 2.727272727272727,
+                                        "confidence": "moderate",
+                                        "mean": 1.818181818181818,
+                                        "se": 0.4436715878171751
+                                    }
+                                ]
+                            },
+                            {
+                                "_id": "Familiarity",
+                                "group_mean": 5.1212,
+                                "data": [
+                                    {
+                                        "subquestion": "Canada Thistle",
+                                        "confidence_num": null,
+                                        "confidence": "none",
+                                        "mean": 2.090909090909091,
+                                        "se": 0.35102083605942647
+                                    },
+                                    {
+                                        "subquestion": "Musk Thistle",
+                                        "confidence_num": null,
+                                        "confidence": "high",
+                                        "mean": 3.4545454545454546,
+                                        "se": 0.4872529908424355
+                                    },
+                                    {
+                                        "subquestion": "Leafy Spurge",
+                                        "confidence_num": null,
+                                        "confidence": "extreme",
+                                        "mean": 3.8181818181818183,
+                                        "se": 0.40284487956872533
+                                    }
+                                ]
+                            },
+                            {
+                                "_id": "Livestock",
+                                "group_mean": -0.0833,
+                                "data": [
+                                    {
+                                        "subquestion": "Canada Thistle",
+                                        "confidence_num": 2.25,
+                                        "confidence": "moderate",
+                                        "mean": -0.5,
+                                        "se": 0.7288689868556625
+                                    },
+                                    {
+                                        "subquestion": "Leafy Spurge",
+                                        "confidence_num": 2.75,
+                                        "confidence": "none",
+                                        "mean": 0,
+                                        "se": 0.7499999999999999
+                                    },
+                                    {
+                                        "subquestion": "Musk Thistle",
+                                        "confidence_num": 3,
+                                        "confidence": "low",
+                                        "mean": 0.25,
+                                        "se": 0.6789237807000134
+                                    }
+                                ]
+                            }
+                        ]
 
+                       let nld = [];
+                        for (let i in data.values){
+                            let row = {"Service": data.values[i].service, "Mean": data.values[i].mean.toPrecision(2)};
+                            const index = bca.map(e => e._id).indexOf(data.values[i].service);
+                            let comparator = bca[index].group_mean;
+                            let vsval = (comparator - row.Mean)/comparator;
+                            let vs_peers = function(){
+                                if (Math.abs(vsval) < .20){
+                                    return "Similar";
+                                }
+                                else if (Math.abs(vsval) >=.20 && Math.abs(vsval) < .40){
+                                    return "Better";
+                                }
+                                else {
+                                    return "Much Better";
+                                }
+                            }
+                            row.Vs_Peers = vs_peers();
+                            let bca1 = bca[index].data;
+                            const index2 = bca1.map(e => e.subquestion).indexOf(data.type);
+                            row.Confidence = bca1[index2].confidence;
+                            nld.push(row);
+                        }
+                        return(nld);
+                    }
+                        let data2 = [
+                            "Service","Mean", "Confidence", "Vs_Peers"
+                        ];
+
+
+                        let table = svg.append("svg:foreignObject")
+                            .attr("style","width: 100%")
+                            .attr("height", "400")
+                            
+                            .attr("class", "nutritionTable" )
+                            .append("xhtml:body")
+                            .append("table")
+                            .attr("class", "table-bordered")
+                            .attr("style", "overflow-x:auto")
+                            ;
+                        let thead = table.append('thead')
+		                let	tbody = table.append('tbody');
+                            
                         // append the header row
-                        thead
-                            .append("tr")
-                            .selectAll("tr")
-                            .data(data)
-                            .enter()
-                            .append("th")
-                            .text(function(data) {
-                                return d.service;
-                            });
-
+		                thead.append('tr')
+		                    .selectAll('th')
+		                    .data(data2).enter()
+		                    .append('th')
+                            .text(d => { return d; });
+                            
                         // create a row for each object in the data
-                        var rows = tbody
-                            .selectAll("tr")
-                            .data(data)
+                        var rows = tbody.selectAll( "tr" )
+                            .data( data1 )
                             .enter()
-                            .append("tr");
+                            .append( "tr" );                        
 
                         // create a cell in each row for each column
-                        var cells = rows
-                            .selectAll("td")
-                            .data(function(row) {
-                                return columns.map(function(column) {
-                                    return { column: column, mean: row[column] };
-                                });
-                            })
+                        var cells = rows.selectAll( "td" )
+                            .data( function ( data1 ) {
+                                return data2.map( function ( column ) {
+                                    return { column: column, value: data1[column] };
+                                } );
+                            } )
                             .enter()
-                            .append("td")
-                            .attr("style", "font-family: 'Lato'")
+                            .append( "td" )
+                            .attr("class", (d) =>{
+                                return d[data2];
+                             })
+                            .attr( "style", "font-family: 'Lato'" )
                             .attr("style", "padding: 2px;")
-                            .html(function(d) {
-                                return d.mean;
-                            });
-                        // Re-add highlight
-                        svg.select(".selectedHighlight").remove();
-                        svg.append("rect")
-                            .attr("class", "selectedHighlight")
-                            .attr("width", "100%")
-                            .attr("height", "100%")
-                            .attr("fill", "gray")
-                            .attr("opacity", 0.04);
+                            .text( function ( d,i ) {
+                                return d.value;
+                            } );
+                    
                     } else {
                         label.remove();
+                        d3.selectAll(".nutritionTable").remove();
                     }
                 })
                 .append("g")
@@ -254,6 +331,7 @@ export default {
                         .padAngle(0.01)
                         .padRadius(innerRadius)
                 );
+
 
             //* Add the negative bars
             svg.append("g")
@@ -304,6 +382,13 @@ export default {
                 .style("stroke", "#CCC")
                 .style("opacity", 0.65)
                 .style("fill", "none");
+            circleAxes
+                .append("svg:circle")
+                .attr("r", (outerRadius / numTicks)*1 )
+                .attr("class", "circle")
+                .style("stroke", "#CCC")
+                .style("opacity", 0.65)
+                .style("fill", "grey");
 
             //* Add the radial labels
             svg.append("g")
@@ -373,6 +458,7 @@ export default {
                 .style("font-family", "Nunito");
         },
         makeCharts() {
+            console.log("Making circular chart");
             // Sort aggregate data alphabetically by category, and remove categories according to project settings
             const sortedData = this.circleAggregate.sort((a, b) => a.type.localeCompare(b.type));
             for (let [i, data] of sortedData.entries()) {
@@ -410,16 +496,6 @@ export default {
                     this.circleChart(d, this.$el);
                 }.bind(this)
             );
-        },
-        showToast() {
-            this.$bvToast.toast("Bad data in survey response, will manually re-fetch in 30 seconds", {
-                title: "Warning",
-                toaster: "b-toaster-bottom-right",
-                variant: "danger",
-                solid: true,
-                autoHideDelay: 5000,
-                noCloseButton: true
-            });
         }
     }
 };
