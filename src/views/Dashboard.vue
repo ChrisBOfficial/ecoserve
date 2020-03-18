@@ -17,7 +17,8 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
-                <b-tab title="disable">
+                
+                <b-tab title="Full Bar Graphs">
                     <div v-for="question in barchartAggregate" :key="question._id" :title="question._id" class="barChartName">
                         <h3> {{ question._id }} </h3>
                         <b-container>
@@ -308,7 +309,7 @@ export default {
                     //console.log(svgElementNodes[i].className["baseVal"])
                     classType.push(svgElementNodes[i].className["baseVal"]);
                 }
-                //console.log(classType);
+                console.log(classType);
 
                 var serializer = new XMLSerializer();
 
@@ -359,14 +360,21 @@ export default {
                             ctx.drawImage(image, 0, 0, width_c, height_c);
                         }
 
-                        var fileName = fileName = svgLabels[numGraphs].toString() + ".png";
+                        var fileName = svgLabels[numGraphs].toString() + ".png";
+                        var folder;
+                        if (classType[numGraphs] == 'barChart'){
+                            folder = "Bar Graph"
+                        }else if (classType[numGraphs] == 'circleChart'){
+                            folder = "Circle Graph"
+                        }
     
                         numGraphs += 1;
 
                         //save to zip file
                         canvas.toBlob(function(blob) {
                             console.log("Save to zip");
-                            vm.zipFile.file(fileName, blob);
+                            console.log("Folder: ", folder);
+                            vm.zipFile.folder(folder).file(fileName, blob);
                             //console.log(vm.circularZip);
                         });
                     });
