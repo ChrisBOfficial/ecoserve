@@ -17,8 +17,7 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
-                
-                <b-tab title="Full Bar Graphs">
+                <b-tab title="disable">
                     <div v-for="question in barchartAggregate" :key="question._id" :title="question._id" class="barChartName">
                         <h3> {{ question._id }} </h3>
                         <b-container>
@@ -328,8 +327,7 @@ export default {
                     //console.log(svgElementNodes[i].className["baseVal"])
                     classType.push(svgElementNodes[i].className["baseVal"]);
                 }
-                console.log("All class types: ");
-                console.log(classType);
+                //console.log(classType);
 
                 var serializer = new XMLSerializer();
 
@@ -396,6 +394,7 @@ export default {
                         canvas.toBlob(function(blob) {
                             console.log("Save to zip");
                             vm.zipFile.folder(folder).file(fileName, blob);
+                            //console.log(vm.circularZip);
                         });
                     });
                 };
