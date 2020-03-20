@@ -17,17 +17,15 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
-                <b-tab title="" disabled>
-                    <b-tabs vertical>
-                        <b-tab v-for="question in barChartData" :key="question._id" :title="question._id">
-                            <h1>{{ question._id }}</h1>
-
-                            <b-container>
-                                <BarChart />
-                            </b-container>
-                        </b-tab>
-                    </b-tabs>
-                </b-tab>
+                
+                <b-tab title="Full Bar Graphs">
+                    <div v-for="question in barchartAggregate" :key="question._id" :title="question._id" class="barChartName">
+                        <h3> {{ question._id }} </h3>
+                        <b-container>
+                            <BarChart :ref="question._id" :aggregate-data="question"/>
+                        </b-container>
+                    </div>
+                 </b-tab>
                 <b-button
                     v-if="!circularLoading"
                     @click="downloadZip"
@@ -63,7 +61,7 @@ export default {
     },
     data() {
         return {
-            circularZip: new JSZip(),
+            zipFile: new JSZip(),
             barChartData: [
                 {
                     _id: "QID23",
@@ -279,16 +277,39 @@ export default {
         downloadImage() {
             var vm = this;
 
-            var width = 2400,
-                height = 2700;
+
+            //Dimension for circular chart
+            var width_c = 2400,
+                height_c = 2700;
+
+            //Dimension for bar chart
+            var width_b = 4200,
+                height_b = 2200;
 
             return new Promise(resolve => {
                 var svgElementNodes = d3.selectAll("svg")._groups[0];
-                //console.log(d3.selectAll("svg"))
                 var svgElements = Array.from(svgElementNodes);
-                var svgLabels = document.getElementsByClassName("chartName");
+                //console.log(svgElements);
+                var svgLabelCircular = document.getElementsByClassName("chartName");
+                var svgLabelBar = document.getElementsByClassName("barChartName");
+                //console.log(svgLabelBar);
+
+                var svgLabels = new Array();
+                for (var i = 0; i < svgLabelCircular.length; i++){
+                    svgLabels.push(svgLabelCircular[i].textContent);
+                }
+                for (var i = 0; i < svgLabelBar.length; i++){
+                    svgLabels.push(svgLabelBar[i].title);
+                }
+                console.log(svgLabels);
                 var numGraphs = 0;
-                //console.log(svgLabels)
+                var classType = new Array();
+
+                for (var i = 0; i < svgElementNodes.length; i++){
+                    //console.log(svgElementNodes[i].className["baseVal"])
+                    classType.push(svgElementNodes[i].className["baseVal"]);
+                }
+                console.log(classType);
 
                 var serializer = new XMLSerializer();
 
@@ -307,6 +328,7 @@ export default {
 
                     return new Promise((resolve, reject) => {
                         var image = new Image();
+                        console.log("Loading Image");
                         image.onload = () => resolve(image);
                         image.onerror = () => reject(new Error("load image fail"));
                         image.src = imgsrc;
@@ -318,24 +340,42 @@ export default {
                     var canvas = document.createElement("canvas");
                     var ctx = canvas.getContext("2d");
 
-                    canvas.width = width;
-                    canvas.height = height;
+                    //temp solution 
+                    if (classType[numGraphs] == "barChart"){
+                        canvas.width = width_b;
+                        canvas.height = height_b;
+                    } else{
+                        canvas.width = width_c;
+                        canvas.height = height_c;
+                    }
 
                     return loadImage(options).then(image => {
                         ctx.fillStyle = "white";
-                        ctx.fillRect(0, 0, width, height);
-                        ctx.drawImage(image, 0, 0, width, height);
-                        var fileName = "";
-                        try {
-                            fileName = svgLabels[numGraphs].textContent.toString() + ".png";
-                        } catch (err) {
-                            fileName = "BarChart.png";
+                        //temp solution 
+                        if (classType[numGraphs] == "barChart"){
+                            ctx.fillRect(0, 0, width_b, height_b);
+                            ctx.drawImage(image, 0, 0, width_b, height_b);
+                        }else{             
+                            ctx.fillRect(0, 0, width_c, height_c);
+                            ctx.drawImage(image, 0, 0, width_c, height_c);
                         }
+
+                        var fileName = svgLabels[numGraphs].toString() + ".png";
+                        var folder;
+                        if (classType[numGraphs] == 'barChart'){
+                            folder = "Bar Graph"
+                        }else if (classType[numGraphs] == 'circleChart'){
+                            folder = "Circle Graph"
+                        }
+    
                         numGraphs += 1;
 
                         //save to zip file
                         canvas.toBlob(function(blob) {
-                            vm.circularZip.file(fileName, blob);
+                            console.log("Save to zip");
+                            console.log("Folder: ", folder);
+                            vm.zipFile.folder(folder).file(fileName, blob);
+                            //console.log(vm.circularZip);
                         });
                     });
                 };
@@ -348,9 +388,9 @@ export default {
         async downloadZip() {
             var vm = this;
             const zip = await vm.downloadImage();
-            vm.circularZip.generateAsync({ type: "blob" }).then(function(content) {
+            vm.zipFile.generateAsync({ type: "blob" }).then(function(content) {
                 console.log("Downloading zip");
-                FileSaver.saveAs(content, "CircularChart.zip");
+                FileSaver.saveAs(content, "Chart.zip");
             });
         },
         showToast() {

@@ -37,6 +37,10 @@ export default {
             let svg = d3.select(this.$el);
             //var width = +svg.attr('width');
             //var height = +svg.attr('height');
+
+            svg.attr("class", "barChart")
+
+
             let data = this.aggregateData.data;
 
             let x = d3
