@@ -12,7 +12,7 @@
                             <h1>{{ question._id }}</h1>
 
                             <b-container>
-                                <BarChart :ref="question._id" :aggregate-data="question" />
+                                <BarChart :ref="question._id" :aggregate-data="question"/>
                             </b-container>
                         </b-tab>
                     </b-tabs>
@@ -26,11 +26,11 @@
                         </b-container>
                     </div>
                  </b-tab>
+
                 <b-button
                     v-if="!circularLoading"
                     @click="downloadZip"
-                    style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
-                >
+                    style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
                     Download ZIP
                 </b-button>
             </b-tabs>
@@ -287,11 +287,23 @@ export default {
                 height_b = 2200;
 
             return new Promise(resolve => {
-                var svgElementNodes = d3.selectAll("svg")._groups[0];
-                var svgElements = Array.from(svgElementNodes);
-                //console.log(svgElements);
-                var svgLabelCircular = document.getElementsByClassName("chartName");
+                var svgElements = d3.selectAll("svg")._groups[0];
+                var svgElementNodes = new Array();
+                //var rectElementNodes = document.getElementsByClassName("nutritionLabel");
+                //d3.selectAll("rect")._groups[0];
+                //console.log(rectElementNodes);
+                for (var i = 0; i < svgElements.length; i++){
+                    svgElementNodes.push(svgElements[i]);
+                }
+                //for (var i = 0; i < rectElementNodes.length; i++){
+                //    svgElementNodes.push(rectElementNodes[i]);
+                //}
+
+                console.log("All elements: ");
+                console.log(svgElementNodes);
+                var svgLabelCircular = document.getElementsByClassName("circularChartName");
                 var svgLabelBar = document.getElementsByClassName("barChartName");
+                //var rectLabelNutrition = document.getELementsBy;
                 //console.log(svgLabelBar);
 
                 var svgLabels = new Array();
@@ -301,6 +313,13 @@ export default {
                 for (var i = 0; i < svgLabelBar.length; i++){
                     svgLabels.push(svgLabelBar[i].title);
                 }
+                //for the nutrition label 
+                //for (var i = 0; i < svgLabelCircular.length; i++){
+                //    svgLabels.push(svgLabelCircular[i].textContent);
+                //}
+
+
+                console.log("All labels: ");
                 console.log(svgLabels);
                 var numGraphs = 0;
                 var classType = new Array();
@@ -309,18 +328,19 @@ export default {
                     //console.log(svgElementNodes[i].className["baseVal"])
                     classType.push(svgElementNodes[i].className["baseVal"]);
                 }
+                console.log("All class types: ");
                 console.log(classType);
 
                 var serializer = new XMLSerializer();
 
                 //Formatting each elements in svgElements array
-                svgElements.forEach(function(element, index) {
+                svgElementNodes.forEach(function(element, index) {
                     var svgString = serializer.serializeToString(this[index]);
                     svgString = svgString.replace(/(\w+)?:?xlink=/g, "xmlns:xlink="); // Fix root xlink without namespace
                     svgString = svgString.replace(/NS\d+:href/g, "xlink:href"); // Safari NS namespace fix
 
                     this[index] = svgString;
-                }, svgElements);
+                }, svgElementNodes);
 
                 //Async image loading using Promise
                 const loadImage = svgString => {
@@ -340,7 +360,7 @@ export default {
                     var canvas = document.createElement("canvas");
                     var ctx = canvas.getContext("2d");
 
-                    //temp solution 
+                    //temp solution. Create different dimension for different types of charts. 
                     if (classType[numGraphs] == "barChart"){
                         canvas.width = width_b;
                         canvas.height = height_b;
@@ -351,7 +371,7 @@ export default {
 
                     return loadImage(options).then(image => {
                         ctx.fillStyle = "white";
-                        //temp solution 
+                        //temp solution. Load with different dimensions.  
                         if (classType[numGraphs] == "barChart"){
                             ctx.fillRect(0, 0, width_b, height_b);
                             ctx.drawImage(image, 0, 0, width_b, height_b);
@@ -361,6 +381,7 @@ export default {
                         }
 
                         var fileName = svgLabels[numGraphs].toString() + ".png";
+                        //Separate file into different folders 
                         var folder;
                         if (classType[numGraphs] == 'barChart'){
                             folder = "Bar Graph"
@@ -368,14 +389,13 @@ export default {
                             folder = "Circle Graph"
                         }
     
+                        //Tracking graph type and name with classType and svgLabels
                         numGraphs += 1;
 
                         //save to zip file
                         canvas.toBlob(function(blob) {
                             console.log("Save to zip");
-                            console.log("Folder: ", folder);
                             vm.zipFile.folder(folder).file(fileName, blob);
-                            //console.log(vm.circularZip);
                         });
                     });
                 };
