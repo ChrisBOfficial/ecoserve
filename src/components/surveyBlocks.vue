@@ -4,8 +4,8 @@
             <h4>Pick Survey From Qualtrics</h4>
         </b-row>
         <b-row class="align-items-center">
-            <b-form-select v-model="selectedSurvey" v-on:change="selectSurvey" :select-size="5">
-                <option v-for="survey in surveys" v-bind:value="survey" v-bind:key="survey.name">
+            <b-form-select v-model="selectedSurvey" @change="selectSurvey" :select-size="5">
+                <option v-for="survey in surveys" :value="survey" :key="survey.name">
                     {{ survey.name }}
                 </option>
             </b-form-select>
@@ -44,6 +44,7 @@ export default {
         }),
         selectSurvey(selected) {
             this.loadSurvey(selected.id);
+            this.$emit("survey-picked");
         }
     }
 };

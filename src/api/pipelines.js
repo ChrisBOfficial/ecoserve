@@ -264,7 +264,7 @@ const barchartPipeline = function(surveyId) {
         {
             $group: {
                 _id: "$_id.QID",
-                group_mean: {$avg: "$mean"},
+                group_mean: { $avg: "$mean" },
                 data: {
                     $push: {
                         subquestion: "$_id.subquestion",
@@ -442,7 +442,182 @@ const circlechartPipeline = function(data) {
     return stage10;
 };
 
+const circlechartPipelineMongo = function(surveyId) {
+    return [
+        {
+            $match: {
+                surveyId: surveyId
+            }
+        },
+        {
+            $unwind: {
+                path: "$responses"
+            }
+        },
+        {
+            $project: {
+                totals: {
+                    $objectToArray: "$responses.values"
+                },
+                descriptions: 1
+            }
+        },
+        {
+            $unwind: {
+                path: "$totals"
+            }
+        },
+        {
+            $match: {
+                "totals.k": {
+                    $regex: "^Q"
+                }
+            }
+        },
+        {
+            $unwind: {
+                path: "$descriptions"
+            }
+        },
+        {
+            $project: {
+                QID: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$totals.k", "#"]
+                        },
+                        0
+                    ]
+                },
+                sub: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$totals.k", "_"]
+                        },
+                        1
+                    ]
+                },
+                col: {
+                    $substr: [
+                        "$totals.k",
+                        {
+                            $subtract: [
+                                {
+                                    $strLenCP: "$totals.k"
+                                },
+                                3
+                            ]
+                        },
+                        1
+                    ]
+                },
+                v: "$totals.v",
+                service: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$descriptions.title", "#"]
+                        },
+                        0
+                    ]
+                },
+                question: "$descriptions.question",
+                subqmatch: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$descriptions.subQuestion", "."]
+                        },
+                        2
+                    ]
+                },
+                impactor: {
+                    $arrayElemAt: [
+                        {
+                            $split: ["$descriptions.title", "_"]
+                        },
+                        1
+                    ]
+                },
+                descriptions: 1
+            }
+        },
+        {
+            $project: {
+                QID: 1,
+                sub: 1,
+                question: 1,
+                subqmatch: 1,
+                impactor: 1,
+                service: 1,
+                col: 1,
+                v: 1,
+                questioneq: {
+                    $cond: [
+                        {
+                            $eq: ["$QID", "$question"]
+                        },
+                        1,
+                        0
+                    ]
+                },
+                subquestioneq: {
+                    $cond: [
+                        {
+                            $eq: ["$sub", "$subqmatch"]
+                        },
+                        1,
+                        0
+                    ]
+                }
+            }
+        },
+        {
+            $match: {
+                subquestioneq: 1,
+                questioneq: 1,
+                col: "1"
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    service: "$service",
+                    impactor: "$impactor"
+                },
+                mean: {
+                    $avg: "$v"
+                }
+            }
+        },
+        {
+            $sort: {
+                service: 1
+            }
+        },
+        {
+            $group: {
+                _id: {
+                    type: "$_id.impactor"
+                },
+                values: {
+                    $push: {
+                        service: "$_id.service",
+                        mean: "$mean"
+                    }
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                type: "$_id.type",
+                values: 1
+            }
+        }
+    ];
+};
+
 module.exports = {
     barchartPipeline,
-    circlechartPipeline
+    circlechartPipeline,
+    circlechartPipelineMongo
 };

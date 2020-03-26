@@ -4,7 +4,7 @@
         <div style="min-height:100vh;">
             <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;">
                 <b-tab title="Circular Charts" active>
-                    <CircularChart ref="circularRef" v-on:done-loading="circularLoading = false" />
+                    <CircularChart ref="circularRef" @done-loading="circularLoading = false" />
                 </b-tab>
                 <b-tab title="Bar Graphs" lazy>
                     <b-tabs vertical lazy>
@@ -17,15 +17,20 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
-                
+
                 <b-tab title="Full Bar Graphs">
-                    <div v-for="question in barchartAggregate" :key="question._id" :title="question._id" class="barChartName">
-                        <h3> {{ question._id }} </h3>
+                    <div
+                        v-for="question in barchartAggregate"
+                        :key="question._id"
+                        :title="question._id"
+                        class="barChartName"
+                    >
+                        <h3>{{ question._id }}</h3>
                         <b-container>
-                            <BarChart :ref="question._id" :aggregate-data="question"/>
+                            <BarChart :ref="question._id" :aggregate-data="question" />
                         </b-container>
                     </div>
-                 </b-tab>
+                </b-tab>
                 <b-button
                     v-if="!circularLoading"
                     @click="downloadZip"
@@ -62,142 +67,6 @@ export default {
     data() {
         return {
             zipFile: new JSZip(),
-            barChartData: [
-                {
-                    _id: "QID23",
-                    data: [
-                        { subquestion: "8", confidence: "low", mean: 0, se: 0.39999999999999997 },
-                        { subquestion: "4", confidence: "high", mean: -0.20000000000000018, se: 0.3346640106136302 },
-                        { subquestion: "3", confidence: "high", mean: -0.40000000000000036, se: 0.35777087639996635 },
-                        { subquestion: "5", confidence: "high", mean: -1, se: 0.28284271247461895 },
-                        {
-                            subquestion: "2",
-                            confidence: "moderate",
-                            mean: -0.7999999999999998,
-                            se: 0.17888543819998315
-                        },
-                        { subquestion: "1", confidence: "high", mean: 0, se: 0.39999999999999997 },
-                        { subquestion: "7", confidence: "high", mean: -1.5999999999999996, se: 0.5366563145999494 },
-                        { subquestion: "6", confidence: "high", mean: -1.2000000000000002, se: 0.17888543819998318 },
-                        { subquestion: "9", confidence: "low", mean: -3.6, se: 0.4560701700396551 }
-                    ]
-                },
-                {
-                    _id: "QID25",
-                    data: [
-                        { subquestion: "6", confidence: "none", mean: 0.20000000000000018, se: 0.17888543819998315 },
-                        { subquestion: "1", confidence: "high", mean: 2, se: 0.39999999999999997 },
-                        { subquestion: "8", confidence: "high", mean: 1, se: 0.28284271247461895 },
-                        {
-                            subquestion: "5",
-                            confidence: "extreme",
-                            mean: -0.20000000000000018,
-                            se: 0.33466401061363016
-                        },
-                        { subquestion: "2", confidence: "extreme", mean: 0.20000000000000018, se: 0.3346640106136302 },
-                        { subquestion: "4", confidence: "high", mean: 0.7999999999999998, se: 0.17888543819998315 },
-                        { subquestion: "9", confidence: "moderate", mean: -2.8, se: 0.4381780460041329 },
-                        { subquestion: "7", confidence: "high", mean: -0.40000000000000036, se: 0.3577708763999663 },
-                        { subquestion: "3", confidence: "high", mean: 1.2000000000000002, se: 0.3346640106136301 }
-                    ]
-                },
-                {
-                    _id: "QID28",
-                    data: [
-                        { subquestion: "2", confidence: "none", mean: -5, se: 0 },
-                        { subquestion: "5", confidence: "low", mean: -4, se: 0 },
-                        { subquestion: "7", confidence: "low", mean: -5, se: 0 },
-                        { subquestion: "3", confidence: "none", mean: -4, se: 0 },
-                        { subquestion: "4", confidence: "low", mean: -2, se: 0 },
-                        { subquestion: "8", confidence: "none", mean: -3, se: 0 },
-                        { subquestion: "6", confidence: "none", mean: -1, se: 0 }
-                    ]
-                },
-                {
-                    _id: "QID21",
-                    data: [
-                        { subquestion: "9", confidence: "high", mean: -2.2, se: 0.6572670690061995 },
-                        { subquestion: "6", confidence: "high", mean: -0.20000000000000018, se: 0.17888543819998318 },
-                        { subquestion: "3", confidence: "high", mean: -0.666666666666667, se: 0.45133546692422 },
-                        { subquestion: "8", confidence: "high", mean: -0.20000000000000018, se: 0.17888543819998318 },
-                        { subquestion: "2", confidence: "high", mean: 0, se: 0 },
-                        { subquestion: "4", confidence: "high", mean: -0.20000000000000018, se: 0.17888543819998318 },
-                        { subquestion: "7", confidence: "high", mean: -1.2000000000000002, se: 0.33466401061363016 },
-                        { subquestion: "5", confidence: "high", mean: 0, se: 0 },
-                        { subquestion: "1", confidence: "high", mean: -0.20000000000000018, se: 0.17888543819998318 }
-                    ]
-                },
-                {
-                    _id: "QID19",
-                    data: [
-                        { subquestion: "7", confidence: "moderate", mean: -2.6, se: 0.4560701700396552 },
-                        { subquestion: "4", confidence: "high", mean: -1.2000000000000002, se: 0.17888543819998318 },
-                        { subquestion: "1", confidence: "high", mean: -1.2000000000000002, se: 0.17888543819998318 },
-                        { subquestion: "8", confidence: "high", mean: -1.2000000000000002, se: 0.17888543819998318 },
-                        { subquestion: "6", confidence: "high", mean: -1, se: 0 },
-                        { subquestion: "9", confidence: "low", mean: -4, se: 0.39999999999999997 },
-                        { subquestion: "3", confidence: "high", mean: -1.2000000000000002, se: 0.17888543819998318 },
-                        { subquestion: "2", confidence: "high", mean: -1.333333333333333, se: 0.3849001794597505 },
-                        { subquestion: "5", confidence: "high", mean: -1.2000000000000002, se: 0.3346640106136301 }
-                    ]
-                },
-                {
-                    _id: "QID6",
-                    data: [
-                        { subquestion: "8", confidence: "low", mean: -1.5714285714285712, se: 0.6342967456293899 },
-                        { subquestion: "5", confidence: "high", mean: -1.4285714285714288, se: 0.5663035479800655 },
-                        { subquestion: "2", confidence: "high", mean: -1.4285714285714288, se: 0.4889448388045281 },
-                        { subquestion: "3", confidence: "moderate", mean: -1.2857142857142856, se: 0.4386568420449934 },
-                        { subquestion: "6", confidence: "high", mean: -0.14285714285714324, se: 0.42515646236734 },
-                        { subquestion: "4", confidence: "high", mean: -0.375, se: 0.246062746062869 },
-                        { subquestion: "9", confidence: "low", mean: -2.875, se: 0.9259707743768159 },
-                        { subquestion: "1", confidence: "moderate", mean: -1.125, se: 0.32775276505317236 },
-                        { subquestion: "7", confidence: "moderate", mean: -2.111111111111111, se: 0.3989010968247781 }
-                    ]
-                },
-                {
-                    _id: "QID20",
-                    data: [
-                        { subquestion: "3", confidence: "moderate", mean: -0.5999999999999996, se: 0.4560701700396551 },
-                        { subquestion: "5", confidence: "high", mean: -1.2000000000000002, se: 0.33466401061363016 },
-                        { subquestion: "8", confidence: "high", mean: -0.40000000000000036, se: 0.3577708763999664 },
-                        { subquestion: "4", confidence: "high", mean: -0.40000000000000036, se: 0.3577708763999664 },
-                        { subquestion: "7", confidence: "high", mean: -0.40000000000000036, se: 0.779743547584717 },
-                        { subquestion: "1", confidence: "high", mean: -0.20000000000000018, se: 0.3346640106136302 },
-                        { subquestion: "6", confidence: "high", mean: -1.166666666666667, se: 0.36641405439647007 },
-                        { subquestion: "2", confidence: "high", mean: -0.40000000000000036, se: 0.3577708763999663 },
-                        { subquestion: "9", confidence: "moderate", mean: 0, se: 1.131370849898476 }
-                    ]
-                },
-                {
-                    _id: "QID24",
-                    data: [
-                        { subquestion: "3", confidence: "low", mean: -0.5999999999999996, se: 0.21908902300206645 },
-                        { subquestion: "6", confidence: "high", mean: -0.5999999999999996, se: 0.4560701700396552 },
-                        { subquestion: "2", confidence: "high", mean: -0.7999999999999998, se: 0.17888543819998315 },
-                        { subquestion: "7", confidence: "moderate", mean: -1.7999999999999998, se: 0.5932958789676531 },
-                        { subquestion: "4", confidence: "high", mean: -0.5999999999999996, se: 0.21908902300206645 },
-                        { subquestion: "5", confidence: "high", mean: -1, se: 0.48989794855663554 },
-                        { subquestion: "8", confidence: "high", mean: -0.40000000000000036, se: 0.35777087639996635 },
-                        { subquestion: "1", confidence: "high", mean: -0.40000000000000036, se: 0.35777087639996635 },
-                        { subquestion: "9", confidence: "low", mean: -4, se: 0.39999999999999997 }
-                    ]
-                },
-                {
-                    _id: "QID22",
-                    data: [
-                        { subquestion: "9", confidence: "none", mean: 2.8000000000000007, se: 0.6572670690061994 },
-                        { subquestion: "4", confidence: "moderate", mean: 0, se: 0 },
-                        { subquestion: "8", confidence: "moderate", mean: 0, se: 0 },
-                        { subquestion: "7", confidence: "moderate", mean: 1.4000000000000004, se: 0.9633275663033836 },
-                        { subquestion: "1", confidence: "high", mean: 0, se: 0 },
-                        { subquestion: "5", confidence: "moderate", mean: 0, se: 0 },
-                        { subquestion: "6", confidence: "high", mean: -0.5, se: 0.4564354645876385 },
-                        { subquestion: "3", confidence: "moderate", mean: 0, se: 0 },
-                        { subquestion: "2", confidence: "moderate", mean: 0, se: 0 }
-                    ]
-                }
-            ],
             circularLoading: true,
             socket: {},
             lastUpdate: 0,
@@ -277,7 +146,6 @@ export default {
         downloadImage() {
             var vm = this;
 
-
             //Dimension for circular chart
             var width_c = 2400,
                 height_c = 2700;
@@ -295,17 +163,17 @@ export default {
                 //console.log(svgLabelBar);
 
                 var svgLabels = new Array();
-                for (var i = 0; i < svgLabelCircular.length; i++){
+                for (var i = 0; i < svgLabelCircular.length; i++) {
                     svgLabels.push(svgLabelCircular[i].textContent);
                 }
-                for (var i = 0; i < svgLabelBar.length; i++){
+                for (var i = 0; i < svgLabelBar.length; i++) {
                     svgLabels.push(svgLabelBar[i].title);
                 }
                 console.log(svgLabels);
                 var numGraphs = 0;
                 var classType = new Array();
 
-                for (var i = 0; i < svgElementNodes.length; i++){
+                for (var i = 0; i < svgElementNodes.length; i++) {
                     //console.log(svgElementNodes[i].className["baseVal"])
                     classType.push(svgElementNodes[i].className["baseVal"]);
                 }
@@ -340,34 +208,34 @@ export default {
                     var canvas = document.createElement("canvas");
                     var ctx = canvas.getContext("2d");
 
-                    //temp solution 
-                    if (classType[numGraphs] == "barChart"){
+                    //temp solution
+                    if (classType[numGraphs] == "barChart") {
                         canvas.width = width_b;
                         canvas.height = height_b;
-                    } else{
+                    } else {
                         canvas.width = width_c;
                         canvas.height = height_c;
                     }
 
                     return loadImage(options).then(image => {
                         ctx.fillStyle = "white";
-                        //temp solution 
-                        if (classType[numGraphs] == "barChart"){
+                        //temp solution
+                        if (classType[numGraphs] == "barChart") {
                             ctx.fillRect(0, 0, width_b, height_b);
                             ctx.drawImage(image, 0, 0, width_b, height_b);
-                        }else{             
+                        } else {
                             ctx.fillRect(0, 0, width_c, height_c);
                             ctx.drawImage(image, 0, 0, width_c, height_c);
                         }
 
                         var fileName = svgLabels[numGraphs].toString() + ".png";
                         var folder;
-                        if (classType[numGraphs] == 'barChart'){
-                            folder = "Bar Graph"
-                        }else if (classType[numGraphs] == 'circleChart'){
-                            folder = "Circle Graph"
+                        if (classType[numGraphs] == "barChart") {
+                            folder = "Bar Graph";
+                        } else if (classType[numGraphs] == "circleChart") {
+                            folder = "Circle Graph";
                         }
-    
+
                         numGraphs += 1;
 
                         //save to zip file

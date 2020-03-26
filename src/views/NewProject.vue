@@ -15,17 +15,32 @@
             <b-row class="align-items-center">
                 <b-button href="https://login.qualtrics.com/login" target="_blank">Link to Qualtrics</b-button>
             </b-row>
+
             <b-row>
-                <survey-blocks />
+                <survey-blocks @survey-picked="selected = true" />
             </b-row>
             <b-row>
                 <visualization-dashboard />
             </b-row>
 
-            
+            <b-row align-h="center" style="margin-bottom: 1rem;" v-if="selected">
+                <b-col class="col-4">
+                    <b-button @click="downloadJSON" style="background-color:DarkSeaGreen;"
+                        >Download Data Template</b-button
+                    >
+                </b-col>
+                <b-col class="col-4">
+                    <div class="dropbox">
+                        <input class="input-file" type="file" ref="file" accept=".json" @change="uploadJSON" />
+                        <p>
+                            {{ uploadText }}
+                        </p>
+                    </div>
+                </b-col>
+            </b-row>
 
             <b-row align-h="center">
-                <b-col class="col-4">
+                <b-col class="col-5">
                     <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center>CREATE PROJECT</b-button>
                     <b-modal
                         id="modal-center"
@@ -54,7 +69,6 @@ import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
 import surveyBlocks from "@/components/surveyBlocks.vue";
 import { mapActions, mapState, mapMutations } from "vuex";
-const axios = require('axios').default
 
 export default {
     components: {
@@ -68,8 +82,9 @@ export default {
             title: "",
             description: "",
             validateErrors: [],
-            file:"",
-            comparisonData: {}
+            selected: false,
+            uploadText: "Drag comparison data or click to browse",
+            comparisonData: []
         };
     },
     computed: {
@@ -130,37 +145,85 @@ export default {
                 surveyId: this.survey.id,
                 projectId: this.title + "+" + this.survey.id,
                 blocks: this.projectBlocks,
+                comparisonData: this.comparisonData,
                 hooked: false
             };
             this.saveProject(payload);
             this.$router.push("projects");
-        }
-        
-        /** 
-        submitFile(){
-            let formData = new FormData()
-            formData.append('file', this.file)
-            
+        },
+        downloadJSON() {
+            let exportObj = [];
+            const questions = this.survey.questions;
 
-            axios.post('/single-file',
-                formData,
-                {
-                    headers:{
-                        'Content-Type': 'multipart/form-data'
-                    }
+            for (let question in this.survey.questions) {
+                let data = [];
+
+                let subQuestions = questions[question].subQuestions;
+                let questionName = questions[question].questionName;
+                for (let key in subQuestions) {
+                    let dataObj = { subname: subQuestions[key].description, max: 0, min: 0 };
+                    data.push(dataObj);
                 }
-            ).then(function(){
-                console.log('Upload Success')
-            }).catch(function(){
-                console.log('Upload failure')
-            })
+                let questionObj = { questionName: questionName, data: data };
+                exportObj.push(questionObj);
+            }
+
+            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 4));
+            let jsonElement = document.createElement("a");
+
+            jsonElement.setAttribute("href", dataStr);
+            jsonElement.setAttribute("download", "comparison.json");
+            document.body.appendChild(jsonElement);
+            jsonElement.click();
+            jsonElement.remove();
+        },
+        uploadJSON() {
+            const file = this.$refs.file.files[0];
+            this.uploadText = "File: " + file.name;
+
+            const reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = () => {
+                this.comparisonData = JSON.parse(reader.result);
+            };
+            reader.onerror = e => {
+                console.log("Error with uploading comparison data");
+                console.log(e);
+            };
         }
-        */
-        
     }
 };
 </script>
 
 <style scoped>
 @import "../assets/grayscale.css";
+
+.dropbox {
+    outline: 2px dashed grey;
+    outline-offset: -10px;
+    background: darkseagreen;
+    color: white;
+    min-height: 59.2px;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    position: relative;
+    cursor: default;
+}
+
+.input-file {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    cursor: default;
+}
+
+.dropbox:hover {
+    opacity: 0.8;
+}
+
+.dropbox p {
+    text-align: center;
+    padding-top: 14.8px;
+}
 </style>
