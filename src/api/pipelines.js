@@ -6,313 +6,145 @@ const barchartPipeline = function(surveyId) {
                 surveyId: surveyId
             }
         },
-        {
-            $unwind: {
-                path: "$responses"
-            }
-        },
-        {
-            $project: {
-                totals: {
-                    $objectToArray: "$responses.values"
+        {$facet: {
+                "r": [
+                    {$project: {"responses":1}},
+                    {$unwind: '$responses'},
+                    {$project: {totals: {
+                                $objectToArray: '$responses.values'}}},
+                    {$unwind: '$totals'},
+                    {$match: {$and: [{'totals.k': {$regex: RegExp('^Q')
+                                }}, {'totals.v': {$type: 'number'}}]}},
+                    {$match: {'totals.k': {$regex: '_'}}},
+                    {$addFields: {QID: {$arrayElemAt: [{$split: [
+                                        '$totals.k','#']},0]},
+                            sub: {$arrayElemAt: [{$split: [
+                                        '$totals.k','_']},1]},
+                            col: {$substr: [{$arrayElemAt: [
+                                        {$split: ['$totals.k','#']},1]},0,1]}}},
+                    {$group: {
+                            _id: {QID: '$QID', sub: '$sub', col: '$col'},
+                            mean: {$avg: '$totals.v'},
+                            count: {$sum: 1},
+                            sd: {$stdDevPop: '$totals.v'}}},
+                    {$addFields:
+                            {se: {$divide: ['$sd',{$sqrt: '$count'}]}
+                            }},
+                    {$project: {QID: '$_id.QID', sub: '$_id.sub',
+                            col: '$_id.col', _id:0,
+                            confidence: {$switch: {branches: [
+                                        {'case': {$eq: ['$_id.col','2']},
+                                            then: '$mean'},
+                                        {'case': {$eq: ['$_id.col','1']},
+                                            then: null}],
+                                    'default': null}},
+                            mean: {$switch: {branches: [
+                                        {'case': {$eq: ['$_id.col','2']},
+                                            then: null},
+                                        {'case': {$eq: ['$_id.col','1']},
+                                            then: '$mean'}],
+                                    'default': '$mean'}},
+                            se: {$switch: {branches: [
+                                        {'case': {$eq: ['$_id.col','2']},
+                                            then: null},
+                                        {'case': {$eq: ['$_id.col','1']},
+                                            then: '$se'}],'default': '$se'}}}}
+                ],
+                "d": [
+                    {$project : {descriptions: 1}},
+                    {$unwind: '$descriptions'},
+                    {$match:{'descriptions.title': {$regex: '_'}}},
+                    {$project: {_id: 0, QID: '$descriptions.question',
+                            sub: {$arrayElemAt: [{$split: [
+                                        '$descriptions.subQuestion','.']},2]},
+                            col: {$arrayElemAt: [{$split: [
+                                        '$descriptions.column','.']},2]},
+                            impactor: {$arrayElemAt: [{$split: [
+                                        '$descriptions.title','_']},1]},
+                            service: {$arrayElemAt: [{$split: [
+                                        '$descriptions.title','#']},0]}
+                        }}
+                ]
+            }}, {$project: {
+                final: {$concatArrays: ['$r', '$d']}
+            }}, {$unwind: {
+                path: '$final'
+            }}, {$group: {
+                _id: {QID: '$final.QID', sub: '$final.sub'},
+                impactor: {$max: '$final.impactor'},
+                service: {$max: '$final.service'},
+                mean: {$max: '$final.mean'},
+                confidence: {$max: '$final.confidence'},
+                se: {$max: '$final.se'},
+
+            }}, {$group: {
+                _id: '$_id.QID',
+                service: {$max: '$service'},
+                group_mean: {
+                    $avg: '$mean'
                 },
-                descriptions: 1
-            }
-        },
-        {
-            $unwind: {
-                path: "$totals"
-            }
-        },
-        {
-            $match: {
-                "totals.k": {
-                    $regex: new RegExp("^Q")
-                },
-                "totals.v": {
-                    $type: "number"
-                }
-            }
-        },
-        {
-            $match: {
-                "totals.k": {
-                    $regex: "_"
-                }
-            }
-        },
-        {
-            $unwind: {
-                path: "$descriptions"
-            }
-        },
-        {
-            $match: {
-                "descriptions.title": {
-                    $regex: "_"
-                }
-            }
-        },
-        {
-            $project: {
-                QID: {
-                    $arrayElemAt: [
-                        {
-                            $split: ["$totals.k", "#"]
-                        },
-                        0
-                    ]
-                },
-                sub: {
-                    $arrayElemAt: [
-                        {
-                            $split: ["$totals.k", "_"]
-                        },
-                        1
-                    ]
-                },
-                col: {
-                    $substr: [
-                        "$totals.k",
-                        {
-                            $subtract: [
-                                {
-                                    $strLenCP: "$totals.k"
-                                },
-                                3
-                            ]
-                        },
-                        1
-                    ]
-                },
-                v: "$totals.v",
-                service: {
-                    $arrayElemAt: [
-                        {
-                            $split: ["$descriptions.title", "#"]
-                        },
-                        0
-                    ]
-                },
-                question: "$descriptions.question",
-                subqmatch: {
-                    $arrayElemAt: [
-                        {
-                            $split: ["$descriptions.subQuestion", "."]
-                        },
-                        2
-                    ]
-                },
-                impactor: {
-                    $arrayElemAt: [
-                        {
-                            $split: ["$descriptions.title", "_"]
-                        },
-                        1
-                    ]
-                },
-                descriptions: 1
-            }
-        },
-        {
-            $project: {
-                QID: 1,
-                sub: 1,
-                question: 1,
-                subqmatch: 1,
-                impactor: 1,
-                service: 1,
-                col: 1,
-                v: 1,
-                questioneq: {
-                    $cond: [
-                        {
-                            $eq: ["$QID", "$question"]
-                        },
-                        1,
-                        0
-                    ]
-                },
-                subquestioneq: {
-                    $cond: [
-                        {
-                            $eq: ["$sub", "$subqmatch"]
-                        },
-                        1,
-                        0
-                    ]
-                }
-            }
-        },
-        {
-            $match: {
-                subquestioneq: 1,
-                questioneq: 1
-            }
-        },
-        {
-            $group: {
-                _id: {
-                    QID: "$service",
-                    subquestion: "$impactor",
-                    col: "$col"
-                },
-                mean: {
-                    $avg: "$v"
-                },
-                count: {
-                    $sum: 1
-                },
-                sd: {
-                    $stdDevPop: "$v"
-                }
-            }
-        },
-        {
-            $addFields: {
-                se: {
-                    $divide: [
-                        "$sd",
-                        {
-                            $sqrt: "$count"
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            $project: {
-                _id: "$_id.QID",
-                subquestion: "$_id.subquestion",
-                confidence: {
-                    $switch: {
-                        branches: [
-                            {
-                                case: {
-                                    $eq: ["$_id.col", "2"]
-                                },
-                                then: "$mean"
-                            },
-                            {
-                                case: {
-                                    $eq: ["$_id.col", "1"]
-                                },
-                                then: null
-                            }
-                        ],
-                        default: null
-                    }
-                },
-                mean: {
-                    $switch: {
-                        branches: [
-                            {
-                                case: {
-                                    $eq: ["$_id.col", "2"]
-                                },
-                                then: null
-                            },
-                            {
-                                case: {
-                                    $eq: ["$_id.col", "1"]
-                                },
-                                then: "$mean"
-                            }
-                        ],
-                        default: "$mean"
-                    }
-                },
-                se: {
-                    $switch: {
-                        branches: [
-                            {
-                                case: {
-                                    $eq: ["$_id.col", "2"]
-                                },
-                                then: null
-                            },
-                            {
-                                case: {
-                                    $eq: ["$_id.col", "1"]
-                                },
-                                then: "$se"
-                            }
-                        ],
-                        default: "$se"
-                    }
-                },
-                type: "$_id.col"
-            }
-        },
-        {
-            $group: {
-                _id: {
-                    QID: "$_id",
-                    subquestion: "$subquestion"
-                },
-                confidence: {
-                    $avg: "$confidence"
-                },
-                mean: {
-                    $avg: "$mean"
-                },
-                se: {
-                    $avg: "$se"
-                }
-            }
-        },
-        {
-            $group: {
-                _id: "$_id.QID",
-                group_mean: { $avg: "$mean" },
                 data: {
                     $push: {
-                        subquestion: "$_id.subquestion",
-                        confidence_num: "$confidence",
+                        subquestion: '$impactor',
+
+                        confidence_num: '$confidence',
                         confidence: {
                             $switch: {
                                 branches: [
                                     {
-                                        case: {
-                                            $lte: ["$confidence", 1]
+                                        'case': {
+                                            $lte: [
+                                                '$confidence',
+                                                1
+                                            ]
                                         },
-                                        then: "None"
+                                        then: 'None'
                                     },
                                     {
-                                        case: {
-                                            $lte: ["$confidence", 2]
+                                        'case': {
+                                            $lte: [
+                                                '$confidence',
+                                                2
+                                            ]
                                         },
-                                        then: "Low"
+                                        then: 'Low'
                                     },
                                     {
-                                        case: {
-                                            $lte: ["$confidence", 3]
+                                        'case': {
+                                            $lte: [
+                                                '$confidence',
+                                                3
+                                            ]
                                         },
-                                        then: "Moderate"
+                                        then: 'Moderate'
                                     },
                                     {
-                                        case: {
-                                            $lte: ["$confidence", 4]
+                                        'case': {
+                                            $lte: [
+                                                '$confidence',
+                                                4
+                                            ]
                                         },
-                                        then: "High"
+                                        then: 'High'
                                     },
                                     {
-                                        case: {
-                                            $lte: ["$confidence", 5]
+                                        'case': {
+                                            $lte: [
+                                                '$confidence',
+                                                5
+                                            ]
                                         },
-                                        then: "Extreme"
+                                        then: 'Extreme'
                                     }
                                 ],
-                                default: "Moderate"
+                                'default': 'Moderate'
                             }
                         },
-                        mean: "$mean",
-                        se: "$se"
+                        mean: '$mean',
+                        se: '$se'
                     }
                 }
-            }
-        }
-    ];
+            }}];
 };
 
 // Circlechart pipeline
@@ -449,171 +281,60 @@ const circlechartPipelineMongo = function(surveyId) {
                 surveyId: surveyId
             }
         },
-        {
-            $unwind: {
-                path: "$responses"
-            }
-        },
-        {
-            $project: {
-                totals: {
-                    $objectToArray: "$responses.values"
-                },
-                descriptions: 1
-            }
-        },
-        {
-            $unwind: {
-                path: "$totals"
-            }
-        },
-        {
-            $match: {
-                "totals.k": {
-                    $regex: "^Q"
-                }
-            }
-        },
-        {
-            $unwind: {
-                path: "$descriptions"
-            }
-        },
-        {
-            $project: {
-                QID: {
-                    $arrayElemAt: [
-                        {
-                            $split: ["$totals.k", "#"]
-                        },
-                        0
-                    ]
-                },
-                sub: {
-                    $arrayElemAt: [
-                        {
-                            $split: ["$totals.k", "_"]
-                        },
-                        1
-                    ]
-                },
-                col: {
-                    $substr: [
-                        "$totals.k",
-                        {
-                            $subtract: [
-                                {
-                                    $strLenCP: "$totals.k"
-                                },
-                                3
-                            ]
-                        },
-                        1
-                    ]
-                },
-                v: "$totals.v",
-                service: {
-                    $arrayElemAt: [
-                        {
-                            $split: ["$descriptions.title", "#"]
-                        },
-                        0
-                    ]
-                },
-                question: "$descriptions.question",
-                subqmatch: {
-                    $arrayElemAt: [
-                        {
-                            $split: ["$descriptions.subQuestion", "."]
-                        },
-                        2
-                    ]
-                },
-                impactor: {
-                    $arrayElemAt: [
-                        {
-                            $split: ["$descriptions.title", "_"]
-                        },
-                        1
-                    ]
-                },
-                descriptions: 1
-            }
-        },
-        {
-            $project: {
-                QID: 1,
-                sub: 1,
-                question: 1,
-                subqmatch: 1,
-                impactor: 1,
-                service: 1,
-                col: 1,
-                v: 1,
-                questioneq: {
-                    $cond: [
-                        {
-                            $eq: ["$QID", "$question"]
-                        },
-                        1,
-                        0
-                    ]
-                },
-                subquestioneq: {
-                    $cond: [
-                        {
-                            $eq: ["$sub", "$subqmatch"]
-                        },
-                        1,
-                        0
-                    ]
-                }
-            }
-        },
-        {
-            $match: {
-                subquestioneq: 1,
-                questioneq: 1,
-                col: "1"
-            }
-        },
-        {
-            $group: {
+        {$facet: {
+                'r': [
+                    {$project: {'responses':1}},
+                    {$unwind: '$responses'},
+                    {$project: {totals: {
+                                $objectToArray: '$responses.values'}}},
+                    {$unwind: '$totals'},
+                    {$match: {$and: [{'totals.k': {$regex: RegExp('^Q')
+                                }}, {'totals.v': {$type: 'number'}}]}},
+                    {$match: {'totals.k': {$regex: '1_'}}},
+                    {$addFields: {QID: {$arrayElemAt: [{$split: [
+                                        '$totals.k','#']},0]},
+                            sub: {$arrayElemAt: [{$split: [
+                                        '$totals.k','_']},1]}}},
+                    {$group: {
+                            _id: {QID: '$QID', sub: '$sub', col: '$col'},
+                            mean: {$avg: '$totals.v'},
+                        }},
+                    {$project: {QID: '$_id.QID', sub: '$_id.sub', mean:1, _id:0}}
+                ],
+
+                'd': [{$project : {descriptions: 1}},
+                    {$unwind: '$descriptions'},
+                    {$match:{'descriptions.title': {$regex: '1_'}}},
+                    {$project: {_id: 0, QID: '$descriptions.question',
+                            sub: {$arrayElemAt: [{$split: [
+                                        '$descriptions.subQuestion','.']},2]},
+                            impactor: {$arrayElemAt: [{$split: [
+                                        '$descriptions.title','_']},1]},
+                            service: {$arrayElemAt: [{$split: [
+                                        '$descriptions.title','#']},0]}
+                        }}]
+            }}, {$project: {
+                final: {$concatArrays: ['$r','$d']}
+            }}, {$unwind: {
+                path: '$final'
+            }}, {$group: {
                 _id: {
-                    service: "$service",
-                    impactor: "$impactor"
+                    QID: '$final.QID',
+                    sub: '$final.sub'
                 },
-                mean: {
-                    $avg: "$v"
-                }
-            }
-        },
-        {
-            $sort: {
-                service: 1
-            }
-        },
-        {
-            $group: {
-                _id: {
-                    type: "$_id.impactor"
-                },
+                impactor: {$max: '$final.impactor'},
+                service: {$max: '$final.service'},
+                mean: {$max: '$final.mean'}
+            }}, {$group: {
+                _id: '$_id.sub',
+                type: {$max: '$impactor'},
                 values: {
                     $push: {
-                        service: "$_id.service",
-                        mean: "$mean"
+                        service: '$service',
+                        mean: '$mean'
                     }
                 }
-            }
-        },
-        {
-            $project: {
-                _id: 0,
-                type: "$_id.type",
-                values: 1
-            }
-        }
-    ];
+            }}];
 };
 
 module.exports = {

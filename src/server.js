@@ -278,12 +278,20 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
             });
         });
     } else if (pipeline === "circlechart") {
-        collection.findOne({ surveyId: surveyId }, function(err, result) {
+        collection.aggregate(Pipelines.circlechartPipelineMongo(surveyId), function(err, cursor) {
+            if (err) throw new Error(err);
+
+            cursor.toArray(function(err, docs) {
+                if (err) throw new Error(err);
+                res.send(docs);
+            });
+        });
+        /*collection.findOne({ surveyId: surveyId }, function(err, result) {
             if (err) throw new Error(err);
 
             let data = Pipelines.circlechartPipeline(result);
             res.send(data);
-        });
+        });*/
     } else if (pipeline === "label") {
         return;
     }
