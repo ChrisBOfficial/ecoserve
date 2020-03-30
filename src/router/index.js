@@ -97,11 +97,15 @@ const routes = [
             requiresAuth: true
         },
         component: () => import("@/views/Settings.vue")
-    } /* ,
+    },
     {
         path: "*",
-        redirect: "/404"
-    } */
+        name: "notFound",
+        meta: {
+            title: "Page not found"
+        },
+        component: () => import("@/views/404.vue")
+    }
 ];
 
 const router = new VueRouter({

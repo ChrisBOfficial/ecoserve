@@ -7,7 +7,6 @@ Disallow: /earth
 User-Agent: Gendo
 Disallow: /human_instrumentality
 
-# 80legs' new crawler
 User-agent: voltron
 Disallow: /
 
@@ -26,5 +25,4 @@ Disallow: /newProject
 Disallow: /editProject
 Disallow: /dashboard
 Disallow: /auth/
-Disallow: /404
 Allow: /
