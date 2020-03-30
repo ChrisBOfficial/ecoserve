@@ -17,19 +17,17 @@
     "main": "server.js",
     "private": true,
     "scripts": {
-        "build": "vue-cli-service build",
+        "build": "vue-cli-service build --modern",
         "deploy": "npm run build && cd resources && ./prep-deploy.sh",
         "prestart": "npm install",
         "devstart": "NODE_ENV=development nodemon src/server.js",
         "start": "node src/server.js",
         "serve": "vue-cli-service serve",
-        "test:server": "mocha --exit",
-        "test:unit": "vue-cli-service test:unit",
-        "test": "mocha --exit; vue-cli-service test:unit"
+        "test": "mocha --exit"
     },
     "dependencies": {
         "aws-amplify": "^2.2.5",
-        "aws-sdk": "^2.625.0",
+        "aws-sdk": "^2.648.0",
         "axios": "^0.19.1",
         "bootstrap": "^4.4.1",
         "bootstrap-vue": "^2.1.0",
@@ -57,14 +55,11 @@
     },
     "devDependencies": {
         "@vue/cli-plugin-router": "^4.0.0",
-        "@vue/cli-plugin-unit-jest": "^4.2.2",
         "@vue/cli-plugin-vuex": "^4.0.0",
-        "@vue/cli-service": "^4.0.0",
-        "@vue/test-utils": "1.0.0-beta.31",
+        "@vue/cli-service": "^4.2.3",
         "babel-eslint": "^10.0.3",
         "eslint": "^6.6.0",
         "eslint-plugin-vue": "^6.0.1",
-        "jest": "^25.1.0",
         "mocha": "^6.2.2",
         "nodemon": "^2.0.2",
         "supertest": "^4.0.2",

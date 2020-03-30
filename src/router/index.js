@@ -97,7 +97,11 @@ const routes = [
             requiresAuth: true
         },
         component: () => import("@/views/Settings.vue")
-    }
+    } /* ,
+    {
+        path: "*",
+        redirect: "/"
+    } */
 ];
 
 const router = new VueRouter({

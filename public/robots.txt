@@ -1,0 +1,29 @@
+User-Agent: Bender
+Disallow: /my_shiny_metal_ass
+
+User-Agent: Gort
+Disallow: /earth
+
+User-Agent: Gendo
+Disallow: /human_instrumentality
+
+# 80legs' new crawler
+User-agent: voltron
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: PiplBot
+Disallow: /
+
+User-Agent: *
+Disallow: /api/
+Disallow: /guidelines
+Disallow: /security
+Disallow: /projects
+Disallow: /newProject
+Disallow: /editProject
+Disallow: /dashboard
+Disallow: /auth/
+Allow: /

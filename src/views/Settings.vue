@@ -8,7 +8,7 @@
                         <h2 class="font-weight-light">Settings</h2>
                         <br />
                         <p>
-                            Update your account's Qualtrics API token and Datacenter ID.
+                            Update your account's Qualtrics API token and Datacenter ID
                         </p>
                         <div class="row-3 text-center">
                             <b-form-input

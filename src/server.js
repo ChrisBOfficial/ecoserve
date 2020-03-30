@@ -286,12 +286,6 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
                 res.send(docs);
             });
         });
-        /*collection.findOne({ surveyId: surveyId }, function(err, result) {
-            if (err) throw new Error(err);
-
-            let data = Pipelines.circlechartPipeline(result);
-            res.send(data);
-        });*/
     } else if (pipeline === "label") {
         return;
     }
