@@ -17,8 +17,8 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
-
-                <b-tab title="Full Bar Graphs">
+                
+                <b-tab title="disable">
                     <div v-for="question in barchartAggregate" :key="question._id" :title="question._id" class="barChartName">
                         <h3> {{ question._id }} </h3>
                         <b-container>
@@ -29,8 +29,7 @@
                 <b-button
                         v-if="!circularLoading"
                         @click="downloadZip"
-                        style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
-                >
+                        style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
                     Download ZIP
                 </b-button>
             </b-tabs>
