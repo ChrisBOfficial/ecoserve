@@ -350,7 +350,7 @@
 
 					if (svg.classList.contains('circleChart')) {
 						chart.type = 'circleChart';
-						chart.name = svg.querySelector('text.chartName').textContent;
+						chart.name = svg.querySelector('text.circularChartName').textContent;
 
 					} else if (svg.classList.contains('barChart')) {
 						chart.type = 'barChart';
