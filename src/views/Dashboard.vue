@@ -339,6 +339,7 @@ export default {
 
                     this[index] = svgString;
                 }, svgElementNodes);
+                console.log(svgElementNodes)
 
                 //Async image loading using Promise
                 const loadImage = svgString => {
