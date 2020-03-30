@@ -100,7 +100,7 @@ const routes = [
     } /* ,
     {
         path: "*",
-        redirect: "/"
+        redirect: "/404"
     } */
 ];
 

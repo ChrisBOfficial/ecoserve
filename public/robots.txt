@@ -26,4 +26,5 @@ Disallow: /newProject
 Disallow: /editProject
 Disallow: /dashboard
 Disallow: /auth/
+Disallow: /404
 Allow: /

@@ -7,7 +7,6 @@ describe("API endpoints", function() {
         it("should return homepage", function(done) {
             request(app)
                 .get("/")
-                .expect("x-powered-by", "Express")
                 .expect(200)
                 .end(function(err, res) {
                     if (err) {
@@ -47,7 +46,6 @@ describe("Vue router endpoints", function() {
         it("should return 404", function(done) {
             request(app)
                 .get("/contact")
-                .expect("x-powered-by", "Express")
                 .expect(404)
                 .end(function(err, res) {
                     if (err) {
@@ -63,7 +61,6 @@ describe("Vue router endpoints", function() {
         it("should return 404", function(done) {
             request(app)
                 .get("/project")
-                .expect("x-powered-by", "Express")
                 .expect(404)
                 .end(function(err, res) {
                     if (err) {
@@ -79,7 +76,6 @@ describe("Vue router endpoints", function() {
         it("should return 404", function(done) {
             request(app)
                 .get("/workspace")
-                .expect("x-powered-by", "Express")
                 .expect(404)
                 .end(function(err, res) {
                     if (err) {
