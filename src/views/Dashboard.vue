@@ -144,46 +144,46 @@ export default {
             getAggregate: "responses/getAggregateData"
         }),
         downloadImage() {
-            var vm = this;
+            let vm = this;
 
             //Dimension for circular chart
-            var width_c = 2400,
+            let width_c = 2400,
                 height_c = 2700;
 
             //Dimension for bar chart
-            var width_b = 4200,
+            let width_b = 4200,
                 height_b = 2200;
 
             return new Promise(resolve => {
-                var svgElementNodes = d3.selectAll("svg")._groups[0];
-                var svgElements = Array.from(svgElementNodes);
+                let svgElementNodes = d3.selectAll("svg")._groups[0];
+                let svgElements = Array.from(svgElementNodes);
                 //console.log(svgElements);
-                var svgLabelCircular = document.getElementsByClassName("chartName");
-                var svgLabelBar = document.getElementsByClassName("barChartName");
+                let svgLabelCircular = document.getElementsByClassName("chartName");
+                let svgLabelBar = document.getElementsByClassName("barChartName");
                 //console.log(svgLabelBar);
 
-                var svgLabels = new Array();
-                for (var i = 0; i < svgLabelCircular.length; i++) {
+                let svgLabels = new Array();
+                for (let i = 0; i < svgLabelCircular.length; i++) {
                     svgLabels.push(svgLabelCircular[i].textContent);
                 }
-                for (var i = 0; i < svgLabelBar.length; i++) {
+                for (let i = 0; i < svgLabelBar.length; i++) {
                     svgLabels.push(svgLabelBar[i].title);
                 }
                 console.log(svgLabels);
-                var numGraphs = 0;
-                var classType = new Array();
+                let numGraphs = 0;
+                let classType = new Array();
 
-                for (var i = 0; i < svgElementNodes.length; i++) {
+                for (let i = 0; i < svgElementNodes.length; i++) {
                     //console.log(svgElementNodes[i].className["baseVal"])
                     classType.push(svgElementNodes[i].className["baseVal"]);
                 }
                 console.log(classType);
 
-                var serializer = new XMLSerializer();
+                let serializer = new XMLSerializer();
 
                 //Formatting each elements in svgElements array
                 svgElements.forEach(function(element, index) {
-                    var svgString = serializer.serializeToString(this[index]);
+                    let svgString = serializer.serializeToString(this[index]);
                     svgString = svgString.replace(/(\w+)?:?xlink=/g, "xmlns:xlink="); // Fix root xlink without namespace
                     svgString = svgString.replace(/NS\d+:href/g, "xlink:href"); // Safari NS namespace fix
 
@@ -192,10 +192,10 @@ export default {
 
                 //Async image loading using Promise
                 const loadImage = svgString => {
-                    var imgsrc = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString))); // Convert SVG string to data URL
+                    let imgsrc = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString))); // Convert SVG string to data URL
 
                     return new Promise((resolve, reject) => {
-                        var image = new Image();
+                        let image = new Image();
                         console.log("Loading Image");
                         image.onload = () => resolve(image);
                         image.onerror = () => reject(new Error("load image fail"));
@@ -205,8 +205,8 @@ export default {
 
                 //Function to draw image
                 const depict = options => {
-                    var canvas = document.createElement("canvas");
-                    var ctx = canvas.getContext("2d");
+                    let canvas = document.createElement("canvas");
+                    let ctx = canvas.getContext("2d");
 
                     //temp solution
                     if (classType[numGraphs] == "barChart") {
@@ -228,8 +228,8 @@ export default {
                             ctx.drawImage(image, 0, 0, width_c, height_c);
                         }
 
-                        var fileName = svgLabels[numGraphs].toString() + ".png";
-                        var folder;
+                        let fileName = svgLabels[numGraphs].toString() + ".png";
+                        let folder;
                         if (classType[numGraphs] == "barChart") {
                             folder = "Bar Graph";
                         } else if (classType[numGraphs] == "circleChart") {
@@ -254,8 +254,8 @@ export default {
             });
         },
         async downloadZip() {
-            var vm = this;
-            const zip = await vm.downloadImage();
+            let vm = this;
+            await vm.downloadImage();
             vm.zipFile.generateAsync({ type: "blob" }).then(function(content) {
                 console.log("Downloading zip");
                 FileSaver.saveAs(content, "Chart.zip");
