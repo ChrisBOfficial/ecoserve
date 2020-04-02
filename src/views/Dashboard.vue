@@ -17,7 +17,6 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
-
                 <b-tab title="Full Bar Graphs">
                     <div
                         v-for="question in barchartAggregate"

@@ -20,6 +20,7 @@ User-Agent: *
 Disallow: /api/
 Disallow: /guidelines
 Disallow: /security
+Disallow: /contact
 Disallow: /projects
 Disallow: /newProject
 Disallow: /editProject

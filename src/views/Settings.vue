@@ -12,14 +12,14 @@
                         </p>
                         <div class="row-3 text-center">
                             <b-form-input
-                                v-model="qualtricsToken"
+                                v-model.trim="qualtricsToken"
                                 style="max-width: 25%;"
                                 placeholder="API token"
                             ></b-form-input>
                         </div>
                         <div class="row-3 text-center">
                             <b-form-input
-                                v-model="qualtricsDatacenter"
+                                v-model.trim="qualtricsDatacenter"
                                 style="max-width: 25%;"
                                 placeholder="Datacenter ID"
                             ></b-form-input>

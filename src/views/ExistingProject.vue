@@ -25,8 +25,8 @@
                     <h4>Survey: "{{ this.selectedSurvey.name }}"</h4>
                 </b-row>
                 <b-row>
-                    <b-form-input v-model="title" placeholder="Enter Project Title"></b-form-input>
-                    <b-form-input v-model="description" placeholder="Enter Project Description"></b-form-input>
+                    <b-form-input v-model.trim="title" placeholder="Enter Project Title"></b-form-input>
+                    <b-form-input v-model.trim="description" placeholder="Enter Project Description"></b-form-input>
                 </b-row>
                 <b-row>
                     <visualization-dashboard
@@ -131,10 +131,14 @@ export default {
     },
     async created() {
         window.scrollTo(0, 0);
+        window.onbeforeunload = () => true;
         if (!window.axios.defaults.headers["x-api-token"] && !window.axios.defaults.headers["q-data-center"]) {
             await new Promise(r => setTimeout(r, 550));
         }
         this.loadProjects();
+    },
+    destroyed() {
+        window.onbeforeunload = null;
     },
     methods: {
         ...mapActions({

@@ -6,8 +6,8 @@
                 <h1>{{ title }}</h1>
             </b-row>
             <b-row>
-                <b-form-input v-model="title" placeholder="Enter Project Title"></b-form-input>
-                <b-form-input v-model="description" placeholder="Enter Project Description"></b-form-input>
+                <b-form-input v-model.trim="title" placeholder="Enter Project Title"></b-form-input>
+                <b-form-input v-model.trim="description" placeholder="Enter Project Description"></b-form-input>
             </b-row>
             <b-row>
                 <h4>Create New Survey</h4>
@@ -95,8 +95,12 @@ export default {
     },
     created() {
         window.scrollTo(0, 0);
+        window.onbeforeunload = () => true;
         this.setSurvey({});
         this.setProjectBlocks([]);
+    },
+    destroyed() {
+        window.onbeforeunload = null;
     },
     methods: {
         ...mapActions({
