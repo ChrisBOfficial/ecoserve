@@ -129,7 +129,7 @@ export default {
                 .catch(() => {
                     setTimeout(() => {
                         window.location.reload();
-                    }, 500);
+                    }, 750);
                 });
         } else {
             this.verifyFurther = true;

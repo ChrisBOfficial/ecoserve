@@ -37,9 +37,9 @@
                     Download ZIP
                 </b-button>
                 <b-button
-                        v-if="!circularLoading"
-                        @click="downloadJSON"
-                        style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
+                    v-if="!circularLoading"
+                    @click="downloadJSON"
+                    style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
                 >
                     Download Data
                 </b-button>
@@ -119,21 +119,19 @@ export default {
             for (let i = 0; i < this.project.blocks.length; i++) {
                 this.blockOrdering[this.project.blocks[i].title] = i;
             }
-            this.loadData("circlechart", true);
-            this.loadData("barchart");
+            this.loadData();
         });
 
         //* Handle survey updates
         this.createHook(this.surveyId);
         this.lastUpdate = Date.now();
-        this.socket = io(this.socketUrl, { transports: ["polling"] });
+        this.socket = io(this.socketUrl);
         this.socket.on(
             this.surveyId,
             function() {
                 if (Date.now() - this.lastUpdate >= 500) {
                     console.log("Response received");
-                    this.loadData("circlechart");
-                    this.loadData("barchart");
+                    this.loadData();
                     this.lastUpdate = Date.now();
                 }
             }.bind(this)
@@ -143,8 +141,7 @@ export default {
         // this.intervalId = setInterval(
         //     function() {
         //         console.log("INTERVAL");
-        //         this.loadData("circlechart");
-        //         this.loadData("barchart");
+        //         this.loadData();
         //     }.bind(this),
         //     30000
         // );
@@ -160,39 +157,21 @@ export default {
             getAggregate: "responses/getAggregateData",
             loadProject: "projects/loadProject"
         }),
-        loadData(type, initial = false) {
-            if (type === "barchart") {
-                this.getAggregate({ id: this.surveyId, pipeline: "barchart" })
-                    .then(() => {
-                        d3.selectAll(".barChart").remove();
-                        for (const ref in this.$refs) {
-                            if (ref !== "circularRef" && this.$refs[ref].length > 0) {
-                                this.$refs[ref][0].makeChart();
-                            }
-                        }
-                    })
-                    .catch(() => {
-                        this.showToast();
-                    });
-            } else if (type === "circlechart") {
-                if (initial) {
-                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" })
-                        .then(() => {
-                            this.circularLoading = false;
-                            this.$refs.circularRef.makeCharts();
-                        })
-                        .catch(() => {
-                            this.showToast();
-                        });
-                } else {
-                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" })
-                        .then(() => {
-                            this.$refs.circularRef.makeCharts();
-                        })
-                        .catch(() => {
-                            this.showToast();
-                        });
+        async loadData() {
+            try {
+                await this.getAggregate({ id: this.surveyId, pipeline: "barchart" });
+                await this.getAggregate({ id: this.surveyId, pipeline: "circlechart" });
+                this.circularLoading = false;
+
+                this.$refs.circularRef.makeCharts();
+                d3.selectAll(".barChart").remove();
+                for (const ref in this.$refs) {
+                    if (ref !== "circularRef" && this.$refs[ref].length > 0) {
+                        this.$refs[ref][0].makeChart();
+                    }
                 }
+            } catch (_) {
+                this.showToast();
             }
         },
         // Add images to the zip file

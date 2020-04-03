@@ -18,7 +18,6 @@ export default {
     props: ["aggregateData", "hidden"],
     computed: {
         ...mapState({
-            barchartAggregate: state => state.responses.barchartAggregate,
             project: state => state.projects.project
         })
     },
@@ -41,8 +40,6 @@ export default {
                 .attr("class", "barChart")
                 .attr("width", 1150)
                 .attr("height", 500);
-            //var width = +svg.attr('width');
-            //var height = +svg.attr('height');
 
             let data = this.aggregateData.data;
 
@@ -55,7 +52,7 @@ export default {
                 .scaleLinear()
                 .rangeRound([height, 0])
                 .domain([-d3.max(data, d => Math.abs(d.mean)), d3.max(data, d => Math.abs(d.mean))]);
-            //-(d3.max(data, d => Math.abs(d.mean))), d3.max(data, d =>  Math.abs(d.mean))
+
             let xAxis = d3.axisBottom(x);
             let yAxis = d3.axisLeft(y).ticks(11);
 
@@ -71,7 +68,6 @@ export default {
                     .attr("dx", "-.8em")
                     .attr("dy", "-.55em")
                     .attr("transform", "translate(0, 133) rotate(-45)");
-                //y(d3.min(data, d => d.mean))/2
 
                 //* Add Y axis
                 elem.append("g")

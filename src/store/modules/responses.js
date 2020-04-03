@@ -4,7 +4,7 @@ let socketUrl;
 if (process.env.NODE_ENV === "development") {
     socketUrl = "http://localhost:3000";
 } else if (process.env.NODE_ENV === "production") {
-    socketUrl = window.location.origin;
+    socketUrl = "https://ecoserve-app.com";
 }
 
 export default {
