@@ -4,12 +4,12 @@
         <div style="min-height:100vh;">
             <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;" pills align="center">
                 <b-tab title="Circular Charts" active>
-                    <CircularChart ref="circularRef" @done-loading="circularLoading = false" />
+                    <CircularChart ref="circularRef" :blockOrdering="blockOrdering" :loading="circularLoading" />
                 </b-tab>
                 <b-tab title="Bar Graphs" lazy>
                     <b-tabs pills card vertical lazy>
-                        <b-tab v-for="question in barchartAggregate" :key="question._id" :title="question._id">
-                            <h1>{{ question._id }}</h1>
+                        <b-tab v-for="question in barchartAggregate" :key="question._id" :title="question.service">
+                            <h1>{{ question.service }}</h1>
 
                             <b-container>
                                 <BarChart :ref="question._id" :aggregate-data="question" :hidden="false" />
@@ -21,10 +21,10 @@
                     <div
                         v-for="question in barchartAggregate"
                         :key="question._id"
-                        :title="question._id"
+                        :title="question.service"
                         class="barChartName"
                     >
-                        <h3>{{ question._id }}</h3>
+                        <h3>{{ question.service }}</h3>
 
                         <BarChart :ref="question._id" :aggregate-data="question" :hidden="true" />
                     </div>
@@ -88,12 +88,14 @@ export default {
             socket: {},
             lastUpdate: 0,
             surveyId: "",
+            blockOrdering: {},
             intervalId: Number
         };
     },
     computed: {
         ...mapState({
             socketUrl: state => state.responses.url,
+            project: state => state.projects.project,
             barchartAggregate: state =>
                 // Sort categories alphabetically
                 state.responses.barchartAggregate.sort((a, b) => (a._id > b._id ? 1 : b._id > a._id ? -1 : 0))
@@ -104,14 +106,15 @@ export default {
     },
     mounted() {
         this.surveyId = this.$route.query.id.split("+")[1];
-        this.getAggregate({ id: this.surveyId, pipeline: "barchart" }).then(() => {
-            d3.selectAll(".barChart").remove();
-            for (const ref in this.$refs) {
-                if (ref !== "circularRef" && this.$refs[ref].length > 0) {
-                    this.$refs[ref][0].makeChart();
-                }
+        this.loadProject(this.$route.query.id).then(() => {
+            // Determine service order according to project settings
+            for (let i = 0; i < this.project.blocks.length; i++) {
+                this.blockOrdering[this.project.blocks[i].title] = i;
             }
+            this.loadData("circlechart", true);
         });
+
+        this.loadData("barchart");
 
         //* Handle survey updates
         this.createHook(this.surveyId);
@@ -122,40 +125,22 @@ export default {
             function() {
                 if (Date.now() - this.lastUpdate >= 500) {
                     console.log("Response received");
-                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" })
-                        .then(() => {
-                            this.$refs.circularRef.makeCharts();
-                        })
-                        .catch(() => {
-                            this.showToast();
-                        });
-                    this.getAggregate({ id: this.surveyId, pipeline: "barchart" })
-                        .then(() => {
-                            d3.selectAll(".barChart").remove();
-                            for (const ref in this.$refs) {
-                                if (ref !== "circularRef" && this.$refs[ref].length > 0) {
-                                    this.$refs[ref][0].makeChart();
-                                }
-                            }
-                        })
-                        .catch(() => {
-                            this.showToast();
-                        });
+                    this.loadData("circlechart");
+                    this.loadData("barchart");
                     this.lastUpdate = Date.now();
                 }
             }.bind(this)
         );
 
         // Refresh data every 60 seconds to grab any residual responses
-        /* this.intervalId = setInterval(
-                function() {
-                    console.log("INTERVAL");
-                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).catch(err => {
-                        throw new Error(err);
-                    });
-                }.bind(this),
-                30000
-            ); */
+        this.intervalId = setInterval(
+            function() {
+                console.log("INTERVAL");
+                this.loadData("circlechart");
+                this.loadData("barchart");
+            }.bind(this),
+            30000
+        );
     },
     destroyed() {
         clearInterval(this.intervalId);
@@ -164,9 +149,44 @@ export default {
     methods: {
         ...mapActions({
             createHook: "responses/createHook",
-            getAggregate: "responses/getAggregateData"
+            getAggregate: "responses/getAggregateData",
+            loadProject: "projects/loadProject"
         }),
-
+        loadData(type, initial = false) {
+            if (type === "barchart") {
+                this.getAggregate({ id: this.surveyId, pipeline: "barchart" })
+                    .then(() => {
+                        d3.selectAll(".barChart").remove();
+                        for (const ref in this.$refs) {
+                            if (ref !== "circularRef" && this.$refs[ref].length > 0) {
+                                this.$refs[ref][0].makeChart();
+                            }
+                        }
+                    })
+                    .catch(() => {
+                        this.showToast();
+                    });
+            } else if (type === "circlechart") {
+                if (initial) {
+                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" })
+                        .then(() => {
+                            this.circularLoading = false;
+                            this.$refs.circularRef.makeCharts();
+                        })
+                        .catch(() => {
+                            this.showToast();
+                        });
+                } else {
+                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" })
+                        .then(() => {
+                            this.$refs.circularRef.makeCharts();
+                        })
+                        .catch(() => {
+                            this.showToast();
+                        });
+                }
+            }
+        },
         // Add images to the zip file
         async addImageToZipFile(image, type, name) {
             const vm = this;
@@ -185,14 +205,12 @@ export default {
             const blob = await vm.canvasToBlob(canvas);
             vm.zipFile.folder(exportSettings[type].directory).file(`${name}.png`, blob);
         },
-
         // Convert canvas element to blob
         canvasToBlob(canvas) {
             return new Promise(resolve => {
                 canvas.toBlob(blob => resolve(blob));
             });
         },
-
         // Get chart data for d3 svgs
         getSvgChartData() {
             const charts = [];
@@ -226,7 +244,6 @@ export default {
 
             return charts;
         },
-
         // Load an image
         loadImage(src) {
             return new Promise((resolve, reject) => {
@@ -236,7 +253,6 @@ export default {
                 image.src = src;
             });
         },
-
         // Generate zip file
         async generateZipFile() {
             const vm = this;
@@ -250,14 +266,12 @@ export default {
 
             return Promise.all(process);
         },
-
         // Download the zip file
         async downloadZip() {
             await this.generateZipFile();
             const content = await this.zipFile.generateAsync({ type: "blob" });
             FileSaver.saveAs(content, "Chart.zip");
         },
-
         showToast() {
             this.$bvToast.toast("Bad data in survey response, will manually re-fetch in 30 seconds", {
                 title: "Warning",

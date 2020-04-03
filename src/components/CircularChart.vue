@@ -6,48 +6,23 @@
 
 <script>
 import Loading from "@/components/Loading.vue";
-import { mapState, mapActions } from "vuex";
+import { mapState } from "vuex";
 const d3 = Object.assign({}, require("d3"), require("d3-scale"), require("d3-selection"));
 
 export default {
     name: "CircularChart",
+    props: ["blockOrdering", "loading"],
     components: {
         Loading
-    },
-    data() {
-        return {
-            surveyId: "",
-            loading: true,
-            blockOrdering: {}
-        };
     },
     computed: {
         ...mapState({
             circleAggregate: state => state.responses.circleAggregate,
             barchartAggregate: state => state.responses.barchartAggregate,
-            socketUrl: state => state.responses.url,
             project: state => state.projects.project
         })
     },
-    mounted() {
-        this.surveyId = this.$route.query.id.split("+")[1];
-        this.loadProject(this.$route.query.id).then(() => {
-            // Determine service order according to project settings
-            for (let i = 0; i < this.project.blocks.length; i++) {
-                this.blockOrdering[this.project.blocks[i].title] = i;
-            }
-            this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).then(() => {
-                this.loading = false;
-                this.$emit("done-loading");
-                this.makeCharts();
-            });
-        });
-    },
     methods: {
-        ...mapActions({
-            getAggregate: "responses/getAggregateData",
-            loadProject: "projects/loadProject"
-        }),
         circleChart(data, location) {
             let category = data.type;
             let results = data.values;
