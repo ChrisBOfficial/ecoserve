@@ -449,13 +449,12 @@ export default {
             svg.append("text")
                 .text(category)
                 .attr("transform", "translate(" + textWidth / -2 + "," + (height / 2 + 20) + ")")
-                .attr("class", "chartName")
+                .attr("class", "circularChartName")
                 .style("font-size", "0.9rem")
                 .style("font-weight", 800)
                 .style("font-family", "Nunito");
         },
         makeCharts() {
-            console.log("Making circular chart");
             // Sort aggregate data alphabetically by category, and remove categories according to project settings
             const sortedData = this.circleAggregate.sort((a, b) => a.type.localeCompare(b.type));
             for (let [i, data] of sortedData.entries()) {
@@ -475,18 +474,9 @@ export default {
                 }
             }
 
-            d3.selectAll("svg").remove();
-            let grid = d3
-                .select("body")
-                .append("div")
-                .attr("id", "grid")
-                .attr("class", "grid");
-            let chars = grid
-                .selectAll("div")
-                .data(sortedData)
-                .enter()
-                .append("div")
-                .attr("class", "char");
+            d3.selectAll(".circleChart").remove();
+            let grid = d3.select("body");
+            let chars = grid.selectAll("div").data(sortedData);
             chars.style(
                 "fill",
                 function(d) {

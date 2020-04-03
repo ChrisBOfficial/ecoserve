@@ -2,22 +2,22 @@
     <div>
         <Header />
         <div style="min-height:100vh;">
-            <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;">
+            <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;" pills align="center">
                 <b-tab title="Circular Charts" active>
                     <CircularChart ref="circularRef" @done-loading="circularLoading = false" />
                 </b-tab>
                 <b-tab title="Bar Graphs" lazy>
-                    <b-tabs vertical lazy>
+                    <b-tabs pills card vertical lazy>
                         <b-tab v-for="question in barchartAggregate" :key="question._id" :title="question._id">
                             <h1>{{ question._id }}</h1>
 
                             <b-container>
-                                <BarChart :ref="question._id" :aggregate-data="question" />
+                                <BarChart :ref="question._id" :aggregate-data="question" :hidden="false" />
                             </b-container>
                         </b-tab>
                     </b-tabs>
                 </b-tab>
-                <b-tab title="Full Bar Graphs">
+                <b-tab disabled>
                     <div
                         v-for="question in barchartAggregate"
                         :key="question._id"
@@ -25,9 +25,8 @@
                         class="barChartName"
                     >
                         <h3>{{ question._id }}</h3>
-                        <b-container>
-                            <BarChart :ref="question._id" :aggregate-data="question" />
-                        </b-container>
+
+                        <BarChart :ref="question._id" :aggregate-data="question" :hidden="true" />
                     </div>
                 </b-tab>
                 <b-button
@@ -50,10 +49,29 @@ import Footer from "@/components/Footer.vue";
 import BarChart from "@/components/BarChart.vue";
 import CircularChart from "@/components/CircularChart.vue";
 import { mapState, mapActions } from "vuex";
+
 const d3 = Object.assign({}, require("d3"), require("d3-scale"));
 const FileSaver = require("file-saver");
 const JSZip = require("jszip");
 const io = require("socket.io-client");
+
+const exportSettings = {
+    default: {
+        directory: "Default",
+        height: 2700,
+        width: 2400
+    },
+    barChart: {
+        directory: "Bar Graph",
+        height: 2200,
+        width: 4200
+    },
+    circleChart: {
+        directory: "Circle Graph",
+        height: 2700,
+        width: 2400
+    }
+};
 
 export default {
     name: "dashboard",
@@ -86,7 +104,14 @@ export default {
     },
     mounted() {
         this.surveyId = this.$route.query.id.split("+")[1];
-        this.getAggregate({ id: this.surveyId, pipeline: "barchart" });
+        this.getAggregate({ id: this.surveyId, pipeline: "barchart" }).then(() => {
+            d3.selectAll(".barChart").remove();
+            for (const ref in this.$refs) {
+                if (ref !== "circularRef" && this.$refs[ref].length > 0) {
+                    this.$refs[ref][0].makeChart();
+                }
+            }
+        });
 
         //* Handle survey updates
         this.createHook(this.surveyId);
@@ -99,7 +124,6 @@ export default {
                     console.log("Response received");
                     this.getAggregate({ id: this.surveyId, pipeline: "circlechart" })
                         .then(() => {
-                            console.log("Calling circular chart method");
                             this.$refs.circularRef.makeCharts();
                         })
                         .catch(() => {
@@ -107,10 +131,10 @@ export default {
                         });
                     this.getAggregate({ id: this.surveyId, pipeline: "barchart" })
                         .then(() => {
+                            d3.selectAll(".barChart").remove();
                             for (const ref in this.$refs) {
-                                if (ref !== "circularRef") {
-                                    console.log("Calling barchart method");
-                                    this.$refs[ref].makeChart();
+                                if (ref !== "circularRef" && this.$refs[ref].length > 0) {
+                                    this.$refs[ref][0].makeChart();
                                 }
                             }
                         })
@@ -124,14 +148,14 @@ export default {
 
         // Refresh data every 60 seconds to grab any residual responses
         /* this.intervalId = setInterval(
-            function() {
-                console.log("INTERVAL");
-                this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).catch(err => {
-                    throw new Error(err);
-                });
-            }.bind(this),
-            30000
-        ); */
+                function() {
+                    console.log("INTERVAL");
+                    this.getAggregate({ id: this.surveyId, pipeline: "circlechart" }).catch(err => {
+                        throw new Error(err);
+                    });
+                }.bind(this),
+                30000
+            ); */
     },
     destroyed() {
         clearInterval(this.intervalId);
@@ -142,124 +166,98 @@ export default {
             createHook: "responses/createHook",
             getAggregate: "responses/getAggregateData"
         }),
-        downloadImage() {
-            let vm = this;
 
-            //Dimension for circular chart
-            let width_c = 2400,
-                height_c = 2700;
+        // Add images to the zip file
+        async addImageToZipFile(image, type, name) {
+            const vm = this;
 
-            //Dimension for bar chart
-            let width_b = 4200,
-                height_b = 2200;
+            type = Object.prototype.hasOwnProperty.call(exportSettings, type) ? type : "default";
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
 
+            canvas.height = exportSettings[type].height;
+            canvas.width = exportSettings[type].width;
+
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, exportSettings[type].width, exportSettings[type].height);
+            ctx.drawImage(image, 0, 0, exportSettings[type].width, exportSettings[type].height);
+
+            const blob = await vm.canvasToBlob(canvas);
+            vm.zipFile.folder(exportSettings[type].directory).file(`${name}.png`, blob);
+        },
+
+        // Convert canvas element to blob
+        canvasToBlob(canvas) {
             return new Promise(resolve => {
-                let svgElementNodes = d3.selectAll("svg")._groups[0];
-                let svgElements = Array.from(svgElementNodes);
-                //console.log(svgElements);
-                let svgLabelCircular = document.getElementsByClassName("chartName");
-                let svgLabelBar = document.getElementsByClassName("barChartName");
-                //console.log(svgLabelBar);
-
-                let svgLabels = new Array();
-                for (let i = 0; i < svgLabelCircular.length; i++) {
-                    svgLabels.push(svgLabelCircular[i].textContent);
-                }
-                for (let i = 0; i < svgLabelBar.length; i++) {
-                    svgLabels.push(svgLabelBar[i].title);
-                }
-                console.log(svgLabels);
-                let numGraphs = 0;
-                let classType = new Array();
-
-                for (let i = 0; i < svgElementNodes.length; i++) {
-                    //console.log(svgElementNodes[i].className["baseVal"])
-                    classType.push(svgElementNodes[i].className["baseVal"]);
-                }
-                console.log(classType);
-
-                let serializer = new XMLSerializer();
-
-                //Formatting each elements in svgElements array
-                svgElements.forEach(function(element, index) {
-                    let svgString = serializer.serializeToString(this[index]);
-                    svgString = svgString.replace(/(\w+)?:?xlink=/g, "xmlns:xlink="); // Fix root xlink without namespace
-                    svgString = svgString.replace(/NS\d+:href/g, "xlink:href"); // Safari NS namespace fix
-
-                    this[index] = svgString;
-                }, svgElements);
-
-                //Async image loading using Promise
-                const loadImage = svgString => {
-                    let imgsrc = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svgString))); // Convert SVG string to data URL
-
-                    return new Promise((resolve, reject) => {
-                        let image = new Image();
-                        console.log("Loading Image");
-                        image.onload = () => resolve(image);
-                        image.onerror = () => reject(new Error("load image fail"));
-                        image.src = imgsrc;
-                    });
-                };
-
-                //Function to draw image
-                const depict = options => {
-                    let canvas = document.createElement("canvas");
-                    let ctx = canvas.getContext("2d");
-
-                    //temp solution
-                    if (classType[numGraphs] == "barChart") {
-                        canvas.width = width_b;
-                        canvas.height = height_b;
-                    } else {
-                        canvas.width = width_c;
-                        canvas.height = height_c;
-                    }
-
-                    return loadImage(options).then(image => {
-                        ctx.fillStyle = "white";
-                        //temp solution
-                        if (classType[numGraphs] == "barChart") {
-                            ctx.fillRect(0, 0, width_b, height_b);
-                            ctx.drawImage(image, 0, 0, width_b, height_b);
-                        } else {
-                            ctx.fillRect(0, 0, width_c, height_c);
-                            ctx.drawImage(image, 0, 0, width_c, height_c);
-                        }
-
-                        let fileName = svgLabels[numGraphs].toString() + ".png";
-                        let folder;
-                        if (classType[numGraphs] == "barChart") {
-                            folder = "Bar Graph";
-                        } else if (classType[numGraphs] == "circleChart") {
-                            folder = "Circle Graph";
-                        }
-
-                        numGraphs += 1;
-
-                        //save to zip file
-                        canvas.toBlob(function(blob) {
-                            console.log("Save to zip");
-                            console.log("Folder: ", folder);
-                            vm.zipFile.folder(folder).file(fileName, blob);
-                            //console.log(vm.circularZip);
-                        });
-                    });
-                };
-
-                svgElements.forEach(depict);
-
-                resolve();
+                canvas.toBlob(blob => resolve(blob));
             });
         },
+
+        // Get chart data for d3 svgs
+        getSvgChartData() {
+            const charts = [];
+
+            const svgs = [];
+            d3.selectAll("svg")._groups.forEach(group => {
+                group.forEach(element => {
+                    svgs.push(element);
+                });
+            });
+
+            const serializer = new XMLSerializer();
+            svgs.forEach(svg => {
+                const chart = {};
+
+                if (svg.classList.contains("circleChart")) {
+                    chart.type = "circleChart";
+                    chart.name = svg.querySelector("text.circularChartName").textContent;
+                } else if (svg.classList.contains("barChart")) {
+                    chart.type = "barChart";
+                    chart.name = svg.closest(".barChartName, .tab-pane").querySelector("h1, h3").textContent;
+                }
+
+                const serialized = serializer
+                    .serializeToString(svg)
+                    .replace(/(\w+)?:?xlink=/g, "xmlns:xlink=")
+                    .replace(/NS\d+:href/g, "xlink:href");
+                chart.src = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(serialized)))}`;
+                charts.push(chart);
+            });
+
+            return charts;
+        },
+
+        // Load an image
+        loadImage(src) {
+            return new Promise((resolve, reject) => {
+                const image = new Image();
+                image.onload = () => resolve(image);
+                image.onerror = () => reject(new Error("load image failed"));
+                image.src = src;
+            });
+        },
+
+        // Generate zip file
+        async generateZipFile() {
+            const vm = this;
+
+            const charts = vm.getSvgChartData();
+            const process = charts.map(chart => {
+                return vm.loadImage(chart.src).then(async image => {
+                    await vm.addImageToZipFile(image, chart.type, chart.name);
+                });
+            });
+
+            return Promise.all(process);
+        },
+
+        // Download the zip file
         async downloadZip() {
-            let vm = this;
-            await vm.downloadImage();
-            vm.zipFile.generateAsync({ type: "blob" }).then(function(content) {
-                console.log("Downloading zip");
-                FileSaver.saveAs(content, "Chart.zip");
-            });
+            await this.generateZipFile();
+            const content = await this.zipFile.generateAsync({ type: "blob" });
+            FileSaver.saveAs(content, "Chart.zip");
         },
+
         showToast() {
             this.$bvToast.toast("Bad data in survey response, will manually re-fetch in 30 seconds", {
                 title: "Warning",
@@ -276,4 +274,9 @@ export default {
 
 <style scoped>
 @import "../assets/grayscale.css";
+
+::v-deep .nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    background-color: darkseagreen !important;
+}
 </style>

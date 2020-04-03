@@ -1,5 +1,5 @@
 <template>
-    <svg width="1150" height="500"></svg>
+    <div></div>
 </template>
 
 <script>
@@ -15,14 +15,14 @@ const d3 = Object.assign(
 );
 
 export default {
-    props: ["aggregateData"],
+    props: ["aggregateData", "hidden"],
     computed: {
         ...mapState({
             barchartAggregate: state => state.responses.barchartAggregate
         })
     },
     mounted() {
-        if (this.aggregateData != undefined) {
+        if (!this.hidden) {
             this.makeChart();
         }
     },
@@ -34,12 +34,14 @@ export default {
             let margin = { top: 20, right: 20, bottom: 50, left: 70 };
             let width = 650 - margin.left - margin.right;
             let height = 325 - margin.top - margin.bottom;
-            let svg = d3.select(this.$el);
+            let svg = d3
+                .select(this.$el)
+                .append("svg")
+                .attr("class", "barChart")
+                .attr("width", 1150)
+                .attr("height", 500);
             //var width = +svg.attr('width');
             //var height = +svg.attr('height');
-
-            svg.attr("class", "barChart")
-
 
             let data = this.aggregateData.data;
 
@@ -127,23 +129,23 @@ export default {
                     .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(0) : y(0) - y(d.mean)));
 
                 //* Add overlays
-                elem.selectAll("rect2")
-                    .data(data)
-                    .enter()
-                    .append("rect")
-                    .attr("fill", "grey")
-                    .attr("stroke", "black")
-                    .attr("fill-opacity", 0)
-                    .attr("x", d => x(d.subquestion) + 10)
-                    .attr("class", d => d.subquestion)
-                    .attr("y", d => y(d.max))
-                    .attr("width", x.bandwidth() - 20)
-                    .transition()
-                    .delay((d, i) => {
-                        return i * 150;
-                    })
-                    .duration(1000)
-                    .attr("height", d => y(d.min) - y(d.max));
+                // elem.selectAll("rect2")
+                //     .data(data)
+                //     .enter()
+                //     .append("rect")
+                //     .attr("fill", "grey")
+                //     .attr("stroke", "black")
+                //     .attr("fill-opacity", 0)
+                //     .attr("x", d => x(d.subquestion) + 10)
+                //     .attr("class", d => d.subquestion)
+                //     .attr("y", d => y(d.max))
+                //     .attr("width", x.bandwidth() - 20)
+                //     .transition()
+                //     .delay((d, i) => {
+                //         return i * 150;
+                //     })
+                //     .duration(1000)
+                //     .attr("height", d => y(d.min) - y(d.max));
             }
 
             svg.append("g")
