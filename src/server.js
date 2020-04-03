@@ -6,7 +6,6 @@ const path = require("path");
 const unzip = require("unzip-stream");
 const util = require("util");
 const helmet = require("helmet");
-// const fs = require('fs');
 const requestPromise = util.promisify(request);
 const app = express();
 
@@ -209,9 +208,6 @@ app.route("/api/surveys/responses")
 
                             res.send(results);
                         });
-
-                    // Save the file to disk
-                    // entry.pipe(fs.createWriteStream(entry.path));
                 });
         }
 
@@ -278,11 +274,13 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
             });
         });
     } else if (pipeline === "circlechart") {
-        collection.findOne({ surveyId: surveyId }, function(err, result) {
+        collection.aggregate(Pipelines.circlechartPipeline(surveyId), function(err, cursor) {
             if (err) throw new Error(err);
 
-            let data = Pipelines.circlechartPipeline(result);
-            res.send(data);
+            cursor.toArray(function(err, docs) {
+                if (err) throw new Error(err);
+                res.send(docs);
+            });
         });
     } else if (pipeline === "label") {
         return;

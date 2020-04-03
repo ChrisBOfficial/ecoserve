@@ -97,6 +97,14 @@ const routes = [
             requiresAuth: true
         },
         component: () => import("@/views/Settings.vue")
+    },
+    {
+        path: "*",
+        name: "notFound",
+        meta: {
+            title: "Page not found"
+        },
+        component: () => import("@/views/404.vue")
     }
 ];
 

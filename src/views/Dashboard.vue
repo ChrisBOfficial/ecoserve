@@ -4,7 +4,7 @@
         <div style="min-height:100vh;">
             <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;" pills align="center">
                 <b-tab title="Circular Charts" active>
-                    <CircularChart ref="circularRef" v-on:done-loading="circularLoading = false" />
+                    <CircularChart ref="circularRef" @done-loading="circularLoading = false" />
                 </b-tab>
                 <b-tab title="Bar Graphs" lazy>
                     <b-tabs pills card vertical lazy>
@@ -29,7 +29,6 @@
                         <BarChart :ref="question._id" :aggregate-data="question" :hidden="true" />
                     </div>
                 </b-tab>
-
                 <b-button
                     v-if="!circularLoading"
                     @click="downloadZip"

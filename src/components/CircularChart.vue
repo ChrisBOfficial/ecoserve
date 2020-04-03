@@ -462,12 +462,12 @@ export default {
                 for (let j = 0; j < data.values.length; j++) {
                     if (!this.project.blocks.some(e => e.title === data.values[j].service)) {
                         sortedData[i].values.splice(j, 1);
-                        j--;
+                        // j--;
                     } else {
                         for (const block of this.project.blocks) {
                             if (block.title === data.values[j].service && !block.visuals.includes("Bullseyes")) {
                                 sortedData[i].values.splice(j, 1);
-                                j--;
+                                // j--;
                             }
                         }
                     }

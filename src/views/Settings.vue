@@ -8,18 +8,18 @@
                         <h2 class="font-weight-light">Settings</h2>
                         <br />
                         <p>
-                            Update your account's Qualtrics API token and Datacenter ID.
+                            Update your account's Qualtrics API token and Datacenter ID
                         </p>
                         <div class="row-3 text-center">
                             <b-form-input
-                                v-model="qualtricsToken"
+                                v-model.trim="qualtricsToken"
                                 style="max-width: 25%;"
                                 placeholder="API token"
                             ></b-form-input>
                         </div>
                         <div class="row-3 text-center">
                             <b-form-input
-                                v-model="qualtricsDatacenter"
+                                v-model.trim="qualtricsDatacenter"
                                 style="max-width: 25%;"
                                 placeholder="Datacenter ID"
                             ></b-form-input>
