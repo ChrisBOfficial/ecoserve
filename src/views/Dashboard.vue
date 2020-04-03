@@ -36,6 +36,13 @@
                 >
                     Download ZIP
                 </b-button>
+                <b-button
+                        v-if="!circularLoading"
+                        @click="downloadJSON"
+                        style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
+                >
+                    Download Data
+                </b-button>
             </b-tabs>
         </div>
 
@@ -282,6 +289,21 @@ export default {
                 autoHideDelay: 5000,
                 noCloseButton: true
             });
+        },
+        async downloadJSON() {
+            await this.generateZipFile();
+
+            let exportObj = [];
+            const questions = this.barchartAggregate;
+
+            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(questions, null, 4));
+            let jsonElement = document.createElement("a");
+
+            jsonElement.setAttribute("href", dataStr);
+            jsonElement.setAttribute("download", "summarized.json");
+            document.body.appendChild(jsonElement);
+            jsonElement.click();
+            jsonElement.remove();
         }
     }
 };
