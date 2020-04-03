@@ -107,8 +107,6 @@ export default {
                             .enter("rect");
 
                         let data1 = function() {
-                            console.log(JSON.parse(JSON.stringify(bca)));
-
                             let nld = [];
                             for (let i in data.values) {
                                 let row = { Service: data.values[i].service, Mean: data.values[i].mean.toPrecision(2) };
@@ -131,8 +129,8 @@ export default {
                                 nld.push(row);
                             }
                             return nld;
-                        }.bind(this);
-                        let data2 = ["Service", "Mean", "Confidence", "Vs_Peers"];
+                        };
+                        let data2 = ["Service", "Impact", "Confidence", "Vs Peers"];
 
                         let table = svg
                             .append("svg:foreignObject")

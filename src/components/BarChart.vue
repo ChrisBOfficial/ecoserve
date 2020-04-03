@@ -15,7 +15,7 @@ const d3 = Object.assign(
 );
 
 export default {
-    props: ["aggregateData", "hidden"],
+    props: ["aggregateData", "hidden", "bardomain"],
     computed: {
         ...mapState({
             project: state => state.projects.project
@@ -31,6 +31,7 @@ export default {
             getAggregate: "responses/getAggregateData"
         }),
         makeChart() {
+            let bardomain = this.bardomain;
             let margin = { top: 20, right: 20, bottom: 50, left: 70 };
             let width = 650 - margin.left - margin.right;
             let height = 325 - margin.top - margin.bottom;
@@ -51,8 +52,8 @@ export default {
             let y = d3
                 .scaleLinear()
                 .rangeRound([height, 0])
-                .domain([-d3.max(data, d => Math.abs(d.mean)), d3.max(data, d => Math.abs(d.mean))]);
-
+                .domain([-this.bardomain, this.bardomain]);
+            //-(d3.max(data, d => Math.abs(d.mean))), d3.max(data, d =>  Math.abs(d.mean))
             let xAxis = d3.axisBottom(x);
             let yAxis = d3.axisLeft(y).ticks(11);
 
