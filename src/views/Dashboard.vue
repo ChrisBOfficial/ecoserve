@@ -12,7 +12,7 @@
                             <h1>{{ question.service }}</h1>
 
                             <b-container>
-                                <BarChart :ref="question._id" :aggregate-data="question" :hidden="false" />
+                                <BarChart :ref="question._id" :aggregate-data="question" :hidden="false" :bardomain="getBarDomain(barchartAggregate)"/>
                             </b-container>
                         </b-tab>
                     </b-tabs>
@@ -272,6 +272,25 @@ export default {
             await this.generateZipFile();
             const content = await this.zipFile.generateAsync({ type: "blob" });
             FileSaver.saveAs(content, "Chart.zip");
+        },
+        getBarDomain(data){
+            let max = 0;
+            let projectData = this.project.comparisonData;
+            for(let i = 0; i < data.length; i++){
+                if(Math.abs(data[i].group_mean) >max){
+                    max = Math.abs(data[i].group_mean);
+                }
+            }
+            console.log(projectData);
+            for(let j = 0; j < projectData.length; j++){
+                for(let k = 0; k < projectData[j].data.length; k++){
+                    if(Math.abs(projectData[j].data[k].max) >max){
+                        max=Math.abs(projectData[j].data[k].max);
+
+                    }
+                }
+            }
+            return Math.ceil(max);
         },
         showToast() {
             this.$bvToast.toast("Bad data in survey response, will manually re-fetch in 30 seconds", {

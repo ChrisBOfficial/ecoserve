@@ -214,7 +214,7 @@ export default {
                             }
                             return nld;
                         };
-                        let data2 = ["Service", "Mean", "Confidence", "Vs_Peers"];
+                        let data2 = ["Service", "Impact", "Confidence", "Vs Peers"];
 
                         let table = svg
                             .append("svg:foreignObject")
