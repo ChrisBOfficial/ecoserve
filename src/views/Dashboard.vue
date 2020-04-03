@@ -2,12 +2,12 @@
     <div>
         <Header />
         <div style="min-height:100vh;">
-            <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;">
+            <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;" pills align="center">
                 <b-tab title="Circular Charts" active>
                     <CircularChart ref="circularRef" v-on:done-loading="circularLoading = false" />
                 </b-tab>
                 <b-tab title="Bar Graphs" lazy>
-                    <b-tabs vertical lazy>
+                    <b-tabs pills card vertical lazy>
                         <b-tab v-for="question in barchartAggregate" :key="question._id" :title="question._id">
                             <h1>{{ question._id }}</h1>
 
@@ -17,7 +17,7 @@
                         </b-tab>
                     </b-tabs>
                 </b-tab>
-                <b-tab title="disabled">
+                <b-tab disabled>
                     <div
                         v-for="question in barchartAggregate"
                         :key="question._id"
@@ -106,6 +106,7 @@ export default {
     mounted() {
         this.surveyId = this.$route.query.id.split("+")[1];
         this.getAggregate({ id: this.surveyId, pipeline: "barchart" }).then(() => {
+            d3.selectAll(".barChart").remove();
             for (const ref in this.$refs) {
                 if (ref !== "circularRef" && this.$refs[ref].length > 0) {
                     this.$refs[ref][0].makeChart();
@@ -131,6 +132,7 @@ export default {
                         });
                     this.getAggregate({ id: this.surveyId, pipeline: "barchart" })
                         .then(() => {
+                            d3.selectAll(".barChart").remove();
                             for (const ref in this.$refs) {
                                 if (ref !== "circularRef" && this.$refs[ref].length > 0) {
                                     this.$refs[ref][0].makeChart();
@@ -273,4 +275,9 @@ export default {
 
 <style scoped>
 @import "../assets/grayscale.css";
+
+::v-deep .nav-pills .nav-link.active,
+.nav-pills .show > .nav-link {
+    background-color: darkseagreen !important;
+}
 </style>
