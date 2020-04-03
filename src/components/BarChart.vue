@@ -18,7 +18,8 @@ export default {
     props: ["aggregateData", "hidden"],
     computed: {
         ...mapState({
-            barchartAggregate: state => state.responses.barchartAggregate
+            barchartAggregate: state => state.responses.barchartAggregate,
+            project: state => state.projects.project
         })
     },
     mounted() {
@@ -58,7 +59,7 @@ export default {
             let xAxis = d3.axisBottom(x);
             let yAxis = d3.axisLeft(y).ticks(11);
 
-            function addRectsWithName(elem) {
+            function addRectsWithName(elem, vm) {
                 //* Add X axis
                 elem.append("g")
                     .attr("class", "x axis")
@@ -101,22 +102,6 @@ export default {
                             return "green";
                         }
                     })
-                    /*
-          .attr('stroke', (d) => {
-              if (d.conf > 2){
-                  return "blue";
-              }
-              else if ((d.conf <= 2) && (d.conf > 0)){
-                  return "orange";
-              }
-              else if ((d.conf <= 0 ) && (d.conf > -2)){
-                  return "red";
-              }
-              else {
-                  return "black";
-              }
-          })
-          */
                     .attr("x", d => x(d.subquestion))
                     .attr("class", d => d.subquestion)
                     .attr("y", d => (d.mean <= 0 ? y(0) : y(d.mean)))
@@ -129,29 +114,39 @@ export default {
                     .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(0) : y(0) - y(d.mean)));
 
                 //* Add overlays
-                // elem.selectAll("rect2")
-                //     .data(data)
-                //     .enter()
-                //     .append("rect")
-                //     .attr("fill", "grey")
-                //     .attr("stroke", "black")
-                //     .attr("fill-opacity", 0)
-                //     .attr("x", d => x(d.subquestion) + 10)
-                //     .attr("class", d => d.subquestion)
-                //     .attr("y", d => y(d.max))
-                //     .attr("width", x.bandwidth() - 20)
-                //     .transition()
-                //     .delay((d, i) => {
-                //         return i * 150;
-                //     })
-                //     .duration(1000)
-                //     .attr("height", d => y(d.min) - y(d.max));
+                if (vm.project.comparisonData.length > 0) {
+                    let comparisonData = {};
+                    for (const data of vm.project.comparisonData) {
+                        if (data.questionName === vm.aggregateData.service) {
+                            comparisonData = data.data;
+                            break;
+                        }
+                    }
+
+                    elem.selectAll("rect2")
+                        .data(comparisonData)
+                        .enter()
+                        .append("rect")
+                        .attr("fill", "grey")
+                        .attr("stroke", "black")
+                        .attr("fill-opacity", 0.35)
+                        .attr("x", d => x(d.subname) + 10)
+                        .attr("class", d => d.subname)
+                        .attr("y", d => y(d.max))
+                        .attr("width", x.bandwidth() - 20)
+                        .transition()
+                        .delay((d, i) => {
+                            return i * 150;
+                        })
+                        .duration(1000)
+                        .attr("height", d => y(d.min) - y(d.max));
+                }
             }
 
             svg.append("g")
                 .attr("id", "bars-style")
                 .attr("transform", "translate(80, 20)")
-                .call(addRectsWithName);
+                .call(addRectsWithName, this);
         }
     }
 };

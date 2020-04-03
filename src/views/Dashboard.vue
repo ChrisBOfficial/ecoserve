@@ -103,6 +103,7 @@ export default {
     },
     created() {
         window.scrollTo(0, 0);
+        window.onbeforeunload = () => true;
     },
     mounted() {
         this.surveyId = this.$route.query.id.split("+")[1];
@@ -112,9 +113,8 @@ export default {
                 this.blockOrdering[this.project.blocks[i].title] = i;
             }
             this.loadData("circlechart", true);
+            this.loadData("barchart");
         });
-
-        this.loadData("barchart");
 
         //* Handle survey updates
         this.createHook(this.surveyId);
@@ -133,18 +133,19 @@ export default {
         );
 
         // Refresh data every 60 seconds to grab any residual responses
-        this.intervalId = setInterval(
-            function() {
-                console.log("INTERVAL");
-                this.loadData("circlechart");
-                this.loadData("barchart");
-            }.bind(this),
-            30000
-        );
+        // this.intervalId = setInterval(
+        //     function() {
+        //         console.log("INTERVAL");
+        //         this.loadData("circlechart");
+        //         this.loadData("barchart");
+        //     }.bind(this),
+        //     30000
+        // );
     },
     destroyed() {
         clearInterval(this.intervalId);
         this.socket.close();
+        window.onbeforeunload = null;
     },
     methods: {
         ...mapActions({
