@@ -23,9 +23,7 @@
         "devstart": "NODE_ENV=development nodemon src/server.js",
         "start": "node src/server.js",
         "serve": "vue-cli-service serve",
-        "test:server": "mocha --exit",
-        "test:unit": "vue-cli-service test:unit",
-        "test": "mocha --exit; vue-cli-service test:unit"
+        "test": "mocha --exit"
     },
     "dependencies": {
         "aws-amplify": "^2.2.5",
