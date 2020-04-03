@@ -12,7 +12,12 @@
                             <h1>{{ question.service }}</h1>
 
                             <b-container>
-                                <BarChart :ref="question._id" :aggregate-data="question" :hidden="false" :bardomain="getBarDomain(barchartAggregate)"/>
+                                <BarChart
+                                    :ref="question._id"
+                                    :aggregate-data="question"
+                                    :hidden="false"
+                                    :bardomain="getBarDomain(barchartAggregate)"
+                                />
                             </b-container>
                         </b-tab>
                     </b-tabs>
@@ -26,7 +31,12 @@
                     >
                         <h3>{{ question.service }}</h3>
 
-                        <BarChart :ref="question._id" :aggregate-data="question" :hidden="true" />
+                        <BarChart
+                            :ref="question._id"
+                            :aggregate-data="question"
+                            :hidden="true"
+                            :bardomain="getBarDomain(barchartAggregate)"
+                        />
                     </div>
                 </b-tab>
                 <b-button
@@ -259,20 +269,18 @@ export default {
             const content = await this.zipFile.generateAsync({ type: "blob" });
             FileSaver.saveAs(content, "Chart.zip");
         },
-        getBarDomain(data){
+        getBarDomain(data) {
             let max = 0;
             let projectData = this.project.comparisonData;
-            for(let i = 0; i < data.length; i++){
-                if(Math.abs(data[i].group_mean) >max){
+            for (let i = 0; i < data.length; i++) {
+                if (Math.abs(data[i].group_mean) > max) {
                     max = Math.abs(data[i].group_mean);
                 }
             }
-            console.log(projectData);
-            for(let j = 0; j < projectData.length; j++){
-                for(let k = 0; k < projectData[j].data.length; k++){
-                    if(Math.abs(projectData[j].data[k].max) >max){
-                        max=Math.abs(projectData[j].data[k].max);
-
+            for (let j = 0; j < projectData.length; j++) {
+                for (let k = 0; k < projectData[j].data.length; k++) {
+                    if (Math.abs(projectData[j].data[k].max) > max) {
+                        max = Math.abs(projectData[j].data[k].max);
                     }
                 }
             }
@@ -289,9 +297,6 @@ export default {
             });
         },
         async downloadJSON() {
-            await this.generateZipFile();
-
-            let exportObj = [];
             const questions = this.barchartAggregate;
 
             let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(questions, null, 4));
