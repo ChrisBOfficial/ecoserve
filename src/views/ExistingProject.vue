@@ -22,7 +22,7 @@
                     <h1>{{ title }}</h1>
                 </b-row>
                 <b-row>
-                    <h4>Survey: "{{ this.selectedSurvey.name }}"</h4>
+                    <h4>Survey name: "{{ this.selectedSurvey.name }}"</h4>
                 </b-row>
                 <b-row>
                     <b-form-input v-model.trim="title" placeholder="Enter Project Title"></b-form-input>

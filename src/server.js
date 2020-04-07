@@ -19,7 +19,6 @@ if (port === 3000 || process.env.NODE_ENV === "development") {
     distDirectory = "../dist";
     Pipelines = require("./api/pipelines.js");
 } else {
-    console.log("IN PRODUCTION");
     distDirectory = "dist";
     Pipelines = require("./pipelines.js");
     app.use(history()); // Middleware for HTML5 history mode
@@ -65,9 +64,9 @@ app.use(express.static(path.join(__dirname, distDirectory))); // Serve files in 
 
 // Start server and socket.io instance on the port
 const server = app.listen(port, () => {
-    console.log("Server started on port " + port);
+    console.log("Server listening on port " + port);
 });
-const io = require("socket.io")(server);
+const io = require("socket.io").listen(server);
 
 // Any routes will be redirected to the vue app, using index.html as homepage
 app.get("/", (_, res) => {
@@ -228,7 +227,7 @@ app.route("/api/surveys/responses")
                 let baseUrl = "https://" + req.headers["q-data-center"] + ".qualtrics.com/API/v3/eventsubscriptions/";
                 let dataString = {
                     topics: "surveyengine.completedResponse." + surveyId,
-                    publicationUrl: req.protocol + "://" + req.get("HOST") + "/api/listener?surveyId=" + surveyId,
+                    publicationUrl: "https://ecoserve-app.com/api/listener?surveyId=" + surveyId,
                     encrypt: false
                 };
                 let options = {
@@ -290,10 +289,9 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
 //* Endpoint for handling Qualtrics events
 app.route("/api/listener").post((req, res) => {
     const surveyId = req.query.surveyId;
-    if (req.body.Status == "Complete") {
-        io.emit(surveyId, req.body.Status);
-    }
-    res.sendStatus(200);
+    console.log("Survey event for " + surveyId);
+    io.emit(surveyId, "Complete");
+    res.send("success");
 });
 
 //* Endpoint for project documents in MongoDB

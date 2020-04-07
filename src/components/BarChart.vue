@@ -31,7 +31,6 @@ export default {
             getAggregate: "responses/getAggregateData"
         }),
         makeChart() {
-            let bardomain = this.bardomain;
             let margin = { top: 20, right: 20, bottom: 50, left: 70 };
             let width = 650 - margin.left - margin.right;
             let height = 325 - margin.top - margin.bottom;

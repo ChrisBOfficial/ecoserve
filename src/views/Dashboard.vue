@@ -139,8 +139,9 @@ export default {
         this.socket.on(
             this.surveyId,
             function() {
+                console.log("Response received");
                 if (Date.now() - this.lastUpdate >= 500) {
-                    console.log("Response received");
+                    console.log("Updating...");
                     this.loadData();
                     this.lastUpdate = Date.now();
                 }
