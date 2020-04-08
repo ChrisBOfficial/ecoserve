@@ -32,7 +32,7 @@ export default {
             });
 
             // Set dimensions
-            let margin = { top: 0, right: 0, bottom: 40, left: 0 },
+            let margin = { top: 10, right: 25, bottom: 40, left: 25 },
                 width = 360,
                 height = 360,
                 innerRadius = 90,
@@ -382,11 +382,6 @@ export default {
 body {
     font-weight: 200;
     font-size: 18px;
-}
-
-body,
-a {
-    color: #808080;
 }
 
 .grid {

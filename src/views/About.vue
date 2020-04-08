@@ -1,7 +1,7 @@
 <template>
     <div>
         <Header />
-        <body id="page-top">
+        <body>
             <header class="masthead about">
                 <div class="container h-100">
                     <div class="row h-100">

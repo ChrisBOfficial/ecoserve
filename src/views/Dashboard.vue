@@ -2,14 +2,14 @@
     <div>
         <Header />
         <div style="min-height:100vh;">
-            <b-tabs content-class="mt-2" style="padding: 15vh 3vh 0vh 3vh;" pills align="center">
+            <b-tabs content-class="mt-2" style="padding: 140px 2rem 0vh 2rem;" pills align="center">
                 <b-tab title="Circular Charts" active>
                     <CircularChart ref="circularRef" :blockOrdering="blockOrdering" :loading="circularLoading" />
                 </b-tab>
                 <b-tab title="Bar Graphs" lazy>
                     <b-tabs pills card vertical lazy>
                         <b-tab v-for="question in barchartAggregate" :key="question._id" :title="question.service">
-                            <h1>{{ question.service }}</h1>
+                            <h1 style="margin-left: 5rem;">{{ question.service }}</h1>
 
                             <b-container>
                                 <BarChart
@@ -39,20 +39,21 @@
                         />
                     </div>
                 </b-tab>
-                <b-button
-                    v-if="!circularLoading"
-                    @click="downloadZip"
-                    style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
-                >
-                    Download ZIP
-                </b-button>
-                <b-button
-                    v-if="!circularLoading"
-                    @click="downloadJSON"
-                    style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
-                >
-                    Download Data
-                </b-button>
+                <div v-if="!circularLoading">
+                    <b-button
+                        @click="downloadZip"
+                        style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
+                    >
+                        Download ZIP
+                    </b-button>
+                    <b-button
+                        @click="downloadJSON"
+                        style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
+                    >
+                        Download Data
+                    </b-button>
+                    <div @click="sharePage" class="btn btn-outline btn-xl">Share this page</div>
+                </div>
             </b-tabs>
         </div>
 
@@ -85,8 +86,8 @@ const exportSettings = {
     },
     circleChart: {
         directory: "Circle Graphs",
-        height: 400,
-        width: 360
+        height: 410,
+        width: 410
     }
 };
 
@@ -295,11 +296,9 @@ export default {
         },
         showToast() {
             this.$bvToast.toast("Bad data in survey response, will manually re-fetch in 30 seconds", {
-                title: "Warning",
                 toaster: "b-toaster-bottom-right",
-                variant: "danger",
+                variant: "warning",
                 solid: true,
-                autoHideDelay: 5000,
                 noCloseButton: true
             });
         },
@@ -314,6 +313,30 @@ export default {
             document.body.appendChild(jsonElement);
             jsonElement.click();
             jsonElement.remove();
+        },
+        sharePage() {
+            this.$bvToast.toast("Copied to clipboard!", {
+                toaster: "b-toaster-bottom-right",
+                variant: "info",
+                solid: true,
+                noCloseButton: true,
+                autoHideDelay: 1250,
+                noHoverPause: true
+            });
+            var linkText = document.createElement("textArea");
+            linkText.value = window.location.href.slice(0, -4) + "static";
+
+            // Avoid scrolling to bottom
+            linkText.style.top = "0";
+            linkText.style.left = "0";
+            linkText.style.position = "fixed";
+
+            document.body.appendChild(linkText);
+            linkText.focus();
+            linkText.select();
+            document.execCommand("copy");
+
+            document.body.removeChild(linkText);
         }
     }
 };
@@ -325,5 +348,31 @@ export default {
 ::v-deep .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
     background-color: darkseagreen !important;
+}
+
+.btn-outline {
+    color: black;
+    border: 1px solid;
+    border-color: lightgray;
+    float: right;
+    margin: 22px 1rem 0 0;
+}
+
+.btn-outline:hover,
+.btn-outline:active {
+    color: white;
+    border-color: darkseagreen;
+    background-color: darkseagreen;
+}
+
+.btn {
+    border-radius: 300px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.btn-xl {
+    font-size: 11px;
+    padding: 15px 45px;
 }
 </style>
