@@ -6,8 +6,8 @@
                 <b-tab title="Circular Charts" active>
                     <CircularChart ref="circularRef" :blockOrdering="blockOrdering" :loading="circularLoading" />
                 </b-tab>
-                <b-tab title="Bar Graphs" lazy>
-                    <b-tabs pills card vertical lazy>
+                <b-tab title="Bar Graphs">
+                    <b-tabs pills card vertical>
                         <b-tab v-for="question in barchartAggregate" :key="question._id" :title="question.service">
                             <h1 style="margin-left: 5rem;">{{ question.service }}</h1>
 
@@ -15,7 +15,6 @@
                                 <BarChart
                                     :ref="question._id"
                                     :aggregate-data="question"
-                                    :hidden="false"
                                     :bardomain="getBarDomain(barchartAggregate)"
                                 />
                             </b-container>
@@ -34,7 +33,6 @@
                         <BarChart
                             :ref="question._id"
                             :aggregate-data="question"
-                            :hidden="true"
                             :bardomain="getBarDomain(barchartAggregate)"
                         />
                     </div>
@@ -313,7 +311,7 @@ export default {
             jsonElement.remove();
         },
         sharePage() {
-            this.$bvToast.toast("Copied to clipboard!", {
+            this.$bvToast.toast("URL copied to clipboard!", {
                 toaster: "b-toaster-bottom-right",
                 variant: "info",
                 solid: true,

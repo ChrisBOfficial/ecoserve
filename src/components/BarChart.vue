@@ -15,19 +15,15 @@ const d3 = Object.assign(
 );
 
 export default {
-    props: ["aggregateData", "hidden", "bardomain"],
+    props: ["aggregateData", "bardomain"],
     computed: {
         ...mapState({
             project: state => state.projects.project
         })
     },
-    mounted() {
-        if (!this.hidden) {
-            this.makeChart();
-        }
-    },
     methods: {
         makeChart() {
+            console.log("Charting bars");
             let margin = { top: 20, right: 20, bottom: 50, left: 70 };
             let width = 650 - margin.left - margin.right;
             let height = 325 - margin.top - margin.bottom;
@@ -103,7 +99,7 @@ export default {
                     .attr("width", x.bandwidth())
                     .transition()
                     .delay((d, i) => {
-                        return i * 150;
+                        return i * 100;
                     })
                     .duration(1000)
                     .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(0) : y(0) - y(d.mean)));
