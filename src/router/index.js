@@ -27,6 +27,9 @@ const routes = [
     {
         path: "/contact",
         name: "contact",
+        meta: {
+            title: "ecoserve - Contact"
+        },
         component: () => import("@/views/Contact.vue")
     },
     {
