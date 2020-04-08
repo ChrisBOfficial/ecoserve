@@ -123,7 +123,6 @@ export default {
     },
     created() {
         window.scrollTo(0, 0);
-        window.onbeforeunload = () => true;
     },
     mounted() {
         this.surveyId = this.$route.query.id.split("+")[1];
@@ -167,7 +166,6 @@ export default {
     destroyed() {
         clearInterval(this.intervalId);
         this.socket.close();
-        window.onbeforeunload = null;
     },
     methods: {
         ...mapActions({
