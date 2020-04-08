@@ -55,25 +55,23 @@ export default {
         },
 
         // Get aggregated response data for a given visualization
-        getAggregateData({ commit, dispatch }, data) {
+        async getAggregateData({ commit, dispatch }, data) {
+            if (data.mode !== "static") await dispatch("loadResponses", data.id);
             return new Promise((resolve, reject) => {
-                // Reloads the survey responses before aggregating
-                dispatch("loadResponses", data.id).then(() => {
-                    ResponsesAPI.getAggregateResponses(data.id, data.pipeline)
-                        .then(response => {
-                            if (data.pipeline === "barchart") {
-                                commit("setBarchartAggregate", response.data);
-                            } else if (data.pipeline === "circlechart") {
-                                commit("setCircleAggregate", response.data);
-                            } else if (data.pipeline === "label") {
-                                commit("setLabelAggregate", response.data);
-                            }
-                            resolve();
-                        })
-                        .catch(error => {
-                            reject(error);
-                        });
-                });
+                ResponsesAPI.getAggregateResponses(data.id, data.pipeline)
+                    .then(response => {
+                        if (data.pipeline === "barchart") {
+                            commit("setBarchartAggregate", response.data);
+                        } else if (data.pipeline === "circlechart") {
+                            commit("setCircleAggregate", response.data);
+                        } else if (data.pipeline === "label") {
+                            commit("setLabelAggregate", response.data);
+                        }
+                        resolve();
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
             });
         }
     },

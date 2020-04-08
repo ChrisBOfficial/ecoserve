@@ -104,7 +104,7 @@ export default {
             circularLoading: true,
             socket: {},
             lastUpdate: 0,
-            surveyId: "",
+            surveyId: String,
             blockOrdering: {},
             intervalId: Number
         };
@@ -134,32 +134,34 @@ export default {
             this.loadData();
         });
 
-        //* Handle survey updates
-        this.createHook(this.surveyId);
-        this.lastUpdate = Date.now();
-        this.socket = io(this.socketUrl);
-        this.socket.on(
-            this.surveyId,
-            function() {
-                console.log("Response received");
-                if (Date.now() - this.lastUpdate >= 500) {
-                    console.log("Updating...");
-                    this.loadData();
-                    this.lastUpdate = Date.now();
-                }
-            }.bind(this)
-        );
+        if (this.$route.query.view !== "static") {
+            //* Handle survey updates
+            this.createHook(this.surveyId);
+            this.lastUpdate = Date.now();
+            this.socket = io(this.socketUrl);
+            this.socket.on(
+                this.surveyId,
+                function() {
+                    console.log("Response received");
+                    if (Date.now() - this.lastUpdate >= 500) {
+                        console.log("Updating...");
+                        this.loadData();
+                        this.lastUpdate = Date.now();
+                    }
+                }.bind(this)
+            );
 
-        //* Refresh data every 30 seconds to grab any residual responses
-        // if (process.env.NODE_ENV === "production") {
-        //     this.intervalId = setInterval(
-        //         function() {
-        //             console.log("INTERVAL");
-        //             this.loadData();
-        //         }.bind(this),
-        //         30000
-        //     );
-        // }
+            //* Refresh data every 30 seconds to grab any residual responses
+            // if (process.env.NODE_ENV === "production") {
+            //     this.intervalId = setInterval(
+            //         function() {
+            //             console.log("INTERVAL");
+            //             this.loadData();
+            //         }.bind(this),
+            //         30000
+            //     );
+            // }
+        }
     },
     destroyed() {
         clearInterval(this.intervalId);
@@ -174,8 +176,8 @@ export default {
         }),
         async loadData() {
             try {
-                await this.getAggregate({ id: this.surveyId, pipeline: "barchart" });
-                await this.getAggregate({ id: this.surveyId, pipeline: "circlechart" });
+                await this.getAggregate({ id: this.surveyId, pipeline: "barchart", mode: this.$route.query.view });
+                await this.getAggregate({ id: this.surveyId, pipeline: "circlechart", mode: this.$route.query.view });
                 this.circularLoading = false;
 
                 this.$refs.circularRef.makeCharts();

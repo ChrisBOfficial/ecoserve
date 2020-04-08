@@ -124,9 +124,8 @@ router.beforeEach((to, _, next) => {
                 document.title = to.meta.title;
                 next();
             })
-            .catch(err => {
-                console.error(err);
-                if (process.env.NODE_ENV === "development") {
+            .catch(() => {
+                if (process.env.NODE_ENV === "development" || (to.name === "dashboard" && to.query.view === "static")) {
                     document.title = to.meta.title;
                     next();
                 } else {

@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-        <!-- Dynamically loaded views -->
         <router-view />
     </div>
 </template>
@@ -26,7 +25,7 @@ export default {
                     window.axios.defaults.headers["x-api-token"] = attributes["custom:Qualtrics-API-Key"];
                     window.axios.defaults.headers["q-data-center"] = attributes["custom:Data-Center"];
                     if (window.location.href.includes("/auth/verify")) {
-                        // If Qualtrics credentials exist, redirect to home from verify page
+                        // If Qualtrics credentials exist and on verify page, redirect
                         this.$router.push("/");
                     }
                 } else {

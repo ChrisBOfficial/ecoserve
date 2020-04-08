@@ -20,7 +20,7 @@ if (process.env.NODE_ENV == "development") {
         }
     });
 } else if (process.env.NODE_ENV == "production") {
-    apiUrl = window.location.origin + "/api";
+    apiUrl = "https://ecoserve-app.com/api";
     instance = axios.create({
         baseURL: apiUrl
     });

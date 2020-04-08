@@ -41,17 +41,17 @@ app.use(
     helmet.featurePolicy({
         features: {
             accelerometer: ["'none'"],
-            ambientLightSensor: ["'none"],
-            autoplay: ["'none"],
-            camera: ["'none"],
-            geolocation: ["'none"],
-            gyroscope: ["'none"],
-            magnetometer: ["'none"],
-            microphone: ["'none"],
-            payment: ["'none"],
-            speaker: ["'none"],
-            usb: ["'none"],
-            vibrate: ["'none"]
+            ambientLightSensor: ["'none'"],
+            autoplay: ["'none'"],
+            camera: ["'none'"],
+            geolocation: ["'none'"],
+            gyroscope: ["'none'"],
+            magnetometer: ["'none'"],
+            microphone: ["'none'"],
+            payment: ["'none'"],
+            speaker: ["'none'"],
+            usb: ["'none'"],
+            vibrate: ["'none'"]
         }
     })
 );
@@ -289,7 +289,7 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
 //* Endpoint for handling Qualtrics events
 app.route("/api/listener").post((req, res) => {
     const surveyId = req.query.surveyId;
-    console.log("Survey event for " + surveyId);
+    console.log("Event received for " + surveyId);
     io.emit(surveyId, "Complete");
     res.send("success");
 });
@@ -308,10 +308,7 @@ app.route("/api/projects")
                 res.send(docs);
             });
         } else if (projectName !== undefined && id !== undefined) {
-            collection.findOne({ projectId: projectName + "+" + id, accountToken: accountToken }, function(
-                err,
-                result
-            ) {
+            collection.findOne({ projectId: projectName + "+" + id }, function(err, result) {
                 if (err) throw new Error(err);
                 res.send(result);
             });
