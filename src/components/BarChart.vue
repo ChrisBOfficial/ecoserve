@@ -1,9 +1,9 @@
 <template>
-    <div></div>
+    <div />
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
+import { mapState } from "vuex";
 const d3 = Object.assign(
     {},
     require("d3"),
@@ -27,9 +27,6 @@ export default {
         }
     },
     methods: {
-        ...mapActions({
-            getAggregate: "responses/getAggregateData"
-        }),
         makeChart() {
             let margin = { top: 20, right: 20, bottom: 50, left: 70 };
             let width = 650 - margin.left - margin.right;
@@ -38,10 +35,12 @@ export default {
                 .select(this.$el)
                 .append("svg")
                 .attr("class", "barChart")
-                .attr("width", 1150)
-                .attr("height", 500);
+                .attr("height", 400)
+                .attr("width", 800);
 
-            let data = this.aggregateData.data;
+            let data = this.aggregateData.data.sort((a, b) =>
+                a.subquestion > b.subquestion ? 1 : b.subquestion > a.subquestion ? -1 : 0
+            );
 
             let x = d3
                 .scaleBand()

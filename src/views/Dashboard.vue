@@ -79,14 +79,14 @@ const exportSettings = {
         width: 2400
     },
     barChart: {
-        directory: "Bar Graph",
-        height: 2200,
-        width: 4200
+        directory: "Bar Graphs",
+        height: 400,
+        width: 800
     },
     circleChart: {
-        directory: "Circle Graph",
-        height: 2700,
-        width: 2400
+        directory: "Circle Graphs",
+        height: 400,
+        width: 360
     }
 };
 
@@ -115,7 +115,9 @@ export default {
             project: state => state.projects.project,
             barchartAggregate: state =>
                 // Sort categories alphabetically
-                state.responses.barchartAggregate.sort((a, b) => (a._id > b._id ? 1 : b._id > a._id ? -1 : 0))
+                state.responses.barchartAggregate.sort((a, b) =>
+                    a.service > b.service ? 1 : b.service > a.service ? -1 : 0
+                )
         })
     },
     created() {
@@ -148,14 +150,16 @@ export default {
             }.bind(this)
         );
 
-        // Refresh data every 60 seconds to grab any residual responses
-        // this.intervalId = setInterval(
-        //     function() {
-        //         console.log("INTERVAL");
-        //         this.loadData();
-        //     }.bind(this),
-        //     30000
-        // );
+        //* Refresh data every 30 seconds to grab any residual responses
+        // if (process.env.NODE_ENV === "production") {
+        //     this.intervalId = setInterval(
+        //         function() {
+        //             console.log("INTERVAL");
+        //             this.loadData();
+        //         }.bind(this),
+        //         30000
+        //     );
+        // }
     },
     destroyed() {
         clearInterval(this.intervalId);
@@ -268,7 +272,7 @@ export default {
         async downloadZip() {
             await this.generateZipFile();
             const content = await this.zipFile.generateAsync({ type: "blob" });
-            FileSaver.saveAs(content, "Chart.zip");
+            FileSaver.saveAs(content, "Charts.zip");
         },
         getBarDomain(data) {
             let max = 0;
