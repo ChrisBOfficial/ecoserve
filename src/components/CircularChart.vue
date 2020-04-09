@@ -196,7 +196,7 @@ export default {
                 .data(results)
                 .enter()
                 .append("path")
-                .attr("fill", "#43bfc7")
+                .attr("fill", "#397429")
                 .attr("class", "yo")
                 .attr(
                     "d",

@@ -2,7 +2,7 @@
     <div>
         <Header />
         <section class="masthead-2">
-            <b-container style="padding: 25vh 0vh 0vh 0vh;">
+            <b-container style="padding: 25vh 0 0 0;">
                 <b-row class="h-100 align-items-center">
                     <b-col class="col-6 text-center align-items-center" id="ProjectList">
                         <h3>PROJECTS</h3>

@@ -6,7 +6,7 @@
                 <b-tab title="Circular Charts" active>
                     <CircularChart ref="circularRef" :blockOrdering="blockOrdering" :loading="circularLoading" />
                 </b-tab>
-                <b-tab title="Bar Graphs">
+                <b-tab title="Bar Charts">
                     <b-tabs pills card vertical>
                         <b-tab v-for="question in barchartAggregate" :key="question._id" :title="question.service">
                             <h1 style="margin-left: 5rem;">{{ question.service }}</h1>
@@ -37,7 +37,7 @@
                         />
                     </div>
                 </b-tab>
-                <div v-if="!circularLoading">
+                <div v-if="staticView">
                     <b-button
                         @click="downloadZip"
                         style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
@@ -117,7 +117,10 @@ export default {
                 state.responses.barchartAggregate.sort((a, b) =>
                     a.service > b.service ? 1 : b.service > a.service ? -1 : 0
                 )
-        })
+        }),
+        staticView: function() {
+            return !this.circularLoading && this.$route.query.view !== "static";
+        }
     },
     created() {
         window.scrollTo(0, 0);
