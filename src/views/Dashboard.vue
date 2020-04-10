@@ -4,7 +4,7 @@
         <div style="min-height:100vh;">
             <b-tabs content-class="mt-2" style="padding: 140px 2rem 0vh 2rem;" pills align="center">
                 <b-tab title="Circular Charts" active>
-                    <CircularChart ref="circularRef" :blockOrdering="blockOrdering" :loading="circularLoading" />
+                    <CircularChart ref="circularRef" :blockOrdering="blockOrdering" :loading="circularLoading" :bcagg="barchartAggregate"/>
                 </b-tab>
                 <b-tab title="Bar Charts">
                     <b-tabs pills card vertical>

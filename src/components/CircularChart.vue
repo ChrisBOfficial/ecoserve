@@ -11,7 +11,7 @@ const d3 = Object.assign({}, require("d3"), require("d3-scale"), require("d3-sel
 
 export default {
     name: "CircularChart",
-    props: ["blockOrdering", "loading"],
+    props: ["blockOrdering", "loading", "bcagg"],
     components: {
         Loading
     },
@@ -66,7 +66,8 @@ export default {
                 .range([innerRadius, 10])
                 .domain([0, 10]);
 
-            let bca = this.barchartAggregate;
+            let bca = this.bcagg;
+            console.log(bca);
             //* Add the SVG element
             let svg = d3
                 .select(location)
@@ -106,14 +107,21 @@ export default {
                             .data(data)
                             .enter("rect");
 
-                        let data1 = function() {
-                            let nld = [];
+                        let data1 = [];
+                        console.log(bca[0].group_mean);
+
+
                             for (let i in data.values) {
-                                let row = { Service: data.values[i].service, Mean: data.values[i].mean.toPrecision(2) };
-                                const index = bca.map(e => e._id).indexOf(data.values[i].service);
+                                let row = { Service: data.values[i].service, Impact: data.values[i].mean.toPrecision(2) };
+                                console.log(row);
+                                const index = bca.map(e => e.service).indexOf(data.values[i].service);
+                                console.log(index);
+
                                 let comparator = bca[index].group_mean;
-                                let vsval = (comparator - row.Mean) / comparator;
-                                let vs_peers = function() {
+                                console.log(comparator);
+                                let vsval = (comparator - row.Impact) / comparator;
+                                console.log(vsval);
+                                let vs_peers = function(vsval) {
                                     if (Math.abs(vsval) < 0.2) {
                                         return "Similar";
                                     } else if (Math.abs(vsval) >= 0.2 && Math.abs(vsval) < 0.4) {
@@ -122,15 +130,20 @@ export default {
                                         return "Much Better";
                                     }
                                 };
-                                row.Vs_Peers = vs_peers();
+                                row.Vs_Peers = vs_peers(vsval);
+                                console.log(row.Vs_Peers)
                                 let bca1 = bca[index].data;
+                                console.log(bca1);
                                 const index2 = bca1.map(e => e.subquestion).indexOf(data.type);
+                                console.log(index2);
                                 row.Confidence = bca1[index2].confidence;
-                                nld.push(row);
+                                console.log(row.Confidence);
+                                data1.push(row);
+
                             }
-                            return nld;
-                        };
-                        let data2 = ["Service", "Impact", "Confidence", "Vs Peers"];
+
+
+                        let data2 = ["Service", "Impact", "Confidence", "Vs_Peers"];
 
                         let table = svg
                             .append("svg:foreignObject")
@@ -162,7 +175,7 @@ export default {
                             .data(data1)
                             .enter()
                             .append("tr");
-
+                        console.log(data1);
                         // create a cell in each row for each column
                         rows.selectAll("td")
                             .data(function(data1) {
