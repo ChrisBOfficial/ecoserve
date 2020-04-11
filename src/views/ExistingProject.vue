@@ -2,7 +2,7 @@
     <div>
         <Header />
         <section class="existing-project-container" style="padding: 15vh 0vh 0vh 0vh; min-height:100vh;">
-            <b-container v-show="seen">
+            <b-container v-show="!projectPicked">
                 <b-row>
                     <b-form-select v-model="selected" :select-size="5">
                         <option v-for="project in projects" :value="project" :key="project.name">
@@ -33,6 +33,22 @@
                         v-bind:existing-visualizations="visualizations"
                         v-bind:existing-blocks="existingBlocks"
                     />
+                </b-row>
+
+                <b-row align-h="center" style="margin-bottom: 1rem;">
+                    <b-col class="col-4">
+                        <b-button @click="downloadJSON" style="background-color:DarkSeaGreen;">
+                            {{ downloadText }}
+                        </b-button>
+                    </b-col>
+                    <b-col class="col-4">
+                        <div class="dropbox">
+                            <input class="input-file" type="file" ref="file" accept=".json" @change="uploadJSON" />
+                            <p>
+                                {{ uploadText }}
+                            </p>
+                        </div>
+                    </b-col>
                 </b-row>
 
                 <b-row>
@@ -106,10 +122,12 @@ export default {
             title: "",
             description: "",
             projectPicked: false,
-            seen: true,
+            uploadText: "Drag comparison data or click to browse",
+            downloadText: "",
             selected: {},
             visualizations: [],
             existingBlocks: [],
+            comparisonData: [],
             validateErrors: [],
             previousProjectId: "",
             hookStatus: Boolean
@@ -157,7 +175,6 @@ export default {
                 this.title = this.selected.name;
                 this.description = this.selected.description;
                 this.projectPicked = !this.projectPicked;
-                this.seen = !this.seen;
                 this.loadSurvey(this.selected.surveyId);
                 this.saveProjectBlocks(this.selected.blocks);
 
@@ -167,6 +184,14 @@ export default {
                         this.visualizations.push(block.title + " - " + graph);
                     }
                 }
+
+                this.comparisonData = this.selected.comparisonData;
+                if (this.comparisonData.length > 0) {
+                    this.downloadText = "Download previous data";
+                } else {
+                    this.downloadText = "Download data template";
+                }
+
                 this.previousProjectId = this.selected.projectId;
                 this.hookStatus = this.selected.hooked;
                 this.setSelectedId(this.selected.projectId);
@@ -212,6 +237,7 @@ export default {
                         surveyId: this.selected.surveyId,
                         projectId: this.title + "+" + this.selected.surveyId,
                         blocks: this.projectBlocks,
+                        comparisonData: this.comparisonData,
                         hooked: this.hookStatus
                     }
                 };
@@ -228,6 +254,50 @@ export default {
             };
             this.removeProject(payload);
             this.exitEditing();
+        },
+        downloadJSON() {
+            let exportObj = [];
+            if (this.selected.comparisonData.length > 0) {
+                exportObj = this.selected.comparisonData;
+            } else {
+                const questions = this.selectedSurvey.questions;
+
+                for (let question in this.selectedSurvey.questions) {
+                    let data = [];
+
+                    let subQuestions = questions[question].subQuestions;
+                    let questionName = questions[question].questionName;
+                    for (let key in subQuestions) {
+                        let dataObj = { subname: subQuestions[key].description, max: 0, min: 0 };
+                        data.push(dataObj);
+                    }
+                    let questionObj = { questionName: questionName, data: data };
+                    exportObj.push(questionObj);
+                }
+            }
+
+            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportObj, null, 4));
+            let jsonElement = document.createElement("a");
+
+            jsonElement.setAttribute("href", dataStr);
+            jsonElement.setAttribute("download", "comparison.json");
+            document.body.appendChild(jsonElement);
+            jsonElement.click();
+            jsonElement.remove();
+        },
+        uploadJSON() {
+            const file = this.$refs.file.files[0];
+            this.uploadText = "File: " + file.name;
+
+            const reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = () => {
+                this.comparisonData = JSON.parse(reader.result);
+            };
+            reader.onerror = e => {
+                console.log("Error with uploading comparison data");
+                console.log(e);
+            };
         }
     }
 };

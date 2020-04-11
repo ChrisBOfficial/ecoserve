@@ -201,33 +201,4 @@ export default {
 
 <style scoped>
 @import "../assets/grayscale.css";
-
-.dropbox {
-    outline: 2px dashed grey;
-    outline-offset: -10px;
-    background: darkseagreen;
-    color: white;
-    min-height: 59.2px;
-    cursor: pointer;
-    border-radius: 0.25rem;
-    position: relative;
-    cursor: default;
-}
-
-.input-file {
-    opacity: 0;
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    cursor: default;
-}
-
-.dropbox:hover {
-    opacity: 0.8;
-}
-
-.dropbox p {
-    text-align: center;
-    padding-top: 14.8px;
-}
 </style>
