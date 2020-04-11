@@ -189,7 +189,7 @@ export default {
                             });
                     } else {
                         label.remove();
-                        d3.selectAll(".nutritionTable").remove();
+                        svg.select(".nutritionTable").remove();
                     }
                 })
                 .append("g")
