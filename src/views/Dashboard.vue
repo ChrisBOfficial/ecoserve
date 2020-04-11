@@ -4,9 +4,9 @@
         <div style="min-height:100vh;">
             <b-tabs content-class="mt-2" style="padding: 140px 2rem 0vh 2rem;" pills align="center">
                 <b-tab title="Circular Charts" active>
-                    <CircularChart ref="circularRef" :blockOrdering="blockOrdering" :loading="circularLoading" :bcagg="barchartAggregate"/>
+                    <CircularChart ref="circularRef" :blockOrdering="blockOrdering" :loading="circularLoading" />
                 </b-tab>
-                <b-tab title="Bar Charts">
+                <b-tab title="Bar charts">
                     <b-tabs pills card vertical>
                         <b-tab v-for="question in barchartAggregate" :key="question._id" :title="question.service">
                             <h1 style="margin-left: 5rem;">{{ question.service }}</h1>

@@ -11,7 +11,7 @@ const d3 = Object.assign({}, require("d3"), require("d3-scale"), require("d3-sel
 
 export default {
     name: "CircularChart",
-    props: ["blockOrdering", "loading", "bcagg"],
+    props: ["blockOrdering", "loading"],
     components: {
         Loading
     },
@@ -66,8 +66,7 @@ export default {
                 .range([innerRadius, 10])
                 .domain([0, 10]);
 
-            let bca = this.bcagg;
-            console.log(bca);
+            let bca = this.barchartAggregate;
             //* Add the SVG element
             let svg = d3
                 .select(location)
@@ -108,40 +107,36 @@ export default {
                             .enter("rect");
 
                         let data1 = [];
-                        console.log(bca[0].group_mean);
+                        for (let i in data.values) {
+                            let row = { Service: data.values[i].service, Impact: data.values[i].mean.toPrecision(2) };
+                            const index = bca.map(e => e.service).indexOf(data.values[i].service);
 
+                            let comparator = bca[index].group_mean;
+                            let group_mean = (comparator * data.values.length - row.Impact) / (data.values.length - 1);
 
-                            for (let i in data.values) {
-                                let row = { Service: data.values[i].service, Impact: data.values[i].mean.toPrecision(2) };
-                                console.log(row);
-                                const index = bca.map(e => e.service).indexOf(data.values[i].service);
-                                console.log(index);
-
-                                let comparator = bca[index].group_mean;
-                                console.log(comparator);
-                                let vsval = (comparator - row.Impact) / comparator;
-                                console.log(vsval);
-                                let vs_peers = function(vsval) {
-                                    if (Math.abs(vsval) < 0.2) {
-                                        return "Similar";
-                                    } else if (Math.abs(vsval) >= 0.2 && Math.abs(vsval) < 0.4) {
-                                        return "Better";
-                                    } else {
-                                        return "Much Better";
-                                    }
-                                };
-                                row.Vs_Peers = vs_peers(vsval);
-                                console.log(row.Vs_Peers)
-                                let bca1 = bca[index].data;
-                                console.log(bca1);
-                                const index2 = bca1.map(e => e.subquestion).indexOf(data.type);
-                                console.log(index2);
-                                row.Confidence = bca1[index2].confidence;
-                                console.log(row.Confidence);
-                                data1.push(row);
-
+                            let ratio = Math.abs(group_mean - row.Impact) / group_mean;
+                            let vsval;
+                            if (ratio < 0.2) {
+                                vsval = "Similar";
+                            } else if (ratio >= 0.2 && ratio < 0.4) {
+                                if (row.Impact < group_mean) {
+                                    vsval = "Worse";
+                                } else if (row.Impact > group_mean) {
+                                    vsval = "Better";
+                                }
+                            } else if (ratio >= 0.4) {
+                                if (row.Impact < group_mean) {
+                                    vsval = "Much worse";
+                                } else if (row.Impact > group_mean) {
+                                    vsval = "Much better";
+                                }
                             }
-
+                            row.Vs_Peers = vsval;
+                            let bca1 = bca[index].data;
+                            const index2 = bca1.map(e => e.subquestion).indexOf(data.type);
+                            row.Confidence = bca1[index2].confidence;
+                            data1.push(row);
+                        }
 
                         let data2 = ["Service", "Impact", "Confidence", "Vs_Peers"];
 
@@ -166,7 +161,7 @@ export default {
                             .enter()
                             .append("th")
                             .text(d => {
-                                return d;
+                                return d.replace("_", " ");
                             });
 
                         // create a row for each object in the data
@@ -175,7 +170,6 @@ export default {
                             .data(data1)
                             .enter()
                             .append("tr");
-                        console.log(data1);
                         // create a cell in each row for each column
                         rows.selectAll("td")
                             .data(function(data1) {

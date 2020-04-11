@@ -90,9 +90,7 @@ export default {
                 this.allBlocks = this.existingBlocks;
             }
             const blockSelected = this.blockSelected;
-            //console.log(blockSelected);
             const graphSelected = this.graphSelected;
-            //console.log(graphSelected);
             if (blockSelected === "" || graphSelected === "") {
                 return;
             }
