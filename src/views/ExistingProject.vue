@@ -75,7 +75,7 @@
                     </b-col>
                     <b-col>
                         <router-link
-                            :to="{ name: 'dashboard', query: { id: selected.projectId } }"
+                            :to="{ name: 'dashboard', query: { id: selected.projectId, view: 'live' } }"
                             tag="b-button"
                             style="background-color:DarkSeaGreen;"
                             >Go To Visualization</router-link

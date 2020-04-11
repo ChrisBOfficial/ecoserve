@@ -4,7 +4,7 @@
         <div style="min-height:100vh;">
             <b-tabs content-class="mt-2" style="padding: 140px 2rem 0vh 2rem;" pills align="center">
                 <b-tab title="Circular Charts" active>
-                    <CircularChart ref="circularRef" :blockOrdering="blockOrdering" :loading="circularLoading" />
+                    <CircularChart ref="circularRef" :loading="circularLoading" />
                 </b-tab>
                 <b-tab title="Bar charts">
                     <b-tabs pills card vertical>
@@ -104,7 +104,6 @@ export default {
             socket: {},
             lastUpdate: 0,
             surveyId: String,
-            blockOrdering: {},
             intervalId: Number
         };
     },
@@ -128,10 +127,6 @@ export default {
     mounted() {
         this.surveyId = this.$route.query.id.split("+")[1];
         this.loadProject(this.$route.query.id).then(() => {
-            // Determine service order according to project settings
-            for (let i = 0; i < this.project.blocks.length; i++) {
-                this.blockOrdering[this.project.blocks[i].title] = i;
-            }
             this.loadData();
         });
 
