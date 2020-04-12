@@ -36,7 +36,7 @@ dbClient.connect(err => {
 });
 
 // Add express configurations
-app.use(helmet()); // Enables various HTTP security headers
+app.use(helmet());
 app.use(
     helmet.featurePolicy({
         features: {

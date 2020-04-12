@@ -143,6 +143,13 @@ export default {
                             .enter("rect");
 
                         let columnTitles = ["Service", "Impact", "Confidence", "Vs_Peers"];
+                        let colorMap = {
+                            Similar: "black",
+                            Worse: "darkRed",
+                            Better: "darkGreen",
+                            Much_worse: "red",
+                            Much_better: "lightGreen"
+                        };
                         let rowData = [];
                         for (let i in data.values) {
                             let row = { Service: data.values[i].service, Impact: data.values[i].mean.toPrecision(2) };
@@ -215,13 +222,11 @@ export default {
                             })
                             .enter()
                             .append("td")
-                            .attr("class", d => {
-                                return d[columnTitles];
-                            })
-                            .attr("style", "font-family: 'Lato'")
-                            .attr("style", "padding: 2px;")
                             .text(function(d) {
                                 return d.value;
+                            })
+                            .style("color", function(d) {
+                                return colorMap[d.value.replace(" ", "_")];
                             });
                     } else {
                         label.remove();
