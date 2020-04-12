@@ -2,6 +2,7 @@
     <b-container>
         <b-row>
             <b-col>
+                <h5>Survey blocks</h5>
                 <b-form-select v-model="blockSelected" :select-size="5">
                     <option v-for="block in blocks" v-bind:value="block" v-bind:key="block.id">
                         {{ block.description }}
@@ -10,6 +11,7 @@
                 <br />
             </b-col>
             <b-col>
+                <h5>Visualizations</h5>
                 <b-form-select v-model="graphSelected" :select-size="5">
                     <option v-for="graph in graphs" v-bind:value="graph" v-bind:key="graph">
                         {{ graph }}

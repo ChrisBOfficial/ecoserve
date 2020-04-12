@@ -73,9 +73,13 @@ export default {
 </script>
 
 <style scoped>
+.navbar {
+    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1);
+}
+
 .navbar-toggler {
     margin-top: auto 0;
-    max-width: 11%;
+    max-width: 15%;
 }
 
 @media (max-width: 575px) {
