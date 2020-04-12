@@ -158,10 +158,6 @@ a:hover {
     color: #64a19d !important;
 }
 
-.nav-link img:hover {
-    opacity: 0.5;
-}
-
 #footerCopy:hover {
     cursor: default;
 }
