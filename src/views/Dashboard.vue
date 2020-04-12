@@ -111,11 +111,21 @@ export default {
         ...mapState({
             socketUrl: state => state.responses.url,
             project: state => state.projects.project,
-            barchartAggregate: state =>
-                // Sort categories alphabetically
-                state.responses.barchartAggregate.sort((a, b) =>
+            barchartAggregate: function(state) {
+                // Sort categories alphabetically and remove categories according to project settings
+                let sortedAggregate = state.responses.barchartAggregate.sort((a, b) =>
                     a.service > b.service ? 1 : b.service > a.service ? -1 : 0
-                )
+                );
+                let prunedData = [];
+                for (let service of sortedAggregate) {
+                    for (let block of this.project.blocks) {
+                        if (service.service === block.title && block.visuals.includes("Bar Chart")) {
+                            prunedData.push(service);
+                        }
+                    }
+                }
+                return prunedData;
+            }
         }),
         staticView: function() {
             return !this.circularLoading && this.$route.query.view !== "static";

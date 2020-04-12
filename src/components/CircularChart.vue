@@ -400,7 +400,7 @@ export default {
                 .style("font-family", "Nunito");
         },
         makeCharts() {
-            // Sort aggregate data alphabetically by category, and remove categories according to project settings
+            // Sort aggregate data alphabetically by category and remove categories according to project settings
             const sortedData = this.circleAggregate.sort((a, b) => a.type.localeCompare(b.type));
             // Asymptotically efficient code is for suckers
             let prunedData = [];
