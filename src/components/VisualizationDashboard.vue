@@ -60,7 +60,7 @@ export default {
     data() {
         return {
             allBlocks: [],
-            graphs: ["Bullseyes", "Bar Chart"],
+            graphs: ["Flower diagrams", "Bar Chart"],
             blockSelected: "",
             graphSelected: "",
             visualizations: this.existingVisualizations,

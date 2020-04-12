@@ -408,7 +408,7 @@ export default {
                 let newObj = { _id: dataObj._id, type: dataObj.type, values: [] };
                 for (let serviceObj of dataObj.values) {
                     for (let block of this.project.blocks) {
-                        if (serviceObj.service === block.title && block.visuals.includes("Bullseyes")) {
+                        if (serviceObj.service === block.title && block.visuals.includes("Flower diagrams")) {
                             newObj.values.push(serviceObj);
                         }
                     }

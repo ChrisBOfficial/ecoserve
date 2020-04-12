@@ -3,7 +3,7 @@
         <Header />
         <div style="min-height:100vh;">
             <b-tabs content-class="mt-2" style="padding: 140px 2rem 0vh 2rem;" pills align="center">
-                <b-tab title="Circular Charts" active>
+                <b-tab title="Flower diagrams" active>
                     <CircularChart ref="circularRef" :loading="circularLoading" />
                 </b-tab>
                 <b-tab title="Bar charts">
