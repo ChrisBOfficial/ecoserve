@@ -25,7 +25,7 @@ export default {
     methods: {
         wrap(text, width) {
             text.each(function() {
-                var text = d3.select(this),
+                let text = d3.select(this),
                     words = text
                         .text()
                         .split(/\s+/)
@@ -36,7 +36,7 @@ export default {
                     lineHeight = 1.1, // ems
                     x = text.attr("x"),
                     y = text.attr("y"),
-                    dy = 0, //parseFloat(text.attr("dy")),
+                    dy = 0,
                     tspan = text
                         .text(null)
                         .append("tspan")
@@ -370,7 +370,7 @@ export default {
                 .style("font-weight", 500)
                 .style("font-family", "Nunito")
                 .attr("alignment-baseline", "middle")
-                .call(this.wrap, 85);
+                .call(this.wrap, 80);
 
             //! Used to calculate text width for centering labels, not actually rendered
             let textWidth = 0;

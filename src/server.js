@@ -68,7 +68,7 @@ const server = app.listen(port, () => {
 });
 const io = require("socket.io").listen(server);
 
-// Any routes will be redirected to the vue app, using index.html as homepage
+// Root route will be redirected to index.html for Vue app
 app.get("/", (_, res) => {
     res.sendFile(path.join(__dirname, distDirectory, "/index.html"));
 });
@@ -263,27 +263,21 @@ app.route("/api/surveys/responses/aggregates").get((req, res) => {
     const pipeline = req.query.pipeline;
     const collection = dbClient.db("DB1").collection("Responses");
 
+    let pipelineFunction;
     if (pipeline === "barchart") {
-        collection.aggregate(Pipelines.barchartPipeline(surveyId), function(err, cursor) {
-            if (err) throw new Error(err);
-
-            cursor.toArray(function(err, docs) {
-                if (err) throw new Error(err);
-                res.send(docs);
-            });
-        });
+        pipelineFunction = Pipelines.barchartPipeline(surveyId);
     } else if (pipeline === "circlechart") {
-        collection.aggregate(Pipelines.circlechartPipeline(surveyId), function(err, cursor) {
-            if (err) throw new Error(err);
-
-            cursor.toArray(function(err, docs) {
-                if (err) throw new Error(err);
-                res.send(docs);
-            });
-        });
-    } else if (pipeline === "label") {
-        return;
+        pipelineFunction = Pipelines.circlechartPipeline(surveyId);
     }
+
+    collection.aggregate(pipelineFunction, function(err, cursor) {
+        if (err) throw new Error(err);
+
+        cursor.toArray(function(err, docs) {
+            if (err) throw new Error(err);
+            res.send(docs);
+        });
+    });
 });
 
 //* Endpoint for handling Qualtrics events

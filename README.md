@@ -8,10 +8,10 @@
 
 **Authors:**
 
--   Burbach, Christopher (Development Manager, Squad Lead)
--   Saltzman, Alexis (Product Manager)
--   Ralph, Stephen
--   Doan, Vy
+-   Christopher Burbach (Development Manager, Squad Lead)
+-   Alexis Saltzman (Product Manager)
+-   Stephen Ralph
+-   Vy Doan
 
 **Tribe Lead:** Shruti Daggumati
 

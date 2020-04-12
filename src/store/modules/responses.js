@@ -64,8 +64,6 @@ export default {
                             commit("setBarchartAggregate", response.data);
                         } else if (data.pipeline === "circlechart") {
                             commit("setCircleAggregate", response.data);
-                        } else if (data.pipeline === "label") {
-                            commit("setLabelAggregate", response.data);
                         }
                         resolve();
                     })
@@ -91,9 +89,6 @@ export default {
         },
         setCircleAggregate(state, data) {
             state.circleAggregate = data;
-        },
-        setLabelAggregate(state, data) {
-            state.labelAggregate = data;
         }
     }
 };

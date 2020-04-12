@@ -1,11 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import BootstrapVue from "bootstrap-vue";
 import { Auth } from "aws-amplify";
 import Credentials from "../api/amplifyConf";
 
 Vue.use(VueRouter);
-Vue.use(BootstrapVue);
 
 const routes = [
     {
