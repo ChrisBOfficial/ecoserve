@@ -20,6 +20,13 @@
                         <b-nav-item to="/about" style="margin: auto 2vh;">
                             ABOUT
                         </b-nav-item>
+                        <b-nav-item-dropdown text="SUPPORT" style="margin: auto 2vh;">
+                            <b-dropdown-item href="https://www.guidetoes.eu/step3.html" target="_blank"
+                                >About ecosystem service assessments</b-dropdown-item
+                            >
+                            <b-dropdown-item to="/guidelines">User guide</b-dropdown-item>
+                            <b-dropdown-item>Project examples (coming soon)</b-dropdown-item>
+                        </b-nav-item-dropdown>
                         <b-nav-item v-if="authorized" to="/projects" style="margin: auto 2vh;">
                             PROJECTS
                         </b-nav-item>
@@ -89,11 +96,21 @@ export default {
     }
 }
 
-li.nav-item > a {
-    color: black !important;
+::v-deep .navbar-light .navbar-nav .nav-link {
+    color: black;
 }
 
-li.nav-item :hover {
+::v-deep .dropdown-item:active {
+    background-color: darkseagreen;
+}
+
+::v-deep .nav-item.dropdown.show > a > span,
+::v-deep li.nav-item:hover > a > span,
+li.nav-item:hover > a {
     opacity: 0.45;
+}
+
+::v-deep .dropdown-menu:hover {
+    opacity: 1;
 }
 </style>
