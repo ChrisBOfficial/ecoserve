@@ -1,6 +1,6 @@
 <template>
     <div id="nav">
-        <b-navbar toggleable="sm" type="light" fixed="top" style="background-color: white;">
+        <b-navbar toggleable="md" type="light" fixed="top" style="background-color: white;">
             <div class="container">
                 <b-navbar-brand to="/">
                     <img
@@ -86,10 +86,10 @@ export default {
 
 .navbar-toggler {
     margin-top: auto 0;
-    max-width: 15%;
+    max-width: 17%;
 }
 
-@media (max-width: 575px) {
+@media (max-width: 767px) {
     .navbar-nav {
         margin-top: 5vh;
         border: solid black;

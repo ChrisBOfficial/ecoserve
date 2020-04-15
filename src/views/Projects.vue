@@ -30,7 +30,7 @@
                     </b-col>
 
                     <b-col class="col-6 text-center align-items-center">
-                        <img src="@/assets/jon.jpg" alt="Project image" class="thumb" />
+                        <img src="@/assets/projects.png" alt="Project image" class="thumb" />
                     </b-col>
                 </b-row>
             </b-container>
