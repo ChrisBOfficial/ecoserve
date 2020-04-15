@@ -3,7 +3,7 @@
         <Header />
         <section class="masthead-2">
             <b-container style="padding: 25vh 0 0 0;">
-                <b-row class="h-100 align-items-center">
+                <b-row class="h-100">
                     <b-col class="col-6 text-center align-items-center" id="ProjectList">
                         <h3>PROJECTS</h3>
                         <b-col>
@@ -30,7 +30,7 @@
                     </b-col>
 
                     <b-col class="col-6 text-center align-items-center">
-                        <img src="@/assets/projects.png" alt="Project image" class="thumb" />
+                        <img src="@/assets/projects.png" alt="Your projects" class="thumb" />
                     </b-col>
                 </b-row>
             </b-container>
