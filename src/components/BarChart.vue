@@ -78,18 +78,17 @@ export default {
                     .data(data)
                     .enter()
                     .append("rect")
-                    // We add attr here
                     .attr("fill", d => {
                         if (d.confidence_num > 2) {
-                            return "#333BFF";
+                            return "#bd271a";
                         } else if (d.confidence_num <= 2 && d.confidence_num > 0) {
-                            return "#FFC300";
+                            return "#ec5428";
                         } else if (d.confidence_num <= 0 && d.confidence_num > -2) {
-                            return "#FF5733";
+                            return "#ede592";
                         } else if (d.confidence_num <= -2) {
-                            return "#C70039";
+                            return "#96cdfa";
                         } else {
-                            return "green";
+                            return "#3574c7";
                         }
                     })
                     .attr("x", d => x(d.subquestion))

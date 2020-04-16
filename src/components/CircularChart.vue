@@ -230,7 +230,7 @@ export default {
                         .style("left", currentEvent.pageX + "px")
                         .style("top", currentEvent.pageY - 28 + "px");
                 })
-                .on("mouseout", function(d) {
+                .on("mouseout", function() {
                     tooltipDiv.style("opacity", 0);
                 });
 
