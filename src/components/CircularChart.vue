@@ -42,9 +42,9 @@ export default {
             });
 
             // Set dimensions
-            let margin = { top: 45, right: 45, bottom: 100, left: 45 },
-                width = 360,
-                height = 360,
+            let margin = { top: 10, right: 10, bottom: 30, left: 10 },
+                width = 310,
+                height = 310,
                 innerRadius = 76,
                 outerRadius = 140;
             let numTicks = 11;
@@ -149,7 +149,8 @@ export default {
                             .append("xhtml:body")
                             .append("table")
                             .attr("width", "100%")
-                            .attr("class", "table-bordered");
+                            .attr("class", "table-bordered")
+                            .style("margin-top", (450 - (rowData.length + 1) * 28) / 2 + "px");
                         let thead = table.append("thead");
                         let tbody = table.append("tbody");
 
@@ -185,9 +186,11 @@ export default {
                             .style("color", function(d) {
                                 return colorMap[d.value.replace(" ", "_")];
                             });
+                        svg.attr("height", 505).attr("width", 450);
                     } else {
                         label.remove();
                         svg.select(".nutritionTable").remove();
+                        svg.attr("height", 350).attr("width", 330);
                     }
                 })
                 .append("g")
@@ -264,7 +267,17 @@ export default {
                         })
                         .padAngle(0.01)
                         .padRadius(innerRadius)
-                );
+                )
+                .on("mouseover", function(d) {
+                    tooltipDiv
+                        .html(d.service)
+                        .style("opacity", 0.9)
+                        .style("left", currentEvent.pageX + "px")
+                        .style("top", currentEvent.pageY - 28 + "px");
+                })
+                .on("mouseout", function() {
+                    tooltipDiv.style("opacity", 0);
+                });
 
             svg.selectAll(".circle-tick").remove(); // Makes ticks visible within bars
             //* Add tick marks
@@ -306,7 +319,7 @@ export default {
             //* Add the chart label
             svg.append("text")
                 .text(category)
-                .attr("transform", "translate(" + textWidth / -2 + "," + (height / 2 + 80) + ")")
+                .attr("transform", "translate(" + textWidth / -2 + "," + height / 2 + ")")
                 .attr("class", "circularChartName")
                 .style("font-size", "0.9rem")
                 .style("font-weight", 800)
