@@ -15,7 +15,7 @@
                                 <BarChart
                                     :ref="question._id"
                                     :aggregate-data="question"
-                                    :bardomain="getBarDomain(barchartAggregate)"
+                                    :bardomain="getBarDomain(question)"
                                 />
                             </b-container>
                         </b-tab>
@@ -33,7 +33,7 @@
                         <BarChart
                             :ref="question._id"
                             :aggregate-data="question"
-                            :bardomain="getBarDomain(barchartAggregate)"
+                            :bardomain="getBarDomain(question)"
                         />
                     </div>
                 </b-tab>
@@ -281,22 +281,16 @@ export default {
             const content = await this.zipFile.generateAsync({ type: "blob" });
             FileSaver.saveAs(content, "Charts.zip");
         },
-        getBarDomain(data) {
-            let max = 0;
-            let projectData = this.project.comparisonData;
+        getBarDomain(question) {
+            let data = question.c;
+            let id = question._id;
+            let m = 0;
             for (let i = 0; i < data.length; i++) {
-                if (Math.abs(data[i].group_mean) > max) {
-                    max = Math.abs(data[i].group_mean);
+                if (data[i].QID == id) {
+                    m = data[i].re;
                 }
             }
-            for (let j = 0; j < projectData.length; j++) {
-                for (let k = 0; k < projectData[j].data.length; k++) {
-                    if (Math.abs(projectData[j].data[k].max) > max) {
-                        max = Math.abs(projectData[j].data[k].max);
-                    }
-                }
-            }
-            return Math.ceil(max);
+            return m;
         },
         showToast() {
             this.$bvToast.toast("Bad data in survey response, will manually re-fetch in 30 seconds", {
