@@ -111,6 +111,17 @@ export default {
                         for (let i in data.values) {
                             let row = { Service: data.values[i].service, Impact: data.values[i].mean.toPrecision(2) };
                             const index = bca.map(e => e.service).indexOf(data.values[i].service);
+                            let questionId = bca[index]._id;
+                            console.log(questionId);
+                            let choices = bca[index].c;
+                            console.log(choices);
+                            let choice = [];
+                            for (let j = 0; j < choices.length; i++) {
+                                if (choices[j].QID == questionId) {
+                                    choice = choices[j].impactText;
+                                    console.log(choice);
+                                }
+                            }
 
                             let comparator = bca[index].group_mean;
                             let group_mean = (comparator * data.values.length - row.Impact) / (data.values.length - 1);
@@ -264,7 +275,16 @@ export default {
                         })
                         .padAngle(0.01)
                         .padRadius(innerRadius)
-                );
+                ).on("mouseover", function(d) {
+                tooltipDiv
+                    .html(d.service)
+                    .style("opacity", 0.9)
+                    .style("left", currentEvent.pageX + "px")
+                    .style("top", currentEvent.pageY - 28 + "px");
+            })
+                .on("mouseout", function() {
+                    tooltipDiv.style("opacity", 0);
+                });
 
             svg.selectAll(".circle-tick").remove(); // Makes ticks visible within bars
             //* Add tick marks
