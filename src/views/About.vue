@@ -8,8 +8,8 @@
                         <div class="col-lg-5 my-auto">
                             <div class="header-content mx-auto">
                                 <h1 class="mb-5">
-                                    ecoserve lets you easily visualize your Qualtrics surveys, giving you a way to
-                                    communicate your information
+                                    IESAT lets you create ecosystem service assessments in real-time using stakeholder
+                                    knowledge
                                 </h1>
                                 <a :href="loginLink" class="btn btn-outline btn-xl">Start Now</a>
                             </div>
@@ -342,9 +342,5 @@ section.cta .overlay {
 
 .device-mockup.hero > .device {
     background-image: url("../assets/aboutHero.png");
-}
-
-.features .device-mockup.hero > .device {
-    background-image: url("../assets/barchartHero.png");
 }
 </style>
