@@ -7,7 +7,10 @@
 <script>
 import Loading from "@/components/Loading.vue";
 import { mapState } from "vuex";
+import { event as currentEvent } from "d3-selection";
 const d3 = Object.assign({}, require("d3"), require("d3-scale"), require("d3-selection"));
+
+let tooltipDiv;
 
 export default {
     name: "CircularChart",
@@ -22,44 +25,14 @@ export default {
             project: state => state.projects.project
         })
     },
+    mounted() {
+        tooltipDiv = d3
+            .select(this.$el)
+            .append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+    },
     methods: {
-        wrap(text, width) {
-            text.each(function() {
-                let text = d3.select(this),
-                    words = text
-                        .text()
-                        .split(/\s+/)
-                        .reverse(),
-                    word,
-                    line = [],
-                    lineNumber = 0,
-                    lineHeight = 1.1, // ems
-                    x = text.attr("x"),
-                    y = text.attr("y"),
-                    dy = 0,
-                    tspan = text
-                        .text(null)
-                        .append("tspan")
-                        .attr("x", x)
-                        .attr("y", y)
-                        .attr("dy", dy + "em");
-                while ((word = words.pop())) {
-                    line.push(word);
-                    tspan.text(line.join(" "));
-                    if (tspan.node().getComputedTextLength() > width) {
-                        line.pop();
-                        tspan.text(line.join(" "));
-                        line = [word];
-                        tspan = text
-                            .append("tspan")
-                            .attr("x", -x)
-                            .attr("y", -y)
-                            .attr("dy", ++lineNumber * lineHeight + dy + "em")
-                            .text(word);
-                    }
-                }
-            });
-        },
         circleChart(data, location) {
             let category = data.type;
             let results = data.values;
@@ -111,24 +84,8 @@ export default {
                 .attr("class", "circleChart")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
-                // Gray highlight to hint clickability
-                .on("mouseover", function() {
-                    let svg = d3.select(this);
-                    if (svg.select(".selectedHighlight").empty()) {
-                        svg.append("rect")
-                            .attr("class", "selectedHighlight")
-                            .attr("width", "100%")
-                            .attr("height", "100%")
-                            .attr("fill", "gray")
-                            .attr("opacity", 0.04);
-                    }
-                })
-                .on("mouseleave", function() {
-                    d3.selectAll(".selectedHighlight").remove();
-                })
                 //* Add and remove the nutrition label
                 .on("click", function() {
-                    d3.selectAll(".selectedHighlight").remove();
                     let svg = d3.select(this);
                     let label = svg.select(".nutritionLabel");
 
@@ -142,7 +99,7 @@ export default {
                             .data(data)
                             .enter("rect");
 
-                        let columnTitles = ["Service", "Impact", "Confidence", "Vs_Peers"];
+                        let columnTitles = ["Service", "Impact", "Confidence", "Comparative_Impact"];
                         let colorMap = {
                             Similar: "black",
                             Worse: "darkRed",
@@ -175,7 +132,7 @@ export default {
                                     vsval = "Much better";
                                 }
                             }
-                            row.Vs_Peers = vsval;
+                            row.Comparative_Impact = vsval;
 
                             let bca1 = bca[index].data;
                             const index2 = bca1.map(e => e.subquestion).indexOf(data.type);
@@ -232,12 +189,6 @@ export default {
                         label.remove();
                         svg.select(".nutritionTable").remove();
                     }
-                    svg.append("rect")
-                        .attr("class", "selectedHighlight")
-                        .attr("width", "100%")
-                        .attr("height", "100%")
-                        .attr("fill", "gray")
-                        .attr("opacity", 0.04);
                 })
                 .append("g")
                 .attr("class", "circleContainer")
@@ -251,7 +202,6 @@ export default {
                 .enter()
                 .append("path")
                 .attr("fill", "#397429")
-                .attr("class", "yo")
                 .attr(
                     "d",
                     d3
@@ -272,7 +222,17 @@ export default {
                         })
                         .padAngle(0.01)
                         .padRadius(innerRadius)
-                );
+                )
+                .on("mouseover", function(d) {
+                    tooltipDiv
+                        .html(d.service)
+                        .style("opacity", 0.9)
+                        .style("left", currentEvent.pageX + "px")
+                        .style("top", currentEvent.pageY - 28 + "px");
+                })
+                .on("mouseout", function(d) {
+                    tooltipDiv.style("opacity", 0);
+                });
 
             //* Add the negative bars
             svg.append("g")
@@ -320,62 +280,15 @@ export default {
                 .append("svg:circle")
                 .attr("r", String)
                 .attr("class", "circle")
-                .style("stroke", "#CCC")
+                .style("stroke", "white")
                 .style("opacity", 0.65)
                 .style("fill", "none");
             circleAxes
                 .append("svg:circle")
                 .attr("r", (outerRadius / numTicks) * 1)
                 .attr("class", "circle")
-                .style("stroke", "#CCC")
                 .style("opacity", 0.65)
-                .style("fill", "grey");
-
-            //* Add the radial labels
-            svg.append("g")
-                .attr("class", "labels")
-                .selectAll("g")
-                .data(results)
-                .enter()
-                .append("g")
-                .attr("text-anchor", function(d) {
-                    return (x(d.service) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI ? "end" : "start";
-                })
-                .attr("transform", function(d) {
-                    if (d.mean < 0) {
-                        return (
-                            "rotate(" +
-                            (((x(d.service) + x.bandwidth() / 2) * 180) / Math.PI - 90) +
-                            ")" +
-                            "translate(" +
-                            (y(0) + 10) +
-                            ",0)"
-                        );
-                    } else {
-                        return (
-                            "rotate(" +
-                            (((x(d.service) + x.bandwidth() / 2) * 180) / Math.PI - 90) +
-                            ")" +
-                            "translate(" +
-                            (y(d.mean) + 10) +
-                            ",0)"
-                        );
-                    }
-                })
-                .append("text")
-                .text(function(d) {
-                    return d.service;
-                })
-                .attr("transform", function(d) {
-                    return (x(d.service) + x.bandwidth() / 2 + Math.PI) % (2 * Math.PI) < Math.PI
-                        ? "rotate(180)"
-                        : "rotate(0)";
-                })
-                .style("font-size", "0.85rem")
-                .style("font-weight", 500)
-                .style("font-family", "Nunito")
-                .attr("alignment-baseline", "middle")
-                .call(this.wrap, 80);
+                .style("fill", "white");
 
             //! Used to calculate text width for centering labels, not actually rendered
             let textWidth = 0;
@@ -429,3 +342,15 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+::v-deep div.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 2px;
+    font: 18px;
+    font-family: Nunito;
+    background: lightgray;
+    pointer-events: none;
+}
+</style>

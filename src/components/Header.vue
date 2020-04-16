@@ -1,6 +1,6 @@
 <template>
     <div id="nav">
-        <b-navbar toggleable="md" type="light" fixed="top" style="background-color: white;">
+        <b-navbar toggleable="lg" type="light" fixed="top" style="background-color: white;">
             <div class="container">
                 <b-navbar-brand to="/">
                     <img
@@ -89,7 +89,7 @@ export default {
     max-width: 17%;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991px) {
     .navbar-nav {
         margin-top: 5vh;
         border: solid black;

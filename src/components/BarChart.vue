@@ -138,45 +138,55 @@ export default {
                 .attr("transform", "translate(80, 20)")
                 .call(addRectsWithName, this);
 
-            // LEGEND
-            let keys = ["None", "Low", "Moderate", "High", "Extreme"]
-            let color = d3.scaleOrdinal()
+            //* Add legend
+            let keys = ["Extreme", "High", "Moderate", "Low", "None"];
+            let color = d3
+                .scaleOrdinal()
                 .domain(keys)
-                .range(["#333BFF", "#FFC300", "#FF5733", "#C70039", "green"]);
+                .range(["#bd271a", "#ec5428", "#ede592", "#96cdfa", "#3574c7"]);
             let legend = "Confidence";
-            let size = 20
+            let size = 20;
             svg.selectAll("mytitle")
                 .data(legend)
                 .enter()
                 .append("text")
-                .attr("x", width +120)
+                .attr("x", width + 120)
                 .attr("y", 75)
                 .style("fill", "black")
                 .text(legend)
                 .attr("text-anchor", "left")
-                .style("alignment-baseline", "middle")
-            // Add one dot in the legend for each name.
+                .style("alignment-baseline", "middle");
+
+            //* Add legend dots
             svg.selectAll("mydots")
                 .data(keys)
                 .enter()
                 .append("rect")
-                .attr("x", width +120)
-                .attr("y", function(d,i){ return 100 + i*(size+5)}) // 100 first dot, 25 distance
+                .attr("x", width + 120)
+                .attr("y", function(d, i) {
+                    return 100 + i * (size + 5);
+                }) // 100 first dot, 25 distance
                 .attr("width", size)
                 .attr("height", size)
-                .style("fill", function(d){ return color(d)})
-            // Add one label in the legend for each name.
+                .style("fill", function(d) {
+                    return color(d);
+                });
+
+            //* Add legend labels
             svg.selectAll("mylabels")
                 .data(keys)
                 .enter()
                 .append("text")
-                .attr("x", width +120+ size*1.2)
-                .attr("y", function(d,i){ return 100 + i*(size+5) + (size/2)}) // 100 first dot, 25 distance
-                .style("fill", function(d){ return color(d)})
-                .text(function(d){ return d})
+                .attr("x", width + 120 + size * 1.6)
+                .attr("y", function(d, i) {
+                    return 106 + i * (size + 5) + size / 2;
+                }) // 100 first dot, 25 distance
+                .style("fill", "black")
+                .text(function(d) {
+                    return d;
+                })
                 .attr("text-anchor", "left")
-                .style("alignment-baseline", "middle")
-
+                .style("alignment-baseline", "middle");
         }
     }
 };
