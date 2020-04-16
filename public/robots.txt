@@ -17,6 +17,7 @@ User-agent: PiplBot
 Disallow: /
 
 User-Agent: *
+Disallow: /etc/
 Disallow: /api/
 Disallow: /security
 Disallow: /projects

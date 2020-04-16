@@ -80,15 +80,15 @@ export default {
                     .append("rect")
                     .attr("fill", d => {
                         if (d.confidence_num > 2) {
-                            return "#bd271a";
+                            return "#3574c7";
                         } else if (d.confidence_num <= 2 && d.confidence_num > 0) {
-                            return "#ec5428";
+                            return "#96cdfa";
                         } else if (d.confidence_num <= 0 && d.confidence_num > -2) {
                             return "#ede592";
                         } else if (d.confidence_num <= -2) {
-                            return "#96cdfa";
+                            return "#ec5428";
                         } else {
-                            return "#3574c7";
+                            return "#bd271a";
                         }
                     })
                     .attr("x", d => x(d.subquestion))
@@ -142,7 +142,7 @@ export default {
             let color = d3
                 .scaleOrdinal()
                 .domain(keys)
-                .range(["#bd271a", "#ec5428", "#ede592", "#96cdfa", "#3574c7"]);
+                .range(["#3574c7", "#96cdfa", "#ede592", "#ec5428", "#bd271a"]);
             let legend = "Confidence";
             let size = 20;
             svg.selectAll("mytitle")

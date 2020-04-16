@@ -1,104 +1,119 @@
 <template>
     <div>
         <Header />
-        <body>
-            <header class="masthead about">
-                <div class="container h-100">
-                    <div class="row h-100">
-                        <div class="col-lg-5 my-auto">
-                            <div class="header-content mx-auto">
-                                <h1 class="mb-5">
-                                    IESAT lets you create ecosystem service assessments in real-time using stakeholder
-                                    knowledge
-                                </h1>
-                                <a :href="loginLink" class="btn btn-outline btn-xl">Start Now</a>
-                            </div>
-                        </div>
-                        <div class="col-lg-7 my-auto">
-                            <div class="device-container">
-                                <div class="device-mockup hero">
-                                    <div class="device" />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="container-fluid" style="margin-top: 20vh;">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h2>What is IESAT?</h2>
+                    <br />
+                    <p>
+                        The Integrative Ecosystem Service Analysis Tool (IESAT) is an interactive web application that
+                        uses stakeholder knowledge to create ecosystem service assessments. This tool was developed for
+                        decision makers, managers, scientists, and other practitioners to better integrate traditional,
+                        local, and expert knowledge sources into the environmental decision making process
+                    </p>
                 </div>
-            </header>
+                <div class="col-sm-4">
+                    <i class="las la-chalkboard-teacher text-primary"></i>
+                </div>
+            </div>
+        </div>
 
-            <section class="features" id="features">
-                <div class="container">
-                    <div class="section-heading text-center">
-                        <h2>Clean Visualizations, Easy Creation</h2>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-4 my-auto">
-                            <div class="device-container">
-                                <div class="device-mockup hero">
-                                    <div class="device" />
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-8 my-auto">
-                            <div class="container-fluid">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="feature-item">
-                                            <i class="icon-layers text-primary"></i>
-                                            <h3>Built on Qualtrics</h3>
-                                            <p class="text-muted">
-                                                Use what you're familiar with and build the surveys you want with
-                                                Qualtrics
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="feature-item">
-                                            <i class="icon-book-open text-primary"></i>
-                                            <h3>Easy to Start</h3>
-                                            <p class="text-muted">
-                                                Our survey creation guidelines make creating compatible surveys easy.
-                                                Click <a href="/guidelines">here</a> for more
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="feature-item">
-                                            <i class="icon-present text-primary"></i>
-                                            <h3>Free to Use</h3>
-                                            <p class="text-muted">
-                                                ecoserve is 100% free, you just need a Qualtrics account
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="feature-item">
-                                            <i class="icon-lock text-primary"></i>
-                                            <h3>Secure</h3>
-                                            <p class="text-muted">
-                                                Your data is secure with ecoserve. Click
-                                                <a href="/security">here</a> to learn more
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        <div class="container-fluid bg-grey">
+            <div class="row">
+                <div class="col-sm-4">
+                    <i class="las la-laptop-code text-primary"></i>
                 </div>
-            </section>
+                <div class="col-sm-8">
+                    <h2>How can it be used?</h2>
+                    <br />
+                    <p>
+                        The IESAT lets you pick the ecosystem services, assessment style, and visualizations. There are
+                        two primary ways to visualize the data: in bar charts and flower diagrams (traditional ecosystem
+                        service assessment). How the IESAT is used depends on the users needs and creativity. Some
+                        example include:
+                    </p>
+                    <ul>
+                        <li>
+                            <strong>Integration of knowledge sources: </strong>Compare stakeholder assessments with the
+                            state of the science or other stakeholder assessments to identify how these knowledge
+                            sources complement each other.
+                        </li>
+                        <li>
+                            <strong>Place based assessments: </strong>Compare ecosystem service provisioning among
+                            properties, landscapes, countries, and continents
+                        </li>
+                        <li>
+                            <strong>Hazard assessment: </strong>Compare risks to ecosystem services posed by multiple
+                            factors (e.g., biological invasions, regime shifts, global change) to help prioritize
+                            resources
+                        </li>
+                        <li>
+                            <strong>Tradeoffs and synergies: </strong>Identify benefits and consequences to navigate the
+                            decision making process
+                        </li>
+                        <li>
+                            <strong>Learning opportunities: </strong>Identify untapped knowledge, known-unknowns, and
+                            unknown-unknowns to help prioritize research needs and stakeholder engagement
+                        </li>
+                        <li>
+                            <strong>Learning outcomes: </strong>Assess stakeholder learning with before and after
+                            assessments by allowing participants to retake the survey
+                        </li>
+                        <li>
+                            <strong>Policy and management: </strong>Evaluate how policy and management decisions impact
+                            ecosystem services
+                        </li>
+                        <li><strong>Stakeholder values: </strong>Assess how stakeholders value ecosystem services</li>
+                        <li><strong>Alternative futures: </strong>Explore ecosystem services among future scenarios</li>
+                    </ul>
+                    <p>
+                        To learn how to create an account, connect to a qualtrics account, and start creating projects
+                        see our user guide <router-link to="/guidelines">here</router-link>
+                    </p>
+                    <br />
+                    <h2>How does it work?</h2>
+                    <br />
+                    <p>
+                        The IESAT works alongside Qualtrics survey software. You design the survey following our
+                        <router-link to="/guidelines">user guidelines</router-link> and IESAT builds user selected
+                        visualizations in real-time as surveys are completed
+                    </p>
+                </div>
+            </div>
+        </div>
 
-            <section class="cta">
-                <div class="cta-content">
-                    <div class="container">
-                        <h2>Stop waiting.<br />Start building.</h2>
-                        <a href="/guidelines" class="btn btn-outline btn-xl">See our guidelines</a>
-                    </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h2>Who developed it?</h2>
+                    <br />
+                    <p>
+                        The IESAT was created in collaboration between the Center for Resilience in Working Agricultural
+                        Landscapes and the College of Engineering at the University of Nebraska, Lincoln. Funding for
+                        this project was provided by Nebraska Game and Parks Commission W-125-R-1. The application was
+                        developed by:
+                    </p>
+                    <ul>
+                        <li>
+                            Chris Burbach
+                        </li>
+                        <li>
+                            Alexis Saltzman
+                        </li>
+                        <li>
+                            Vy Doan
+                        </li>
+                        <li>
+                            Stephen Ralph
+                        </li>
+                    </ul>
                 </div>
-                <div class="overlay"></div>
-            </section>
-        </body>
+                <div class="col-sm-4">
+                    <i class="las la-users text-primary"></i>
+                </div>
+            </div>
+        </div>
         <Footer />
     </div>
 </template>
@@ -106,18 +121,12 @@
 <script>
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
-import Credentials from "../api/amplifyConf";
 
 export default {
     name: "about",
     components: {
         Header,
         Footer
-    },
-    data() {
-        return {
-            loginLink: Credentials.COGNITO_TOKEN_URL
-        };
     },
     created() {
         window.scrollTo(0, 0);
@@ -127,220 +136,29 @@ export default {
 
 <style scoped>
 @import "../assets/grayscale.css";
-@import "https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css";
+@import "https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css";
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-weight: 200;
-    letter-spacing: 1px;
+i.las.text-primary {
+    font-size: 15rem;
+    color: darkseagreen !important;
 }
 
-p {
-    font-size: 18px;
-    line-height: 1.5;
-    margin-bottom: 20px;
+.bg-grey {
+    background-color: #f6f6f6;
 }
 
-section {
-    padding: 100px 0;
+.container-fluid {
+    padding: 60px 50px;
 }
 
-section h2 {
-    font-size: 50px;
+.logo {
+    font-size: 200px;
 }
 
-header.masthead.about {
-    position: relative;
-    width: 100%;
-    padding-top: 150px;
-    padding-bottom: 100px;
-    color: white;
-    background: url("../assets/bg-pattern.png"), linear-gradient(to left, #364e32, #98ba93);
-}
-
-header.masthead .header-content {
-    max-width: 500px;
-    margin-bottom: 100px;
-    text-align: center;
-}
-
-header.masthead .header-content h1 {
-    font-size: 30px;
-    letter-spacing: 1px;
-}
-
-header.masthead .device-container {
-    max-width: 325px;
-    margin-right: auto;
-    margin-left: auto;
-}
-
-@media (min-width: 992px) {
-    header.masthead {
-        height: 100vh;
-        min-height: 775px;
-        padding-top: 0;
-        padding-bottom: 0;
+@media screen and (max-width: 768px) {
+    .col-sm-4 {
+        text-align: center;
+        margin: 25px 0;
     }
-    header.masthead .header-content {
-        margin-bottom: 0;
-        text-align: left;
-    }
-    header.masthead .header-content h1 {
-        font-size: 30px;
-    }
-    header.masthead .device-container {
-        max-width: 325px;
-    }
-}
-
-section.features .section-heading {
-    margin-bottom: 100px;
-}
-
-section.features .section-heading h2 {
-    margin-top: 0;
-}
-
-section.features .section-heading p {
-    margin-bottom: 0;
-}
-
-section.features .device-container,
-section.features .feature-item {
-    max-width: 325px;
-    margin: 0 auto;
-}
-
-section.features .device-container {
-    margin-bottom: 100px;
-}
-
-@media (min-width: 992px) {
-    section.features .device-container {
-        margin-bottom: 0;
-    }
-}
-
-section.features .feature-item {
-    padding-top: 50px;
-    padding-bottom: 50px;
-    text-align: center;
-}
-
-section.features .feature-item h3 {
-    font-size: 30px;
-}
-
-section.features .feature-item i {
-    font-size: 80px;
-    display: block;
-    margin-bottom: 15px;
-    background: darkseagreen;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-section.cta {
-    position: relative;
-    padding: 250px 0;
-    background-image: url("../assets/austin.jpg");
-    background-position: center;
-    background-size: cover;
-}
-
-section.cta .cta-content {
-    position: relative;
-    z-index: 1;
-}
-
-section.cta .cta-content h2 {
-    font-size: 50px;
-    max-width: 450px;
-    margin-top: 0;
-    margin-bottom: 25px;
-    color: white;
-}
-
-@media (min-width: 768px) {
-    section.cta .cta-content h2 {
-        font-size: 80px;
-    }
-}
-
-section.cta .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.btn-outline {
-    color: white;
-    border: 1px solid;
-    border-color: white;
-}
-
-.btn-outline:hover,
-.btn-outline:focus,
-.btn-outline:active,
-.btn-outline.active {
-    color: white;
-    border-color: darkseagreen;
-    background-color: darkseagreen;
-}
-
-.btn {
-    border-radius: 300px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-.btn-xl {
-    font-size: 11px;
-    padding: 15px 45px;
-}
-
-.device-mockup {
-    position: relative;
-    width: 100%;
-}
-
-.device-mockup > .device {
-    position: absolute;
-    top: -4.5rem;
-    bottom: 0;
-    left: -12rem;
-    right: 0;
-    width: 250%;
-    height: 180%;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-}
-
-.features .device-mockup > .device {
-    position: absolute;
-    top: -5.5rem;
-    bottom: 0;
-    left: -12rem;
-    right: 0;
-    width: 170%;
-    height: 217%;
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-}
-
-.device-mockup.hero {
-    padding-bottom: 57.5%;
-}
-
-.device-mockup.hero > .device {
-    background-image: url("../assets/aboutHero.png");
 }
 </style>
