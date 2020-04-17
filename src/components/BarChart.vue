@@ -23,8 +23,15 @@ export default {
     },
     methods: {
         makeChart() {
+            let data = this.aggregateData.data.sort((a, b) =>
+                a.subquestion > b.subquestion ? 1 : b.subquestion > a.subquestion ? -1 : 0
+            );
             let margin = { top: 20, right: 20, bottom: 50, left: 70 };
             let width = 650 - margin.left - margin.right;
+            let expansion = this.aggregateData.data.length;
+            if (expansion > 10){
+                width = width + (expansion - 10)*20;
+            }
             let height = 325 - margin.top - margin.bottom;
             let svg = d3
                 .select(this.$el)
@@ -32,10 +39,6 @@ export default {
                 .attr("class", "barChart")
                 .attr("height", 400)
                 .attr("width", 800);
-
-            let data = this.aggregateData.data.sort((a, b) =>
-                a.subquestion > b.subquestion ? 1 : b.subquestion > a.subquestion ? -1 : 0
-            );
 
             let x = d3
                 .scaleBand()
