@@ -364,7 +364,6 @@ export default {
                 prunedData.push(newObj);
             }
 
-            d3.selectAll(".circleChart").remove();
             let grid = d3.select("body");
             let chars = grid.selectAll("div").data(prunedData);
             chars.style(
