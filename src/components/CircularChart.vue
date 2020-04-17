@@ -228,7 +228,9 @@ export default {
                         .innerRadius(innerRadius)
                         .outerRadius(function(d) {
                             if (d.mean > 0) {
-                                return y(d.mean);
+                                let scaler = bca[0].c[1].re;
+                                let adjustedMean = d.mean/scaler*10;
+                                return y(adjustedMean);
                             } else {
                                 return y(0);
                             }
@@ -270,7 +272,9 @@ export default {
                         })
                         .outerRadius(function(d) {
                             if (d.mean < 0) {
-                                return ybis(d.mean * -1);
+                                let scaler = bca[0].c[1].re;
+                                let adjustedMean = d.mean/scaler*10*-1;
+                                return ybis(adjustedMean);
                             } else {
                                 return ybis(0);
                             }
