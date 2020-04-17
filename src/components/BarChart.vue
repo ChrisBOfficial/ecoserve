@@ -25,6 +25,15 @@ export default {
         makeChart() {
             let margin = { top: 20, right: 20, bottom: 50, left: 70 };
             let width = 650 - margin.left - margin.right;
+            let data = this.aggregateData.data.sort((a, b) =>
+                a.subquestion > b.subquestion ? 1 : b.subquestion > a.subquestion ? -1 : 0
+            );
+            let margin = { top: 20, right: 20, bottom: 50, left: 70 };
+            let width = 650 - margin.left - margin.right;
+            let expansion = this.data.length;
+            if (expansion > 10) {
+                width = width + (expansion - 10) * 20;
+            }
             let height = 325 - margin.top - margin.bottom;
             let svg = d3
                 .select(this.$el)
@@ -49,14 +58,6 @@ export default {
             //-(d3.max(data, d => Math.abs(d.mean))), d3.max(data, d =>  Math.abs(d.mean))
             let xAxis = d3.axisBottom(x);
             let yAxis = d3.axisLeft(y).ticks(11);
-
-            let line = d3.line()
-                .x(function(d){return x(d.subquestion);
-                })
-                .y(function(d) {
-                    return y(d.mean + d.se);
-                });
-
 
             function addRectsWithName(elem, vm) {
                 //* Add X axis
@@ -110,14 +111,22 @@ export default {
                     .duration(1000)
                     .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(0) : y(0) - y(d.mean)));
 
-                elem.append("g").selectAll("line")
-                        .data(data).enter()
-                .append("line")
-                .attr("class", "error-line")
-                .attr("x1", d => x(d.subquestion))
-                .attr("y1", d => (d.se))
-                .attr("x2", d => x(d.subquestion))
-                .attr("y2", d => (d.se <= 0 ? y(0) : y(d.se)));
+                //* Add whiskers
+                elem.selectAll("rectWhisker")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    .attr("fill", "black")
+                    .attr("x", d => (x(d.subquestion) + x.bandwidth()/2))
+                    .attr("class", d => d.subquestion)
+                    .attr("y", d => (y(d.mean) - y(d.se)))
+                    .attr("width", 3)
+                    .transition()
+                    .delay((d, i) => {
+                        return i * 100;
+                    })
+                    .duration(1000)
+                    .attr("height", d => (d.se * 2));
 
                 //* Add overlays
                 if (vm.project.comparisonData.length > 0) {
