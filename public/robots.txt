@@ -18,6 +18,7 @@ Disallow: /
 
 User-Agent: *
 Disallow: /etc/
+Disallow: /img/
 Disallow: /api/
 Disallow: /security
 Disallow: /projects

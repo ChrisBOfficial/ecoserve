@@ -9,8 +9,32 @@
 
 .thumb {
     object-fit: cover;
-    width: 600px;
-    height: 600px;
+    width: 200px;
+    height: 200px;
+}
+
+@media (min-width: 768px) {
+    .thumb {
+        object-fit: cover;
+        width: 300px;
+        height: 300px;
+    }
+}
+
+@media (min-width: 991px) {
+    .thumb {
+        object-fit: cover;
+        width: 400px;
+        height: 400px;
+    }
+}
+
+@media (min-width: 1230px) {
+    .thumb {
+        object-fit: cover;
+        width: 600px;
+        height: 600px;
+    }
 }
 
 body {

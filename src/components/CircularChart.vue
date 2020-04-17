@@ -109,7 +109,7 @@ export default {
                         };
                         let rowData = [];
                         for (let i in data.values) {
-                            let row = { Service: data.values[i].service};
+                            let row = { Service: data.values[i].service };
                             const index = bca.map(e => e.service).indexOf(data.values[i].service);
                             let questionId = bca[index]._id;
                             let choices = bca[index].c;
@@ -123,11 +123,10 @@ export default {
                             let impactNum = data.values[i].mean.toPrecision(2);
                             let impactText = "";
                             for (let k = 0; k < choice.length - 1; k++) {
-                                if (impactNum >= parseFloat(choice[k][0]) && impactNum < parseFloat(choice[k+1][0])) {
+                                if (impactNum >= parseFloat(choice[k][0]) && impactNum < parseFloat(choice[k + 1][0])) {
                                     impactText = choice[k][1].concat(", ", impactNum.toString());
                                     break;
-                                }
-                                else {
+                                } else {
                                     impactText = choice[choice.length - 1][1].concat(", ", impactNum.toString());
                                 }
                             }
@@ -205,7 +204,7 @@ export default {
                             .style("color", function(d) {
                                 return colorMap[d.value.replace(" ", "_")];
                             });
-                        svg.attr("height", 505).attr("width", 450);
+                        svg.attr("height", 505).attr("width", 490);
                     } else {
                         label.remove();
                         svg.select(".nutritionTable").remove();
@@ -232,7 +231,7 @@ export default {
                         .outerRadius(function(d) {
                             if (d.mean > 0) {
                                 let scaler = bca[0].c[1].re;
-                                let adjustedMean = d.mean/scaler*10;
+                                let adjustedMean = (d.mean / scaler) * 10;
                                 return y(adjustedMean);
                             } else {
                                 return y(0);
@@ -276,7 +275,7 @@ export default {
                         .outerRadius(function(d) {
                             if (d.mean < 0) {
                                 let scaler = bca[0].c[1].re;
-                                let adjustedMean = d.mean/scaler*10*-1;
+                                let adjustedMean = (d.mean / scaler) * 10 * -1;
                                 return ybis(adjustedMean);
                             } else {
                                 return ybis(0);
