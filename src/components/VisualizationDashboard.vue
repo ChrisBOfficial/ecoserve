@@ -3,7 +3,7 @@
         <b-row>
             <b-col>
                 <h5>Survey blocks</h5>
-                <b-form-select v-model="blockSelected" :select-size="5">
+                <b-form-select v-model="blocksSelected" multiple :select-size="5">
                     <option v-for="block in blocks" v-bind:value="block" v-bind:key="block.id">
                         {{ block.description }}
                     </option>
@@ -12,7 +12,7 @@
             </b-col>
             <b-col>
                 <h5>Visualizations</h5>
-                <b-form-select v-model="graphSelected" :select-size="5">
+                <b-form-select v-model="graphsSelected" multiple :select-size="5">
                     <option v-for="graph in graphs" v-bind:value="graph" v-bind:key="graph">
                         {{ graph }}
                     </option>
@@ -63,8 +63,8 @@ export default {
         return {
             allBlocks: [],
             graphs: ["Flower diagrams", "Bar Chart"],
-            blockSelected: "",
-            graphSelected: "",
+            blocksSelected: [],
+            graphsSelected: [],
             visualizations: this.existingVisualizations,
             removeData: ""
         };
@@ -91,31 +91,35 @@ export default {
             if (this.allBlocks.length === 0) {
                 this.allBlocks = this.existingBlocks;
             }
-            const blockSelected = this.blockSelected;
-            const graphSelected = this.graphSelected;
-            if (blockSelected === "" || graphSelected === "") {
+            const blocksSelected = this.blocksSelected;
+            const graphsSelected = this.graphsSelected;
+            if (blocksSelected.length == 0 || graphsSelected.length == 0) {
                 return;
             }
 
-            let present = false;
-            for (let block of this.allBlocks) {
-                if (block.title === blockSelected.description) {
-                    present = true;
-                    // Check if the visualization is already added
-                    if (!block.visuals.includes(graphSelected)) {
-                        block.visuals.push(graphSelected);
-                        this.visualizations.push(blockSelected.description + " - " + graphSelected);
+            for (let singleBlock of blocksSelected) {
+                for (let singleGraph of graphsSelected) {
+                    let present = false;
+                    for (let block of this.allBlocks) {
+                        if (block.title === singleBlock.description) {
+                            present = true;
+                            // Check if the visualization is already added
+                            if (!block.visuals.includes(singleGraph)) {
+                                block.visuals.push(singleGraph);
+                                this.visualizations.push(singleBlock.description + " - " + singleGraph);
+                            }
+                        }
+                    }
+                    if (!present) {
+                        this.allBlocks.push({ title: singleBlock.description, visuals: [singleGraph] });
+                        this.visualizations.push(singleBlock.description + " - " + singleGraph);
                     }
                 }
             }
-            if (!present) {
-                this.allBlocks.push({ title: blockSelected.description, visuals: [graphSelected] });
-                this.visualizations.push(blockSelected.description + " - " + graphSelected);
-            }
 
             this.saveProjectBlocks(this.allBlocks);
-            this.blockSelected = "";
-            this.graphSelected = "";
+            this.blocksSelected = [];
+            this.graphsSelected = [];
         },
         removeVisualization() {
             // Use pre-existing blocks if empty

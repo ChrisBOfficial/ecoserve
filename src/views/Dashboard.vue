@@ -1,7 +1,7 @@
 <template>
     <div>
         <Header />
-        <div style="min-height:100vh;">
+        <div style="min-height: 716px;">
             <b-tabs content-class="mt-2" style="padding: 140px 2rem 0vh 2rem;" pills align="center">
                 <b-tab title="Flower diagrams" active>
                     <CircularChart ref="circularRef" :loading="circularLoading" />
@@ -11,13 +11,12 @@
                         <b-tab v-for="question in barchartAggregate" :key="question._id" :title="question.service">
                             <h1 style="margin-left: 5rem;">{{ question.service }}</h1>
 
-                            <b-container>
-                                <BarChart
-                                    :ref="question._id"
-                                    :aggregate-data="question"
-                                    :bardomain="getBarDomain(question)"
-                                />
-                            </b-container>
+                            <BarChart
+                                :ref="question._id"
+                                :aggregate-data="question"
+                                :bardomain="getBarDomain(question)"
+                            />
+                            <h3 class="axisText">{{ axisLabel }}</h3>
                         </b-tab>
                     </b-tabs>
                 </b-tab>
@@ -30,31 +29,25 @@
                     >
                         <h3>{{ question.service }}</h3>
 
-                        <BarChart
-                            :ref="question._id"
-                            :aggregate-data="question"
-                            :bardomain="getBarDomain(question)"
-                        />
+                        <BarChart :ref="question._id" :aggregate-data="question" :bardomain="getBarDomain(question)" />
                     </div>
                 </b-tab>
-                <div v-if="staticView">
-                    <b-button
-                        @click="downloadZip"
-                        style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
-                    >
-                        Download ZIP
-                    </b-button>
-                    <b-button
-                        @click="downloadJSON"
-                        style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;"
-                    >
-                        Download Data
-                    </b-button>
-                    <div @click="sharePage" class="btn btn-outline btn-xl">Share this page</div>
-                </div>
             </b-tabs>
         </div>
-
+        <div v-if="staticView">
+            <b-button @click="downloadZip" style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
+                Download ZIP
+            </b-button>
+            <b-button @click="downloadJSON" style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
+                Download Data
+            </b-button>
+            <b-form-input
+                v-model.trim="axisLabel"
+                placeholder="Enter bar chart y-axis label"
+                style="max-width: 20%;"
+            ></b-form-input>
+            <div @click="sharePage" class="btn btn-outline btn-xl">Share this page</div>
+        </div>
         <Footer />
     </div>
 </template>
@@ -99,6 +92,7 @@ export default {
     },
     data() {
         return {
+            axisLabel: "",
             zipFile: new JSZip(),
             circularLoading: true,
             socket: {},
@@ -185,7 +179,9 @@ export default {
                 await this.getAggregate({ id: this.surveyId, pipeline: "circlechart", mode: this.$route.query.view });
                 this.circularLoading = false;
 
+                d3.selectAll(".circleChart").remove();
                 this.$refs.circularRef.makeCharts();
+
                 d3.selectAll(".barChart").remove();
                 for (const ref in this.$refs) {
                     if (ref !== "circularRef" && this.$refs[ref].length > 0) {
@@ -372,5 +368,13 @@ export default {
 .btn-xl {
     font-size: 11px;
     padding: 15px 45px;
+}
+
+.axisText {
+    font-size: 18px;
+    transform: rotate(-90deg);
+    margin-top: -200px;
+    margin-left: 10px;
+    transform-origin: top left;
 }
 </style>

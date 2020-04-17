@@ -23,14 +23,12 @@ export default {
     },
     methods: {
         makeChart() {
-            let margin = { top: 20, right: 20, bottom: 50, left: 70 };
-            let width = 650 - margin.left - margin.right;
             let data = this.aggregateData.data.sort((a, b) =>
                 a.subquestion > b.subquestion ? 1 : b.subquestion > a.subquestion ? -1 : 0
             );
             let margin = { top: 20, right: 20, bottom: 50, left: 70 };
             let width = 650 - margin.left - margin.right;
-            let expansion = this.data.length;
+            let expansion = data.length;
             if (expansion > 10) {
                 width = width + (expansion - 10) * 20;
             }
@@ -41,10 +39,6 @@ export default {
                 .attr("class", "barChart")
                 .attr("height", 400)
                 .attr("width", 800);
-
-            let data = this.aggregateData.data.sort((a, b) =>
-                a.subquestion > b.subquestion ? 1 : b.subquestion > a.subquestion ? -1 : 0
-            );
 
             let x = d3
                 .scaleBand()
@@ -117,16 +111,16 @@ export default {
                     .enter()
                     .append("rect")
                     .attr("fill", "black")
-                    .attr("x", d => (x(d.subquestion) - 1 + x.bandwidth()/2))
+                    .attr("x", d => x(d.subquestion) - 1 + x.bandwidth() / 2)
                     .attr("class", d => d.subquestion)
-                    .attr("y", d => (y(d.mean) - y(d.se)))
+                    .attr("y", d => y(d.mean) - y(d.se))
                     .attr("width", 2)
                     .transition()
                     .delay((d, i) => {
                         return i * 100;
                     })
                     .duration(1000)
-                    .attr("height", d => (d.se * 2));
+                    .attr("height", d => d.se * 2);
 
                 //* Add overlays
                 if (vm.project.comparisonData.length > 0) {
@@ -230,7 +224,7 @@ export default {
 }
 .error-line {
     stroke: #b30059;
-    stroke-dasharray: 2,2;
+    stroke-dasharray: 2, 2;
 }
 
 .error-cap {
