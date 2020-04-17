@@ -109,26 +109,46 @@ export default {
                         };
                         let rowData = [];
                         for (let i in data.values) {
-                            let row = { Service: data.values[i].service, Impact: data.values[i].mean.toPrecision(2) };
+                            let row = { Service: data.values[i].service};
                             const index = bca.map(e => e.service).indexOf(data.values[i].service);
-
+                            let questionId = bca[index]._id;
+                            let choices = bca[index].c;
+                            let choice = [];
+                            for (let j = 0; j < choices.length; j++) {
+                                if (choices[j].QID == questionId) {
+                                    choice = choices[j].impactText;
+                                }
+                            }
+                            //Impact: data.values[i].mean.toPrecision(2)
+                            let impactNum = data.values[i].mean.toPrecision(2);
+                            let impactText = "";
+                            for (let k = 0; k < choice.length - 1; k++) {
+                                if (impactNum >= parseFloat(choice[k][0]) && impactNum < parseFloat(choice[k+1][0])) {
+                                    impactText = choice[k][1].concat(", ", impactNum.toString());
+                                    break;
+                                }
+                                else {
+                                    impactText = choice[choice.length - 1][1].concat(", ", impactNum.toString());
+                                }
+                            }
+                            row.Impact = impactText;
                             let comparator = bca[index].group_mean;
-                            let group_mean = (comparator * data.values.length - row.Impact) / (data.values.length - 1);
+                            let group_mean = (comparator * data.values.length - impactNum) / (data.values.length - 1);
 
-                            let ratio = Math.abs(group_mean - row.Impact) / group_mean;
+                            let ratio = Math.abs(group_mean - impactNum) / group_mean;
                             let vsval;
                             if (ratio < 0.2) {
                                 vsval = "Similar";
                             } else if (ratio >= 0.2 && ratio < 0.4) {
-                                if (row.Impact < group_mean) {
+                                if (impactNum < group_mean) {
                                     vsval = "Worse";
-                                } else if (row.Impact > group_mean) {
+                                } else if (impactNum > group_mean) {
                                     vsval = "Better";
                                 }
                             } else if (ratio >= 0.4) {
-                                if (row.Impact < group_mean) {
+                                if (impactNum < group_mean) {
                                     vsval = "Much worse";
-                                } else if (row.Impact > group_mean) {
+                                } else if (impactNum > group_mean) {
                                     vsval = "Much better";
                                 }
                             }
@@ -144,7 +164,6 @@ export default {
                             .append("svg:foreignObject")
                             .attr("width", "100%")
                             .attr("height", "100%")
-
                             .attr("class", "nutritionTable")
                             .append("xhtml:body")
                             .append("table")
@@ -212,7 +231,9 @@ export default {
                         .innerRadius(innerRadius)
                         .outerRadius(function(d) {
                             if (d.mean > 0) {
-                                return y(d.mean);
+                                let scaler = bca[0].c[1].re;
+                                let adjustedMean = d.mean/scaler*10;
+                                return y(adjustedMean);
                             } else {
                                 return y(0);
                             }
@@ -254,7 +275,9 @@ export default {
                         })
                         .outerRadius(function(d) {
                             if (d.mean < 0) {
-                                return ybis(d.mean * -1);
+                                let scaler = bca[0].c[1].re;
+                                let adjustedMean = d.mean/scaler*10*-1;
+                                return ybis(adjustedMean);
                             } else {
                                 return ybis(0);
                             }

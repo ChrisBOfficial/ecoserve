@@ -334,7 +334,7 @@ app.route("/api/projects")
                 let choicesData = [];
                 for (const question in result.questions) {
                     if (result.questions[question].questionType.type === "SBS") {
-                        choicesData.push(result.questions[question].columns["1"].choices);
+                        choicesData.push({question: question, choices: result.questions[question].columns["1"].choices});
                     }
                 }
 
