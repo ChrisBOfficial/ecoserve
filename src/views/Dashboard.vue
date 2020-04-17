@@ -84,8 +84,8 @@ const exportSettings = {
     },
     circleChart: {
         directory: "Circle Graphs",
-        height: 505,
-        width: 450
+        height: 350,
+        width: 330
     }
 };
 

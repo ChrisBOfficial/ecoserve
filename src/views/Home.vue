@@ -141,7 +141,7 @@
                             <div class="row">
                                 <div class="col-lg-3">
                                     <div class="feature-item">
-                                        <i class="las la-layer-group text-primary"></i>
+                                        <i class="lab la-buffer text-primary"></i>
                                         <h3>Built on Qualtrics</h3>
                                         <p class="text-muted">
                                             Use what you’re familiar with and build the surveys you want with Qualtrics
@@ -183,7 +183,7 @@
                                         <h3>Easy to start</h3>
                                         <p class="text-muted">
                                             Our user guide makes creating compatible surveys easy. Click
-                                            <a href="/guidelines">here</a> for more
+                                            <router-link to="/guidelines">here</router-link> for more
                                         </p>
                                     </div>
                                 </div>
@@ -201,8 +201,8 @@
                                         <i class="las la-lock text-primary"></i>
                                         <h3>Secure</h3>
                                         <p class="text-muted">
-                                            Your data is secure with ecoserve. Click <a href="/security">here</a> to
-                                            learn more
+                                            Your data is secure with ecoserve. Click
+                                            <router-link to="/security">here</router-link> to learn more
                                         </p>
                                     </div>
                                 </div>
@@ -217,7 +217,7 @@
             <div class="cta-content">
                 <div class="container">
                     <h2>Stop waiting.<br />Start building.</h2>
-                    <a href="/guidelines" class="btn btn-outline btn-xl">See our guidelines</a>
+                    <router-link to="/guidelines" class="btn btn-outline btn-xl">See our user guide</router-link>
                 </div>
             </div>
             <div class="overlay"></div>
