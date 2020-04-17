@@ -117,10 +117,10 @@ export default {
                     .enter()
                     .append("rect")
                     .attr("fill", "black")
-                    .attr("x", d => (x(d.subquestion) + x.bandwidth()/2))
+                    .attr("x", d => (x(d.subquestion) - 1 + x.bandwidth()/2))
                     .attr("class", d => d.subquestion)
                     .attr("y", d => (y(d.mean) - y(d.se)))
-                    .attr("width", 3)
+                    .attr("width", 2)
                     .transition()
                     .delay((d, i) => {
                         return i * 100;
