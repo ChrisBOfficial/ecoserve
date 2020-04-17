@@ -29,8 +29,8 @@ export default {
             let margin = { top: 20, right: 20, bottom: 50, left: 70 };
             let width = 650 - margin.left - margin.right;
             let expansion = this.aggregateData.data.length;
-            if (expansion > 10){
-                width = width + (expansion - 10)*20;
+            if (expansion > 10) {
+                width = width + (expansion - 10) * 20;
             }
             let height = 325 - margin.top - margin.bottom;
             let svg = d3
