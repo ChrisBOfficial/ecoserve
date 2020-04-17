@@ -50,6 +50,14 @@ export default {
             let xAxis = d3.axisBottom(x);
             let yAxis = d3.axisLeft(y).ticks(11);
 
+            let line = d3.line()
+                .x(function(d){return x(d.subquestion);
+                })
+                .y(function(d) {
+                    return y(d.mean + d.se);
+                });
+
+
             function addRectsWithName(elem, vm) {
                 //* Add X axis
                 elem.append("g")
@@ -101,6 +109,15 @@ export default {
                     })
                     .duration(1000)
                     .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(0) : y(0) - y(d.mean)));
+
+                elem.append("g").selectAll("line")
+                        .data(data).enter()
+                .append("line")
+                .attr("class", "error-line")
+                .attr("x1", d => x(d.subquestion))
+                .attr("y1", d => (d.se))
+                .attr("x2", d => x(d.subquestion))
+                .attr("y2", d => (d.se <= 0 ? y(0) : y(d.se)));
 
                 //* Add overlays
                 if (vm.project.comparisonData.length > 0) {
@@ -201,5 +218,15 @@ export default {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
+}
+.error-line {
+    stroke: #b30059;
+    stroke-dasharray: 2,2;
+}
+
+.error-cap {
+    stroke: #b30059;
+    stroke-width: 2px;
+    stroke-type: solid;
 }
 </style>
