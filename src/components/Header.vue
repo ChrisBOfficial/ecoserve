@@ -17,29 +17,29 @@
 
                 <b-collapse id="nav-collapse" is-nav>
                     <b-navbar-nav class="ml-auto">
-                        <b-nav-item to="/about" style="margin: auto 2vh;">
+                        <b-nav-item to="/about" style="margin: auto 1vw;">
                             ABOUT
                         </b-nav-item>
-                        <b-nav-item-dropdown text="SUPPORT" style="margin: auto 2vh;">
+                        <b-nav-item-dropdown text="SUPPORT" style="margin: auto 1vw;">
                             <b-dropdown-item href="https://www.guidetoes.eu/step3.html" target="_blank"
                                 >About ecosystem service assessments</b-dropdown-item
                             >
                             <b-dropdown-item to="/guidelines">User guide</b-dropdown-item>
                             <b-dropdown-item>Project examples (coming soon)</b-dropdown-item>
                         </b-nav-item-dropdown>
-                        <b-nav-item v-if="authorized" to="/projects" style="margin: auto 2vh;">
+                        <b-nav-item v-if="authorized" to="/projects" style="margin: auto 1vw;">
                             PROJECTS
                         </b-nav-item>
-                        <b-nav-item v-if="!authorized" :href="loginLink" style="margin: auto 2vh;">
+                        <b-nav-item v-if="!authorized" :href="loginLink" style="margin: auto 1vw;">
                             LOGIN
                         </b-nav-item>
-                        <b-nav-item v-if="authorized" href="#" @click="logout" style="margin: auto 1vh auto 2vh;">
+                        <b-nav-item v-if="authorized" href="#" @click="logout" style="margin: auto 1vw auto 1vw;">
                             LOGOUT
                         </b-nav-item>
                         <b-nav-item
                             v-if="authorized"
                             to="/auth/settings"
-                            style="padding: 2px; margin: auto 0 3px 1.5vh;"
+                            style="padding: 2px; margin: auto 0 3px 0.5vw;"
                         >
                             <img
                                 src="../assets/settingsGear.png"
@@ -91,7 +91,7 @@ export default {
 
 @media (max-width: 991px) {
     .navbar-nav {
-        margin-top: 5vh;
+        margin-top: 20px;
         border: solid black;
     }
 }

@@ -23,7 +23,7 @@
                 <div class="row h-100">
                     <div class="col text-center">
                         <p>
-                            308 Kelm Hall<br />
+                            308 Keim Hall<br />
                             Lincoln, NE 68593<br />
                             <a href="mailto:dirac.twidwell@unl.edu">dirac.twidwell@unl.edu</a>
                         </p>
@@ -31,7 +31,7 @@
 
                     <div class="col text-center">
                         <p>
-                            104 Kelm Hall<br />
+                            140 Keim Hall<br />
                             Lincoln, NE 68593<br />
                             <a href="mailto:dillon.fogarty@huskers.unl.edu">dillon.fogarty@huskers.unl.edu</a>
                         </p>

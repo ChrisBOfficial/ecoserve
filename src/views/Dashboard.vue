@@ -1,7 +1,7 @@
 <template>
     <div>
         <Header />
-        <div style="min-height: 716px;">
+        <div id="dashboardContainer">
             <b-tabs content-class="mt-2" style="padding: 140px 2rem 0vh 2rem;" pills align="center">
                 <b-tab title="Flower diagrams" active>
                     <CircularChart ref="circularRef" :loading="circularLoading" />
@@ -143,7 +143,7 @@ export default {
                 this.surveyId,
                 function() {
                     console.log("Response received");
-                    if (Date.now() - this.lastUpdate >= 500) {
+                    if (Date.now() - this.lastUpdate >= 250) {
                         console.log("Updating...");
                         this.loadData();
                         this.lastUpdate = Date.now();
@@ -152,15 +152,15 @@ export default {
             );
 
             //* Refresh data every 30 seconds to grab any residual responses
-            // if (process.env.NODE_ENV === "production") {
-            //     this.intervalId = setInterval(
-            //         function() {
-            //             console.log("INTERVAL");
-            //             this.loadData();
-            //         }.bind(this),
-            //         30000
-            //     );
-            // }
+            if (process.env.NODE_ENV === "production") {
+                this.intervalId = setInterval(
+                    function() {
+                        console.log("INTERVAL");
+                        this.loadData();
+                    }.bind(this),
+                    30000
+                );
+            }
         }
     },
     destroyed() {
@@ -342,6 +342,18 @@ export default {
 ::v-deep .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
     background-color: darkseagreen !important;
+}
+
+@media (max-height: 746px) {
+    #dashboardContainer {
+        min-height: 746px;
+    }
+}
+
+@media (min-height: 746px) {
+    #dashboardContainer {
+        min-height: 100vh;
+    }
 }
 
 .btn-outline {

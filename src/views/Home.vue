@@ -367,6 +367,7 @@ section.features .feature-item i {
     display: block;
     margin-bottom: 15px;
     background: darkseagreen;
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -468,5 +469,14 @@ section.cta .overlay {
 
 .device-mockup.hero > .device {
     background-image: url("../assets/aboutHero.png");
+}
+
+a {
+    color: #007bff;
+}
+
+a:focus,
+a:hover {
+    color: #0056b3;
 }
 </style>
