@@ -38,7 +38,7 @@
             <b-button @click="downloadZip" style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
                 Download ZIP
             </b-button>
-            <b-button @click="downloadJSON" style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
+            <b-button @click="downloadCSV" style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
                 Download Data
             </b-button>
             <b-form-input
@@ -308,6 +308,35 @@ export default {
             jsonElement.click();
             jsonElement.remove();
         },
+        JSONtoCSV(){
+            const questions = this.barchartAggregate;
+            let header = ["id", "service", "group_mean", "subquestion", "mean", "se", "confidence_num", "confidence"];
+            let row = [];
+            let formatted = [];
+            formatted.push(header);
+            for (let q = 0; q < questions.length; q++){
+                let data = questions[q].data;
+                for (let d = 0; d < data.length; d++){
+                    row.push(questions[q]._id, questions[q].service, questions[q].group_mean,
+                        data[d].subquestion, data[d].mean, data[d].se, data[d].confidence_num, data[d].confidence);
+                    formatted.push(row);
+                    row = [];
+                }
+            }
+            return formatted;
+        },
+        async downloadCSV(){
+            let formatted = this.JSONtoCSV();
+            const csv = formatted.map(row => row.map(item => (typeof item === 'string' && item.indexOf(',') >=0) ? `"${item}"`: String(item)).join(',')).join('\n');
+            // Format the CSV string
+            const data = encodeURI('data:text/csv;charset=utf-8,' + csv);
+            const link = document.createElement('a');
+            link.setAttribute('href', data);
+            link.setAttribute('download', 'export.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        },
         sharePage() {
             this.$bvToast.toast("URL copied to clipboard!", {
                 toaster: "b-toaster-bottom-right",
@@ -317,7 +346,7 @@ export default {
                 autoHideDelay: 1250,
                 noHoverPause: true
             });
-            var linkText = document.createElement("textArea");
+            let linkText = document.createElement("textArea");
             linkText.value = window.location.href.slice(0, -4) + "static";
 
             // Avoid scrolling to bottom
