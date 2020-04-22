@@ -119,22 +119,27 @@ export default {
                                     choice = choices[j].impactText;
                                 }
                             }
-                            //Impact: data.values[i].mean.toPrecision(2)
                             let impactNum = data.values[i].mean.toPrecision(2);
+
                             let impactText = "";
                             for (let k = 0; k < choice.length - 1; k++) {
                                 if (impactNum >= parseFloat(choice[k][0]) && impactNum < parseFloat(choice[k + 1][0])) {
-                                    impactText = choice[k][1].concat(", ", impactNum.toString());
+                                    impactText = choice[k][1];
                                     break;
                                 } else {
-                                    impactText = choice[choice.length - 1][1].concat(", ", impactNum.toString());
+                                    impactText = choice[choice.length - 1][1];
                                 }
                             }
                             row.Impact = impactText;
-                            let comparator = bca[index].group_mean;
-                            let group_mean = (comparator * data.values.length - impactNum) / (data.values.length - 1);
-
-                            let ratio = Math.abs(group_mean - impactNum) / group_mean;
+                            let group_mean = bca[index].group_mean;
+                            console.log("group mean: " + group_mean)
+                            console.log("individual mean" + impactNum)
+                            //let group_mean = (comparator * data.values.length - impactNum) / (data.values.length - 1);
+                            let ratio;
+                            if (group_mean === 0){ratio = 0;}
+                            else {ratio = (group_mean - impactNum) / group_mean;}
+                            ratio = Math.abs(ratio);
+                            console.log("ratio: " + ratio);
                             let vsval;
                             if (ratio < 0.2) {
                                 vsval = "Similar";
@@ -151,6 +156,7 @@ export default {
                                     vsval = "Much better";
                                 }
                             }
+                            console.log("comparative_impact: " + vsval);
                             row.Comparative_Impact = vsval;
 
                             let bca1 = bca[index].data;
