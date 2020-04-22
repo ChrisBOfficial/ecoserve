@@ -54,17 +54,7 @@ export default {
             let yAxis = d3.axisLeft(y).ticks(11);
 
             function addRectsWithName(elem, vm) {
-                //* Add X axis
-                elem.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + y(0) + ")")
-                    .call(xAxis)
-                    .selectAll("text")
-                    .style("text-anchor", "end")
-                    .style("fill", "black")
-                    .attr("dx", "-.8em")
-                    .attr("dy", "-.55em")
-                    .attr("transform", "translate(0, 133) rotate(-45)");
+
 
                 //* Add Y axis
                 elem.append("g")
@@ -101,15 +91,26 @@ export default {
                     })
                     .attr("x", d => x(d.subquestion))
                     .attr("class", d => d.subquestion)
-                    .attr("y", d => (d.mean <= 0 ? y(-1): y(d.mean))) //y(-1) because y(0) causes bar to overlap axis
+                    .attr("y", d => (d.mean <= 0 ? y(0): y(d.mean))) //y(-1) because y(0) causes bar to overlap axis
                     .attr("width", x.bandwidth())
                     .transition()
                     .delay((d, i) => {
                         return i * 100;
                     })
                     .duration(1000)
-                    .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(-1) : y(0) - y(d.mean)));
+                    .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(0) : y(0) - y(d.mean)));
 
+                //* Add X axis
+                elem.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + y(0) + ")")
+                    .call(xAxis)
+                    .selectAll("text")
+                    .style("text-anchor", "end")
+                    .style("fill", "black")
+                    .attr("dx", "-.8em")
+                    .attr("dy", "-.55em")
+                    .attr("transform", "translate(0, 133) rotate(-45)");
                 //* Add whiskers
                 elem.selectAll("rectWhisker")
                     .data(data)
