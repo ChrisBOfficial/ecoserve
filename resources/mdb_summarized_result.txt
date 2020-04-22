@@ -351,35 +351,35 @@
                 {
                   'case': {
                     '$lte': [
-                      '$confidence', 1
+                      '$confidence', -2.4
                     ]
                   },
                   'then': 'None'
                 }, {
                   'case': {
                     '$lte': [
-                      '$confidence', 2
+                      '$confidence', -0.8
                     ]
                   },
                   'then': 'Low'
                 }, {
                   'case': {
                     '$lte': [
-                      '$confidence', 3
+                      '$confidence', 0.8
                     ]
                   },
                   'then': 'Moderate'
                 }, {
                   'case': {
                     '$lte': [
-                      '$confidence', 4
+                      '$confidence', 2.4
                     ]
                   },
                   'then': 'High'
                 }, {
                   'case': {
-                    '$lte': [
-                      '$confidence', 5
+                    '$gt': [
+                      '$confidence', 2.4
                     ]
                   },
                   'then': 'Extreme'
@@ -392,6 +392,10 @@
           'se': '$se'
         }
       }
+    }
+  }, {
+    '$unwind': {
+      'path': '$data'
     }
   }
 ]
@@ -666,38 +670,78 @@
       }
     }
   ],
-  c: [{
+  c: [
+    {
       $project: {
         choices: 1
-      }},
-      {$unwind: '$choices'},
-      {$project: {
+      }
+    },
+    {
+      $unwind: '$choices'
+    },
+    {
+      $project: {
         _id: 0,
         question: '$choices.question',
-        choices: {$objectToArray: '$choices.choices'}
-      }},
-      {$group: {_id: '$question',
-      values: {$push: {recode: '$choices.v.recode', choiceText: '$choices.v.choiceText'}}}
-      },
-      {$project: {
+        choices: {
+          $objectToArray: '$choices.choices'
+        }
+      }
+    },
+    {
+      $group: {
+        _id: '$question',
+        values: {
+          $push: {
+            recode: '$choices.v.recode',
+            choiceText: '$choices.v.choiceText'
+          }
+        }
+      }
+    },
+    {
+      $project: {
         _id: 0,
         QID: '$_id',
-        recode: {$arrayElemAt: ['$values.recode', 0]},
-        choiceText: {$arrayElemAt: ['$values.choiceText',0]
+        recode: {
+          $arrayElemAt: [
+            '$values.recode',
+            0
+          ]
+        },
+        choiceText: {
+          $arrayElemAt: [
+            '$values.choiceText',
+            0
+          ]
+        }
       }
-      }},
-      {$project: {QID: 1,
-        re: {$max: "$recode"},
-        impactText: {$zip: {inputs: ['$recode', '$choiceText']}}
-      }}
-    ]
+    },
+    {
+      $project: {
+        QID: 1,
+        re: {
+          $max: '$recode'
+        },
+        impactText: {
+          $zip: {
+            inputs: [
+              '$recode',
+              '$choiceText'
+            ]
+          }
+        }
+      }
+    }
+  ]
 }}, {$project: {
   'final': {
     $concatArrays: [
       '$r',
       '$d'
     ]
-  }, c:1
+  },
+  c: 1
 }}, {$unwind: {
   path: '$final'
 }}, {$group: {
@@ -720,10 +764,14 @@
   se: {
     $max: '$final.se'
   },
-  c: {$max: '$c'}
+  c: {
+    $max: '$c'
+  }
 }}, {$group: {
   _id: '$_id.QID',
-  c: {$max: '$c'},
+  c: {
+    $max: '$c'
+  },
   service: {
     $max: '$service'
   },
@@ -741,7 +789,7 @@
               'case': {
                 $lte: [
                   '$confidence',
-                  1
+                  -2.4
                 ]
               },
               then: 'None'
@@ -750,7 +798,7 @@
               'case': {
                 $lte: [
                   '$confidence',
-                  2
+                  -0.8
                 ]
               },
               then: 'Low'
@@ -759,7 +807,7 @@
               'case': {
                 $lte: [
                   '$confidence',
-                  3
+                  0.8
                 ]
               },
               then: 'Moderate'
@@ -768,16 +816,16 @@
               'case': {
                 $lte: [
                   '$confidence',
-                  4
+                  2.4
                 ]
               },
               then: 'High'
             },
             {
               'case': {
-                $lte: [
+                $gt: [
                   '$confidence',
-                  5
+                  2.4
                 ]
               },
               then: 'Extreme'
@@ -790,7 +838,10 @@
       se: '$se'
     }
   }
-}}]
+}}, {$unwind: {
+  path: '$data'
+
+  }}]
 
 ##Circular Chart Aggregation Pipeline##
 ##NODE##
