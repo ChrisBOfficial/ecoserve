@@ -28,7 +28,7 @@ export default {
             );
             let margin = { top: 20, right: 20, bottom: 50, left: 70 };
             let width = 650 - margin.left - margin.right;
-            let expansion = this.aggregateData.data.length;
+            let expansion = data.length;
             if (expansion > 10) {
                 width = width + (expansion - 10) * 20;
             }
@@ -50,7 +50,7 @@ export default {
                 .rangeRound([height, 0])
                 .domain([-this.bardomain, this.bardomain]);
             //-(d3.max(data, d => Math.abs(d.mean))), d3.max(data, d =>  Math.abs(d.mean))
-            let xAxis = d3.axisBottom(x);
+            let xAxis = d3.axisBottom(x).tickSize(0);
             let yAxis = d3.axisLeft(y).ticks(11);
 
             function addRectsWithName(elem, vm) {
@@ -101,14 +101,31 @@ export default {
                     })
                     .attr("x", d => x(d.subquestion))
                     .attr("class", d => d.subquestion)
-                    .attr("y", d => (d.mean <= 0 ? y(0) : y(d.mean)))
+                    .attr("y", d => (d.mean <= 0 ? y(-1): y(d.mean))) //y(-1) because y(0) causes bar to overlap axis
                     .attr("width", x.bandwidth())
                     .transition()
                     .delay((d, i) => {
                         return i * 100;
                     })
                     .duration(1000)
-                    .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(0) : y(0) - y(d.mean)));
+                    .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(-1) : y(0) - y(d.mean)));
+
+                //* Add whiskers
+                elem.selectAll("rectWhisker")
+                    .data(data)
+                    .enter()
+                    .append("rect")
+                    .attr("fill", "black")
+                    .attr("x", d => x(d.subquestion) - 1 + x.bandwidth() / 2)
+                    .attr("class", d => d.subquestion)
+                    .attr("y", d => (d.mean <= 0 ?  y(d.mean) :  y(d.mean) - (d.se)))
+                    .attr("width", 2)
+                    .transition()
+                    .delay((d, i) => {
+                        return i * 100;
+                    })
+                    .duration(1000)
+                    .attr("height", d => (d.mean <= 0 ? d.se : d.se));
 
                 //* Add overlays
                 if (vm.project.comparisonData.length > 0) {
@@ -209,5 +226,15 @@ export default {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
+}
+.error-line {
+    stroke: #b30059;
+    stroke-dasharray: 2, 2;
+}
+
+.error-cap {
+    stroke: #b30059;
+    stroke-width: 2px;
+    stroke-type: solid;
 }
 </style>
