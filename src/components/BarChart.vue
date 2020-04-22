@@ -50,7 +50,7 @@ export default {
                 .rangeRound([height, 0])
                 .domain([-this.bardomain, this.bardomain]);
             //-(d3.max(data, d => Math.abs(d.mean))), d3.max(data, d =>  Math.abs(d.mean))
-            let xAxis = d3.axisBottom(x);
+            let xAxis = d3.axisBottom(x).tickSize(0);
             let yAxis = d3.axisLeft(y).ticks(11);
 
             function addRectsWithName(elem, vm) {
@@ -96,14 +96,14 @@ export default {
                     })
                     .attr("x", d => x(d.subquestion))
                     .attr("class", d => d.subquestion)
-                    .attr("y", d => (d.mean <= 0 ? y(0) : y(d.mean)))
+                    .attr("y", d => (d.mean <= 0 ? y(-1): y(d.mean))) //y(-1) because y(0) causes bar to overlap axis
                     .attr("width", x.bandwidth())
                     .transition()
                     .delay((d, i) => {
                         return i * 100;
                     })
                     .duration(1000)
-                    .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(0) : y(0) - y(d.mean)));
+                    .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(-1) : y(0) - y(d.mean)));
 
                 //* Add whiskers
                 elem.selectAll("rectWhisker")
@@ -113,14 +113,14 @@ export default {
                     .attr("fill", "black")
                     .attr("x", d => x(d.subquestion) - 1 + x.bandwidth() / 2)
                     .attr("class", d => d.subquestion)
-                    .attr("y", d => y(d.mean) - y(d.se))
+                    .attr("y", d => (d.mean <= 0 ?  y(d.mean) :  y(d.mean) - (d.se)))
                     .attr("width", 2)
                     .transition()
                     .delay((d, i) => {
                         return i * 100;
                     })
                     .duration(1000)
-                    .attr("height", d => d.se * 2);
+                    .attr("height", d => (d.mean <= 0 ? d.se : d.se));
 
                 //* Add overlays
                 if (vm.project.comparisonData.length > 0) {
