@@ -82,16 +82,21 @@ export default {
                     .enter()
                     .append("rect")
                     .attr("fill", d => {
-                        if (d.confidence_num > 2) {
-                            return "#3574c7";
-                        } else if (d.confidence_num <= 2 && d.confidence_num > 0) {
-                            return "#96cdfa";
-                        } else if (d.confidence_num <= 0 && d.confidence_num > -2) {
-                            return "#ede592";
-                        } else if (d.confidence_num <= -2) {
-                            return "#ec5428";
-                        } else {
-                            return "#bd271a";
+                        if (d.confidence_num != null){
+                            if (d.confidence_num > 2.4) {
+                                return "#3574c7";
+                            } else if (d.confidence_num <= 2.4 && d.confidence_num > 0.8) {
+                                return "#96cdfa";
+                            } else if (d.confidence_num <= 0.8 && d.confidence_num > -0.8) {
+                                return "#ede592";
+                            } else if (d.confidence_num <= -0.8 && d.confidence_num > -2.4) {
+                                return "#ec5428";
+                            } else if (d.confidence_num <= -2.4){
+                                return "#bd271a";
+                            }
+                        }
+                         else {
+                            return "#633e19";
                         }
                     })
                     .attr("x", d => x(d.subquestion))
@@ -141,11 +146,11 @@ export default {
                 .call(addRectsWithName, this);
 
             //* Add legend
-            let keys = ["Extreme", "High", "Moderate", "Low", "None"];
+            let keys = ["Extreme", "High", "Moderate", "Low", "None", "N/A"];
             let color = d3
                 .scaleOrdinal()
                 .domain(keys)
-                .range(["#3574c7", "#96cdfa", "#ede592", "#ec5428", "#bd271a"]);
+                .range(["#3574c7", "#96cdfa", "#ede592", "#ec5428", "#bd271a", "#633e19"]);
             let legend = "Confidence";
             let size = 20;
             svg.selectAll("mytitle")
