@@ -315,22 +315,36 @@ const barchartPipeline = function(surveyId) {
                         }
                     }
                 },
+                {$unwind: '$recode'},
+                {$project: {
+                        QID:1, choiceText:1,
+                        recode: {$toInt: '$recode'}
+                    }
+                },
+                {$group: {
+                        _id: '$QID',
+                        choiceText: {$max: '$choiceText'},
+                        recode: {$push: {re: '$recode'}}
+                    }},
+
                 {
                     $project: {
-                        QID: 1,
+                        QID: '$_id',
+                        _id:0,
                         re: {
-                            $max: '$recode'
+                            $max: '$recode.re'
                         },
                         impactText: {
                             $zip: {
                                 inputs: [
-                                    '$recode',
+                                    '$recode.re',
                                     '$choiceText'
                                 ]
                             }
                         }
                     }
                 }
+
             ]
         }}, {$project: {
             'final': {
