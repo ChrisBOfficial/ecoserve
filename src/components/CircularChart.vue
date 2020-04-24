@@ -349,24 +349,12 @@ export default {
                 .style("opacity", 0.65)
                 .style("fill", "white");
 
-            //! Used to calculate text width for centering labels, not actually rendered
-            let textWidth = 0;
-            svg.append("text")
-                .text(category)
-                .attr("opacity", 0.0)
-                .style("font-size", "0.9rem")
-                .style("font-weight", 800)
-                .style("font-family", "Nunito")
-                .each(function() {
-                    textWidth = this.getComputedTextLength();
-                    this.remove();
-                });
-
             //* Add the chart label
             svg.append("text")
                 .text(category)
-                .attr("transform", "translate(" + textWidth / -2 + "," + (height + 30) / 2 + ")")
+                .attr("transform", "translate(0," + (height + 30) / 2 + ")")
                 .attr("class", "circularChartName")
+                .attr("text-anchor", "middle")
                 .style("font-size", "0.9rem")
                 .style("font-weight", 800)
                 .style("font-family", "Nunito");

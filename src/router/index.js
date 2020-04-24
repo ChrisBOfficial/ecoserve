@@ -5,12 +5,19 @@ import Credentials from "../api/amplifyConf";
 
 Vue.use(VueRouter);
 
+let prefix;
+if (process.env.NODE_ENV === "development") {
+    prefix = "[DEV] ";
+} else {
+    prefix = "";
+}
+
 const routes = [
     {
         path: "/",
         name: "home",
         meta: {
-            title: "ecoserve"
+            title: prefix + "ecoserve"
         },
         component: () => import("@/views/Home.vue")
     },
@@ -18,7 +25,7 @@ const routes = [
         path: "/about",
         name: "about",
         meta: {
-            title: "ecoserve - About"
+            title: prefix + "ecoserve - About"
         },
         component: () => import("@/views/About.vue")
     },
@@ -26,7 +33,7 @@ const routes = [
         path: "/contact",
         name: "contact",
         meta: {
-            title: "ecoserve - Contact"
+            title: prefix + "ecoserve - Contact"
         },
         component: () => import("@/views/Contact.vue")
     },
@@ -34,7 +41,7 @@ const routes = [
         path: "/guidelines",
         name: "guidelines",
         meta: {
-            title: "ecoserve - Guidelines"
+            title: prefix + "ecoserve - Guidelines"
         },
         component: () => import("@/views/Guidelines.vue")
     },
@@ -42,7 +49,7 @@ const routes = [
         path: "/security",
         name: "security",
         meta: {
-            title: "ecoserve - Security"
+            title: prefix + "ecoserve - Security"
         },
         component: () => import("@/views/Security.vue")
     },
@@ -50,7 +57,7 @@ const routes = [
         path: "/projects",
         name: "projects",
         meta: {
-            title: "ecoserve - Projects",
+            title: prefix + "ecoserve - Projects",
             requiresAuth: true
         },
         component: () => import("@/views/Projects.vue")
@@ -59,7 +66,7 @@ const routes = [
         path: "/newProject",
         name: "newProject",
         meta: {
-            title: "ecoserve - Create Project",
+            title: prefix + "ecoserve - Create Project",
             requiresAuth: true
         },
         component: () => import("@/views/NewProject.vue")
@@ -68,7 +75,7 @@ const routes = [
         path: "/editProject",
         name: "editProject",
         meta: {
-            title: "ecoserve - Edit Project",
+            title: prefix + "ecoserve - Edit Project",
             requiresAuth: true
         },
         component: () => import("@/views/ExistingProject.vue")
@@ -77,7 +84,7 @@ const routes = [
         path: "/dashboard",
         name: "dashboard",
         meta: {
-            title: "ecoserve - Dashboard",
+            title: prefix + "ecoserve - Dashboard",
             requiresAuth: true
         },
         component: () => import("@/views/Dashboard.vue")
@@ -86,7 +93,7 @@ const routes = [
         path: "/auth/verify",
         name: "verify",
         meta: {
-            title: "Account verification"
+            title: prefix + "Account verification"
         },
         component: () => import("@/views/Verify.vue")
     },
@@ -94,7 +101,7 @@ const routes = [
         path: "/auth/settings",
         name: "settings",
         meta: {
-            title: "ecoserve - Settings",
+            title: prefix + "ecoserve - Settings",
             requiresAuth: true
         },
         component: () => import("@/views/Settings.vue")
@@ -103,7 +110,7 @@ const routes = [
         path: "*",
         name: "notFound",
         meta: {
-            title: "Page not found"
+            title: prefix + "Page not found"
         },
         component: () => import("@/views/404.vue")
     }

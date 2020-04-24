@@ -5,9 +5,7 @@
                 project.name
             }}</router-link>
         </h5>
-        <p>
-            {{ project.description }}
-        </p>
+        <p>{{ project.description }}</p>
     </div>
 </template>
 

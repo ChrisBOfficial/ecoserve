@@ -3,7 +3,20 @@
         <Header />
         <div id="dashboardContainer">
             <b-tabs content-class="mt-2" style="padding: 140px 2rem 0vh 2rem;" pills align="center">
-                <b-tab title="Flower diagrams" active>
+                <b-tab active>
+                    <template v-slot:title>About</template>
+                    <div style="margin: 50px auto;">
+                        <h4 style="text-align: center;">{{ projectName }}</h4>
+                        <h5 v-if="this.$route.query.view !== 'static'" style="text-align: center;">
+                            {{ project.description }}
+                        </h5>
+
+                        <p v-if="this.$route.query.view !== 'static'" style="margin-top: 30px; text-align: center;">
+                            <strong>Survey link: </strong>{{ surveyLink }}
+                        </p>
+                    </div>
+                </b-tab>
+                <b-tab title="Flower diagrams">
                     <CircularChart ref="circularRef" :loading="circularLoading" />
                 </b-tab>
                 <b-tab title="Bar charts">
@@ -34,7 +47,7 @@
                 </b-tab>
             </b-tabs>
         </div>
-        <div v-if="staticView">
+        <div v-if="liveView">
             <b-button @click="downloadZip" style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
                 Download ZIP
             </b-button>
@@ -97,7 +110,9 @@ export default {
             circularLoading: true,
             socket: {},
             lastUpdate: 0,
+            projectName: String,
             surveyId: String,
+            surveyLink: String,
             intervalId: Number
         };
     },
@@ -121,15 +136,21 @@ export default {
                 return prunedData;
             }
         }),
-        staticView: function() {
+        liveView: function() {
             return !this.circularLoading && this.$route.query.view !== "static";
         }
     },
     created() {
         window.scrollTo(0, 0);
+        this.projectName = this.$route.query.id.split("+")[0];
+        this.surveyId = this.$route.query.id.split("+")[1];
+        this.surveyLink =
+            "https://" +
+            window.axios.defaults.headers["q-data-center"].substring(0, 3) +
+            ".qualtrics.com/jfe/form/" +
+            this.surveyId;
     },
     mounted() {
-        this.surveyId = this.$route.query.id.split("+")[1];
         this.loadProject(this.$route.query.id).then(() => {
             this.loadData();
         });
