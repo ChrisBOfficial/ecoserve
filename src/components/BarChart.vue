@@ -15,11 +15,16 @@ const d3 = Object.assign(
 );
 
 export default {
-    props: ["aggregateData", "bardomain"],
+    props: ["aggregateData", "bardomain", "legendLabel"],
     computed: {
         ...mapState({
             project: state => state.projects.project
         })
+    },
+    watch: {
+        legendLabel: function(newVal) {
+            d3.selectAll(".legendLabel").text(newVal);
+        }
     },
     methods: {
         makeChart() {
@@ -166,12 +171,19 @@ export default {
                 .scaleOrdinal()
                 .domain(keys)
                 .range(["#3574c7", "#96cdfa", "#ede592", "#ec5428", "#bd271a", "#633e19"]);
-            let legend = "Confidence";
+
+            let legend;
+            if (this.$props.legendLabel === "") {
+                legend = " "; //! Just using an empty string caused rendering issues with D3
+            } else {
+                legend = this.$props.legendLabel;
+            }
             let size = 20;
             svg.selectAll("mytitle")
                 .data(legend)
                 .enter()
                 .append("text")
+                .attr("class", "legendLabel")
                 .attr("x", width + 120)
                 .attr("y", 75)
                 .style("fill", "black")
