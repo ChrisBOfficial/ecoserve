@@ -26,19 +26,19 @@ export default {
             let data = this.aggregateData.data.sort((a, b) =>
                 a.subquestion > b.subquestion ? 1 : b.subquestion > a.subquestion ? -1 : 0
             );
-            let margin = { top: 20, right: 20, bottom: 50, left: 70 };
+            let margin = { top: 20, right: 20, bottom: 50, left: 80 };
             let width = 650 - margin.left - margin.right;
             let expansion = data.length;
             if (expansion > 10) {
-                width = width + (expansion - 10) * 20;
+                width = width + (expansion - 10) * 5;
             }
             let height = 325 - margin.top - margin.bottom;
             let svg = d3
                 .select(this.$el)
                 .append("svg")
                 .attr("class", "barChart")
-                .attr("height", 400)
-                .attr("width", 800);
+                .attr("height", 500)
+                .attr("width", 1000);
 
             let x = d3
                 .scaleBand()
@@ -105,8 +105,8 @@ export default {
                     .selectAll("text")
                     .style("text-anchor", "end")
                     .style("fill", "black")
-                    .attr("dx", "-.8em")
-                    .attr("dy", "-.55em")
+                    .attr("dx", "-1em")
+                    .attr("dy", "1em")
                     .attr("transform", "translate(0, 133) rotate(-45)");
                 //* Add whiskers
                 elem.selectAll("rectWhisker")
