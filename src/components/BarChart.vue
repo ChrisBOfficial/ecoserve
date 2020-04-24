@@ -167,10 +167,14 @@ export default {
 
             //* Add legend
             let keys = ["Extreme", "High", "Moderate", "Low", "None", "N/A"];
+            if (this.project.comparisonData.length > 0) {
+                keys.push("Scientific Standard");
+            }
+
             let color = d3
                 .scaleOrdinal()
                 .domain(keys)
-                .range(["#3574c7", "#96cdfa", "#ede592", "#ec5428", "#bd271a", "#633e19"]);
+                .range(["#3574c7", "#96cdfa", "#ede592", "#ec5428", "#bd271a", "#633e19", "grey"]);
 
             let legend;
             if (this.$props.legendLabel === "") {
@@ -202,8 +206,24 @@ export default {
                 }) // 100 first dot, 25 distance
                 .attr("width", size)
                 .attr("height", size)
-                .style("fill", function(d) {
+                .attr("fill", function(d) {
                     return color(d);
+                })
+                .attr("stroke", function(d){
+                    if (color(d) == "grey"){
+                        return "black";
+                    }
+                    else{
+                        return "none";
+                    }
+                })
+                .attr("fill-opacity", function(d){
+                    if (color(d) == "grey"){
+                        return 0.35;
+                    }
+                    else {
+                        return 100;
+                    }
                 });
 
             //* Add legend labels
