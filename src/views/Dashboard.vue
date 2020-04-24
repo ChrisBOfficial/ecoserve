@@ -49,7 +49,7 @@
         </div>
         <div v-if="liveView">
             <b-button @click="downloadZip" style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
-                Download ZIP
+                {{ downloadText }}
             </b-button>
             <b-button @click="downloadCSV" style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
                 Download Data
@@ -85,13 +85,13 @@ const exportSettings = {
     },
     barChart: {
         directory: "Bar Graphs",
-        height: 400,
-        width: 800
+        height: 1600,
+        width: 3200
     },
     circleChart: {
         directory: "Circle Graphs",
-        height: 380,
-        width: 330
+        height: 1520,
+        width: 1320
     }
 };
 
@@ -107,6 +107,7 @@ export default {
         return {
             axisLabel: "",
             zipFile: new JSZip(),
+            downloadText: "DOWNLOAD ZIP",
             circularLoading: true,
             socket: {},
             lastUpdate: 0,
@@ -294,9 +295,11 @@ export default {
         },
         // Download the zip file
         async downloadZip() {
+            this.downloadText = "LOADING...";
             await this.generateZipFile();
             const content = await this.zipFile.generateAsync({ type: "blob" });
             FileSaver.saveAs(content, "Charts.zip");
+            this.downloadText = "DOWNLOAD ZIP";
         },
         getBarDomain(question) {
             let data = question.c;
@@ -316,18 +319,6 @@ export default {
                 solid: true,
                 noCloseButton: true
             });
-        },
-        async downloadJSON() {
-            const questions = this.barchartAggregate;
-
-            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(questions, null, 4));
-            let jsonElement = document.createElement("a");
-
-            jsonElement.setAttribute("href", dataStr);
-            jsonElement.setAttribute("download", "summarized.json");
-            document.body.appendChild(jsonElement);
-            jsonElement.click();
-            jsonElement.remove();
         },
         JSONtoCSV() {
             const questions = this.barchartAggregate;
