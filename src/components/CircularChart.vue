@@ -42,7 +42,7 @@ export default {
             });
 
             // Set dimensions
-            let margin = { top: 10, right: 10, bottom: 30, left: 10 },
+            let margin = { top: 10, right: 10, bottom: 60, left: 10 },
                 width = 310,
                 height = 310,
                 innerRadius = 76,
@@ -132,12 +132,15 @@ export default {
                             }
                             row.Impact = impactText;
                             let group_mean = bca[index].group_mean;
-                            console.log("group mean: " + group_mean)
-                            console.log("individual mean" + impactNum)
+                            console.log("group mean: " + group_mean);
+                            console.log("individual mean" + impactNum);
                             //let group_mean = (comparator * data.values.length - impactNum) / (data.values.length - 1);
                             let ratio;
-                            if (group_mean === 0){ratio = 0;}
-                            else {ratio = (group_mean - impactNum) / group_mean;}
+                            if (group_mean === 0) {
+                                ratio = 0;
+                            } else {
+                                ratio = (group_mean - impactNum) / group_mean;
+                            }
                             ratio = Math.abs(ratio);
                             console.log("ratio: " + ratio);
                             let vsval;
@@ -173,8 +176,7 @@ export default {
                             .append("xhtml:body")
                             .append("table")
                             .attr("width", "100%")
-                            .attr("class", "table-bordered")
-                            .style("margin-top", (450 - (rowData.length + 1) * 28) / 2 + "px");
+                            .attr("class", "table-bordered");
                         let thead = table.append("thead");
                         let tbody = table.append("tbody");
 
@@ -210,11 +212,11 @@ export default {
                             .style("color", function(d) {
                                 return colorMap[d.value.replace(" ", "_")];
                             });
-                        svg.attr("height", 505).attr("width", 490);
+                        svg.attr("height", (rowData.length + 1) * 50 + 20).attr("width", 490);
                     } else {
                         label.remove();
                         svg.select(".nutritionTable").remove();
-                        svg.attr("height", 350).attr("width", 330);
+                        svg.attr("height", 380).attr("width", 330);
                     }
                 })
                 .append("g")
@@ -251,17 +253,7 @@ export default {
                         })
                         .padAngle(0.01)
                         .padRadius(innerRadius)
-                )
-                .on("mouseover", function(d) {
-                    tooltipDiv
-                        .html(d.service)
-                        .style("opacity", 0.9)
-                        .style("left", currentEvent.pageX + "px")
-                        .style("top", currentEvent.pageY - 28 + "px");
-                })
-                .on("mouseout", function() {
-                    tooltipDiv.style("opacity", 0);
-                });
+                );
 
             //* Add the negative bars
             svg.append("g")
@@ -295,7 +287,33 @@ export default {
                         })
                         .padAngle(0.01)
                         .padRadius(innerRadius)
+                );
+
+            //* Add invisible bars for tooltips
+            svg.append("g")
+                .attr("class", "positiveBars")
+                .selectAll("path")
+                .data(results)
+                .enter()
+                .append("path")
+                .attr(
+                    "d",
+                    d3
+                        .arc()
+                        .innerRadius(0)
+                        .outerRadius(function() {
+                            return y(10);
+                        })
+                        .startAngle(function(d) {
+                            return x(d.service);
+                        })
+                        .endAngle(function(d) {
+                            return x(d.service) + x.bandwidth();
+                        })
+                        .padAngle(0.01)
+                        .padRadius(innerRadius)
                 )
+                .attr("fill-opacity", 0)
                 .on("mouseover", function(d) {
                     tooltipDiv
                         .html(d.service)
@@ -347,7 +365,7 @@ export default {
             //* Add the chart label
             svg.append("text")
                 .text(category)
-                .attr("transform", "translate(" + textWidth / -2 + "," + height / 2 + ")")
+                .attr("transform", "translate(" + textWidth / -2 + "," + (height + 30) / 2 + ")")
                 .attr("class", "circularChartName")
                 .style("font-size", "0.9rem")
                 .style("font-weight", 800)

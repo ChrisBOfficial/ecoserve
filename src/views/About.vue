@@ -161,4 +161,13 @@ i.las.text-primary {
         margin: 25px 0;
     }
 }
+
+a {
+    color: #007bff;
+}
+
+a:focus,
+a:hover {
+    color: #0056b3;
+}
 </style>

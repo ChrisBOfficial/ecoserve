@@ -77,7 +77,7 @@ const exportSettings = {
     },
     circleChart: {
         directory: "Circle Graphs",
-        height: 350,
+        height: 380,
         width: 330
     }
 };
@@ -308,31 +308,45 @@ export default {
             jsonElement.click();
             jsonElement.remove();
         },
-        JSONtoCSV(){
+        JSONtoCSV() {
             const questions = this.barchartAggregate;
             let header = ["id", "service", "group_mean", "subquestion", "mean", "se", "confidence_num", "confidence"];
             let row = [];
             let formatted = [];
             formatted.push(header);
-            for (let q = 0; q < questions.length; q++){
+            for (let q = 0; q < questions.length; q++) {
                 let data = questions[q].data;
-                for (let d = 0; d < data.length; d++){
-                    row.push(questions[q]._id, questions[q].service, questions[q].group_mean,
-                        data[d].subquestion, data[d].mean, data[d].se, data[d].confidence_num, data[d].confidence);
+                for (let d = 0; d < data.length; d++) {
+                    row.push(
+                        questions[q]._id,
+                        questions[q].service,
+                        questions[q].group_mean,
+                        data[d].subquestion,
+                        data[d].mean,
+                        data[d].se,
+                        data[d].confidence_num,
+                        data[d].confidence
+                    );
                     formatted.push(row);
                     row = [];
                 }
             }
             return formatted;
         },
-        async downloadCSV(){
+        async downloadCSV() {
             let formatted = this.JSONtoCSV();
-            const csv = formatted.map(row => row.map(item => (typeof item === 'string' && item.indexOf(',') >=0) ? `"${item}"`: String(item)).join(',')).join('\n');
+            const csv = formatted
+                .map(row =>
+                    row
+                        .map(item => (typeof item === "string" && item.indexOf(",") >= 0 ? `"${item}"` : String(item)))
+                        .join(",")
+                )
+                .join("\n");
             // Format the CSV string
-            const data = encodeURI('data:text/csv;charset=utf-8,' + csv);
-            const link = document.createElement('a');
-            link.setAttribute('href', data);
-            link.setAttribute('download', 'export.csv');
+            const data = encodeURI("data:text/csv;charset=utf-8," + csv);
+            const link = document.createElement("a");
+            link.setAttribute("href", data);
+            link.setAttribute("download", "export.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
