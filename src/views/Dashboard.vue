@@ -84,12 +84,12 @@ const exportSettings = {
         width: 2400
     },
     barChart: {
-        directory: "Bar Graphs",
+        directory: "Bar charts",
         height: 3200,
         width: 6400
     },
     circleChart: {
-        directory: "Circle Graphs",
+        directory: "Flower diagrams",
         height: 3040,
         width: 2640
     }
