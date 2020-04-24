@@ -119,14 +119,14 @@ export default {
                     .attr("fill", "black")
                     .attr("x", d => x(d.subquestion) - 1 + x.bandwidth() / 2)
                     .attr("class", d => d.subquestion)
-                    .attr("y", d => (d.mean <= 0 ?  y(d.mean + d.se) :  y(d.mean + d.se)))
+                    .attr("y", d => y(d.mean + d.se))
                     .attr("width", 2)
                     .transition()
                     .delay((d, i) => {
                         return i * 100;
                     })
                     .duration(1000)
-                    .attr("height", d => (d.mean <= 0 ? y(0) - y(d.se * 2) : y(0) - y(d.se * 2)));
+                    .attr("height", d => y(0) - y(d.se * 2));
 
                 //* Add overlays
                 if (vm.project.comparisonData.length > 0) {
