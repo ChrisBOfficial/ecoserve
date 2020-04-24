@@ -54,8 +54,6 @@ export default {
             let yAxis = d3.axisLeft(y).ticks(11);
 
             function addRectsWithName(elem, vm) {
-
-
                 //* Add Y axis
                 elem.append("g")
                     .attr("class", "y axis")
@@ -72,7 +70,7 @@ export default {
                     .enter()
                     .append("rect")
                     .attr("fill", d => {
-                        if (d.confidence_num != null){
+                        if (d.confidence_num != null) {
                             if (d.confidence_num > 2.4) {
                                 return "#3574c7";
                             } else if (d.confidence_num <= 2.4 && d.confidence_num > 0.8) {
@@ -81,17 +79,16 @@ export default {
                                 return "#ede592";
                             } else if (d.confidence_num <= -0.8 && d.confidence_num > -2.4) {
                                 return "#ec5428";
-                            } else if (d.confidence_num <= -2.4){
+                            } else if (d.confidence_num <= -2.4) {
                                 return "#bd271a";
                             }
-                        }
-                         else {
+                        } else {
                             return "#633e19";
                         }
                     })
                     .attr("x", d => x(d.subquestion))
                     .attr("class", d => d.subquestion)
-                    .attr("y", d => (d.mean <= 0 ? y(0): y(d.mean))) //y(-1) because y(0) causes bar to overlap axis
+                    .attr("y", d => (d.mean <= 0 ? y(0) : y(d.mean))) //y(-1) because y(0) causes bar to overlap axis
                     .attr("width", x.bandwidth())
                     .transition()
                     .delay((d, i) => {
@@ -119,7 +116,7 @@ export default {
                     .attr("fill", "black")
                     .attr("x", d => x(d.subquestion) - 1 + x.bandwidth() / 2)
                     .attr("class", d => d.subquestion)
-                    .attr("y", d => (d.mean <= 0 ?  y(d.mean) :  y(d.mean) - (d.se)))
+                    .attr("y", d => (d.mean <= 0 ? y(d.mean + d.se) : y(d.mean + d.se)))
                     .attr("width", 2)
                     .transition()
                     .delay((d, i) => {
