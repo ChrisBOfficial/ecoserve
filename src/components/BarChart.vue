@@ -168,7 +168,7 @@ export default {
             //* Add legend
             let keys = ["Extreme", "High", "Moderate", "Low", "None", "N/A"];
             if (this.project.comparisonData.length > 0) {
-                keys.push("Scientific Standard");
+                keys.push("Comparisons");
             }
 
             let color = d3
