@@ -28,6 +28,7 @@
                                 :ref="question._id"
                                 :aggregate-data="question"
                                 :bardomain="getBarDomain(question)"
+                                :legendLabel="legendLabel"
                             />
                             <h3 class="axisText">{{ axisLabel }}</h3>
                         </b-tab>
@@ -56,8 +57,13 @@
             </b-button>
             <b-form-input
                 v-model.trim="axisLabel"
-                placeholder="Enter bar chart y-axis label"
-                style="max-width: 20%;"
+                placeholder="Enter y-axis label"
+                style="max-width: 15%;"
+            ></b-form-input>
+            <b-form-input
+                v-model.trim="legendLabel"
+                placeholder="Enter the legend's label"
+                style="margin-left: 20px; max-width: 15%;"
             ></b-form-input>
             <div @click="sharePage" class="btn btn-outline btn-xl">Share this page</div>
         </div>
@@ -106,6 +112,7 @@ export default {
     data() {
         return {
             axisLabel: "",
+            legendLabel: "",
             zipFile: new JSZip(),
             downloadText: "DOWNLOAD ZIP",
             circularLoading: true,
