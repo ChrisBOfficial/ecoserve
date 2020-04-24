@@ -126,7 +126,7 @@ export default {
                         return i * 100;
                     })
                     .duration(1000)
-                    .attr("height", d => (d.mean <= 0 ? y(0) - y(d.se) : y(0) - y(d.se * 2)));
+                    .attr("height", d => (d.mean <= 0 ? y(0) - y(d.se * 2) : y(0) - y(d.se * 2)));
 
                 //* Add overlays
                 if (vm.project.comparisonData.length > 0) {
