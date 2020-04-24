@@ -1,7 +1,7 @@
 const barchartPipeline = function(surveyId) {
     return [{$match: {
             surveyId: surveyId
-            }}, {$facet: {
+        }}, {$facet: {
             r: [
                 {
                     $project: {
@@ -268,30 +268,83 @@ const barchartPipeline = function(surveyId) {
                     }
                 }
             ],
-            c: [{
-                $project: {
-                    choices: 1
-                }},
-                {$unwind: '$choices'},
-                {$project: {
+            c: [
+                {
+                    $project: {
+                        choices: 1
+                    }
+                },
+                {
+                    $unwind: '$choices'
+                },
+                {
+                    $project: {
                         _id: 0,
                         question: '$choices.question',
-                        choices: {$objectToArray: '$choices.choices'}
-                    }},
-                {$group: {_id: '$question',
-                        values: {$push: {recode: '$choices.v.recode', choiceText: '$choices.v.choiceText'}}}
+                        choices: {
+                            $objectToArray: '$choices.choices'
+                        }
+                    }
                 },
-                {$project: {
+                {
+                    $group: {
+                        _id: '$question',
+                        values: {
+                            $push: {
+                                recode: '$choices.v.recode',
+                                choiceText: '$choices.v.choiceText'
+                            }
+                        }
+                    }
+                },
+                {
+                    $project: {
                         _id: 0,
                         QID: '$_id',
-                        recode: {$arrayElemAt: ['$values.recode', 0]},
-                        choiceText: {$arrayElemAt: ['$values.choiceText',0]
+                        recode: {
+                            $arrayElemAt: [
+                                '$values.recode',
+                                0
+                            ]
+                        },
+                        choiceText: {
+                            $arrayElemAt: [
+                                '$values.choiceText',
+                                0
+                            ]
                         }
+                    }
+                },
+                {$unwind: '$recode'},
+                {$project: {
+                        QID:1, choiceText:1,
+                        recode: {$toInt: '$recode'}
+                    }
+                },
+                {$group: {
+                        _id: '$QID',
+                        choiceText: {$max: '$choiceText'},
+                        recode: {$push: {re: '$recode'}}
                     }},
-                {$project: {QID: 1,
-                        re: {$max: "$recode"},
-                        impactText: {$zip: {inputs: ['$recode', '$choiceText']}}
-                    }}
+
+                {
+                    $project: {
+                        QID: '$_id',
+                        _id:0,
+                        re: {
+                            $max: '$recode.re'
+                        },
+                        impactText: {
+                            $zip: {
+                                inputs: [
+                                    '$recode.re',
+                                    '$choiceText'
+                                ]
+                            }
+                        }
+                    }
+                }
+
             ]
         }}, {$project: {
             'final': {
@@ -299,7 +352,8 @@ const barchartPipeline = function(surveyId) {
                     '$r',
                     '$d'
                 ]
-            }, c:1
+            },
+            c: 1
         }}, {$unwind: {
             path: '$final'
         }}, {$group: {
@@ -322,10 +376,14 @@ const barchartPipeline = function(surveyId) {
             se: {
                 $max: '$final.se'
             },
-            c: {$max: '$c'}
+            c: {
+                $max: '$c'
+            }
         }}, {$group: {
             _id: '$_id.QID',
-            c: {$max: '$c'},
+            c: {
+                $max: '$c'
+            },
             service: {
                 $max: '$service'
             },
@@ -343,7 +401,7 @@ const barchartPipeline = function(surveyId) {
                                     'case': {
                                         $lte: [
                                             '$confidence',
-                                            1
+                                            -2.4
                                         ]
                                     },
                                     then: 'None'
@@ -352,7 +410,7 @@ const barchartPipeline = function(surveyId) {
                                     'case': {
                                         $lte: [
                                             '$confidence',
-                                            2
+                                            -0.8
                                         ]
                                     },
                                     then: 'Low'
@@ -361,7 +419,7 @@ const barchartPipeline = function(surveyId) {
                                     'case': {
                                         $lte: [
                                             '$confidence',
-                                            3
+                                            0.8
                                         ]
                                     },
                                     then: 'Moderate'
@@ -370,16 +428,16 @@ const barchartPipeline = function(surveyId) {
                                     'case': {
                                         $lte: [
                                             '$confidence',
-                                            4
+                                            2.4
                                         ]
                                     },
                                     then: 'High'
                                 },
                                 {
                                     'case': {
-                                        $lte: [
+                                        $gt: [
                                             '$confidence',
-                                            5
+                                            2.4
                                         ]
                                     },
                                     then: 'Extreme'

@@ -1,7 +1,7 @@
 <template>
     <div>
         <Header />
-        <div style="min-height: 716px;">
+        <div id="dashboardContainer">
             <b-tabs content-class="mt-2" style="padding: 140px 2rem 0vh 2rem;" pills align="center">
                 <b-tab title="Flower diagrams" active>
                     <CircularChart ref="circularRef" :loading="circularLoading" />
@@ -38,7 +38,7 @@
             <b-button @click="downloadZip" style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
                 Download ZIP
             </b-button>
-            <b-button @click="downloadJSON" style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
+            <b-button @click="downloadCSV" style="max-width: 20%; background-color: darkseagreen; margin: 1rem 1rem;">
                 Download Data
             </b-button>
             <b-form-input
@@ -143,7 +143,7 @@ export default {
                 this.surveyId,
                 function() {
                     console.log("Response received");
-                    if (Date.now() - this.lastUpdate >= 500) {
+                    if (Date.now() - this.lastUpdate >= 250) {
                         console.log("Updating...");
                         this.loadData();
                         this.lastUpdate = Date.now();
@@ -152,15 +152,15 @@ export default {
             );
 
             //* Refresh data every 30 seconds to grab any residual responses
-            // if (process.env.NODE_ENV === "production") {
-            //     this.intervalId = setInterval(
-            //         function() {
-            //             console.log("INTERVAL");
-            //             this.loadData();
-            //         }.bind(this),
-            //         30000
-            //     );
-            // }
+            if (process.env.NODE_ENV === "production") {
+                this.intervalId = setInterval(
+                    function() {
+                        console.log("INTERVAL");
+                        this.loadData();
+                    }.bind(this),
+                    30000
+                );
+            }
         }
     },
     destroyed() {
@@ -308,6 +308,35 @@ export default {
             jsonElement.click();
             jsonElement.remove();
         },
+        JSONtoCSV(){
+            const questions = this.barchartAggregate;
+            let header = ["id", "service", "group_mean", "subquestion", "mean", "se", "confidence_num", "confidence"];
+            let row = [];
+            let formatted = [];
+            formatted.push(header);
+            for (let q = 0; q < questions.length; q++){
+                let data = questions[q].data;
+                for (let d = 0; d < data.length; d++){
+                    row.push(questions[q]._id, questions[q].service, questions[q].group_mean,
+                        data[d].subquestion, data[d].mean, data[d].se, data[d].confidence_num, data[d].confidence);
+                    formatted.push(row);
+                    row = [];
+                }
+            }
+            return formatted;
+        },
+        async downloadCSV(){
+            let formatted = this.JSONtoCSV();
+            const csv = formatted.map(row => row.map(item => (typeof item === 'string' && item.indexOf(',') >=0) ? `"${item}"`: String(item)).join(',')).join('\n');
+            // Format the CSV string
+            const data = encodeURI('data:text/csv;charset=utf-8,' + csv);
+            const link = document.createElement('a');
+            link.setAttribute('href', data);
+            link.setAttribute('download', 'export.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        },
         sharePage() {
             this.$bvToast.toast("URL copied to clipboard!", {
                 toaster: "b-toaster-bottom-right",
@@ -317,7 +346,7 @@ export default {
                 autoHideDelay: 1250,
                 noHoverPause: true
             });
-            var linkText = document.createElement("textArea");
+            let linkText = document.createElement("textArea");
             linkText.value = window.location.href.slice(0, -4) + "static";
 
             // Avoid scrolling to bottom
@@ -342,6 +371,18 @@ export default {
 ::v-deep .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
     background-color: darkseagreen !important;
+}
+
+@media (max-height: 746px) {
+    #dashboardContainer {
+        min-height: 746px;
+    }
+}
+
+@media (min-height: 746px) {
+    #dashboardContainer {
+        min-height: 100vh;
+    }
 }
 
 .btn-outline {

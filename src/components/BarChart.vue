@@ -54,17 +54,7 @@ export default {
             let yAxis = d3.axisLeft(y).ticks(11);
 
             function addRectsWithName(elem, vm) {
-                //* Add X axis
-                elem.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + y(0) + ")")
-                    .call(xAxis)
-                    .selectAll("text")
-                    .style("text-anchor", "end")
-                    .style("fill", "black")
-                    .attr("dx", "-.8em")
-                    .attr("dy", "-.55em")
-                    .attr("transform", "translate(0, 133) rotate(-45)");
+
 
                 //* Add Y axis
                 elem.append("g")
@@ -82,29 +72,45 @@ export default {
                     .enter()
                     .append("rect")
                     .attr("fill", d => {
-                        if (d.confidence_num > 2) {
-                            return "#3574c7";
-                        } else if (d.confidence_num <= 2 && d.confidence_num > 0) {
-                            return "#96cdfa";
-                        } else if (d.confidence_num <= 0 && d.confidence_num > -2) {
-                            return "#ede592";
-                        } else if (d.confidence_num <= -2) {
-                            return "#ec5428";
-                        } else {
-                            return "#bd271a";
+                        if (d.confidence_num != null){
+                            if (d.confidence_num > 2.4) {
+                                return "#3574c7";
+                            } else if (d.confidence_num <= 2.4 && d.confidence_num > 0.8) {
+                                return "#96cdfa";
+                            } else if (d.confidence_num <= 0.8 && d.confidence_num > -0.8) {
+                                return "#ede592";
+                            } else if (d.confidence_num <= -0.8 && d.confidence_num > -2.4) {
+                                return "#ec5428";
+                            } else if (d.confidence_num <= -2.4){
+                                return "#bd271a";
+                            }
+                        }
+                         else {
+                            return "#633e19";
                         }
                     })
                     .attr("x", d => x(d.subquestion))
                     .attr("class", d => d.subquestion)
-                    .attr("y", d => (d.mean <= 0 ? y(-1): y(d.mean))) //y(-1) because y(0) causes bar to overlap axis
+                    .attr("y", d => (d.mean <= 0 ? y(0): y(d.mean))) //y(-1) because y(0) causes bar to overlap axis
                     .attr("width", x.bandwidth())
                     .transition()
                     .delay((d, i) => {
                         return i * 100;
                     })
                     .duration(1000)
-                    .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(-1) : y(0) - y(d.mean)));
+                    .attr("height", d => (d.mean <= 0 ? y(d.mean) - y(0) : y(0) - y(d.mean)));
 
+                //* Add X axis
+                elem.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + y(0) + ")")
+                    .call(xAxis)
+                    .selectAll("text")
+                    .style("text-anchor", "end")
+                    .style("fill", "black")
+                    .attr("dx", "-.8em")
+                    .attr("dy", "-.55em")
+                    .attr("transform", "translate(0, 133) rotate(-45)");
                 //* Add whiskers
                 elem.selectAll("rectWhisker")
                     .data(data)
@@ -158,11 +164,11 @@ export default {
                 .call(addRectsWithName, this);
 
             //* Add legend
-            let keys = ["Extreme", "High", "Moderate", "Low", "None"];
+            let keys = ["Extreme", "High", "Moderate", "Low", "None", "N/A"];
             let color = d3
                 .scaleOrdinal()
                 .domain(keys)
-                .range(["#3574c7", "#96cdfa", "#ede592", "#ec5428", "#bd271a"]);
+                .range(["#3574c7", "#96cdfa", "#ede592", "#ec5428", "#bd271a", "#633e19"]);
             let legend = "Confidence";
             let size = 20;
             svg.selectAll("mytitle")
