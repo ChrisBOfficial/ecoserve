@@ -91,13 +91,13 @@ const exportSettings = {
     },
     barChart: {
         directory: "Bar charts",
-        height: 3200,
-        width: 6400
+        height: 3500,
+        width: 7000
     },
     circleChart: {
         directory: "Flower diagrams",
-        height: 3040,
-        width: 2640
+        height: 6080,
+        width: 5280
     }
 };
 

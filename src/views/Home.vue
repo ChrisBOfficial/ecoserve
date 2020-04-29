@@ -441,12 +441,12 @@ section.cta .overlay {
 
 .device-mockup > .device {
     position: absolute;
-    top: -4.5rem;
+    top: -8rem;
     bottom: 0;
     left: -12rem;
     right: 0;
     width: 250%;
-    height: 180%;
+    height: 230%;
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }

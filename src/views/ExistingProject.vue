@@ -36,12 +36,12 @@
                 </b-row>
 
                 <b-row align-h="center" style="margin-bottom: 1rem;">
-                    <b-col class="col-4">
-                        <b-button @click="downloadJSON" style="background-color:DarkSeaGreen;">
+                    <b-col class="col-3">
+                        <b-button @click="downloadJSON" style="background-color: DarkSeaGreen; font-size: 10px;">
                             {{ downloadText }}
                         </b-button>
                     </b-col>
-                    <b-col class="col-4">
+                    <b-col class="col-3">
                         <div class="dropbox">
                             <input class="input-file" type="file" ref="file" accept=".json" @change="uploadJSON" />
                             <p>
@@ -49,18 +49,35 @@
                             </p>
                         </div>
                     </b-col>
+                    <b-col class="col-3">
+                        <b-button v-b-modal.modal-center-1 style="background-color: #dc3545; font-size: 10px;">
+                            Delete comparison data
+                        </b-button>
+                        <b-modal
+                            id="modal-center-1"
+                            centered
+                            title="Warning"
+                            ok-variant="danger"
+                            ok-title="Yes"
+                            cancel-title="No"
+                            :hide-header-close="true"
+                            v-on:ok="deleteComparison"
+                        >
+                            <p class="my-4">Are you sure you want to delete the comparison data?</p>
+                        </b-modal>
+                    </b-col>
                 </b-row>
 
                 <b-row>
                     <b-col>
                         <b-button
                             v-on:click="saveProject"
-                            style="background-color:DarkSeaGreen;"
-                            v-b-modal.modal-center-1
+                            style="background-color: DarkSeaGreen;"
+                            v-b-modal.modal-center-2
                             >SAVE PROJECT</b-button
                         >
                         <b-modal
-                            id="modal-center-1"
+                            id="modal-center-2"
                             centered
                             :hide-header="true"
                             size="sm"
@@ -73,11 +90,17 @@
                         </b-modal>
                     </b-col>
                     <b-col>
-                        <b-button style="background-color:DarkSeaGreen;" v-b-modal.modal-center-2
-                            >DELETE PROJECT</b-button
+                        <router-link
+                            :to="{ name: 'dashboard', query: { id: selected.projectId, view: 'live' } }"
+                            tag="b-button"
+                            style="background-color:DarkSeaGreen;"
+                            >Go To Visualization</router-link
                         >
+                    </b-col>
+                    <b-col>
+                        <b-button style="background-color: #dc3545;" v-b-modal.modal-center-3>DELETE PROJECT</b-button>
                         <b-modal
-                            id="modal-center-2"
+                            id="modal-center-3"
                             centered
                             title="Warning"
                             ok-variant="danger"
@@ -88,14 +111,6 @@
                         >
                             <p class="my-4">Are you sure you want to delete the project?</p>
                         </b-modal>
-                    </b-col>
-                    <b-col>
-                        <router-link
-                            :to="{ name: 'dashboard', query: { id: selected.projectId, view: 'live' } }"
-                            tag="b-button"
-                            style="background-color:DarkSeaGreen;"
-                            >Go To Visualization</router-link
-                        >
                     </b-col>
                 </b-row>
             </b-container>
@@ -122,7 +137,7 @@ export default {
             title: "",
             description: "",
             projectPicked: false,
-            uploadText: "Drag comparison data or click to browse",
+            uploadText: "Drag comparison data or browse",
             downloadText: "",
             selected: {},
             visualizations: [],
@@ -246,6 +261,9 @@ export default {
         },
         exitEditing() {
             this.$router.push("projects");
+        },
+        deleteComparison() {
+            this.comparisonData = [];
         },
         deleteProject() {
             const payload = {

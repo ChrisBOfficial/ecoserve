@@ -212,7 +212,7 @@ export default {
                             .style("color", function(d) {
                                 return colorMap[d.value.replace(" ", "_")];
                             });
-                        svg.attr("height", (rowData.length + 1) * 50 + 20).attr("width", 490);
+                        svg.attr("height", (rowData.length + 1) * 52 + 20).attr("width", 490);
                     } else {
                         label.remove();
                         svg.select(".nutritionTable").remove();
