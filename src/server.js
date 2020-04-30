@@ -172,7 +172,6 @@ app.route("/api/surveys/responses")
                                 // Delete the fields we don't need from Qualtrics
                                 [
                                     "startDate",
-                                    "endDate",
                                     "status",
                                     "ipAddress",
                                     "duration",
@@ -181,10 +180,20 @@ app.route("/api/surveys/responses")
                                     "locationLatitude",
                                     "locationLongitude",
                                     "distributionChannel",
-                                    "userLanguage"
+                                    "userLanguage",
+                                    "finished",
+                                    "progress"
                                 ].forEach(key => {
                                     delete values[key];
                                 });
+                                let v = Object.values(values);
+                                let email = results.indexOf(result).toString();
+                                for (let i = 0; i< v.length;i++){
+                                    if (v[i].toString().includes("@")){
+                                        email = v[i];
+                                    }
+                                }
+                                values.email = email;
                                 let resultObj = { values: values, labels: result.labels };
                                 responses.push(resultObj);
                             }

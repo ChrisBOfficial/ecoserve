@@ -10,11 +10,29 @@ const barchartPipeline = function(surveyId) {
                 },
                 {
                     $unwind: '$responses'
-                },
-                {
+                },{
                     $project: {
                         totals: {
                             $objectToArray: '$responses.values'
+                        },
+                        timestamp: {
+                            $toDate: '$responses.values.endDate'
+                        },
+                        email: '$responses.values.email'
+                    }
+                }, {
+                    $sort: {
+                        email: 1,
+                        timestamp: 1
+                    }
+                }, {
+                    $group: {
+                        _id: '$email',
+                        timestamp: {
+                            $last: '$timestamp'
+                        },
+                        totals: {
+                            $max: '$totals'
                         }
                     }
                 },
