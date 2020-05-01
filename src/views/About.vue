@@ -91,8 +91,8 @@
                     <p>
                         The IESAT was created in collaboration between the Center for Resilience in Working Agricultural
                         Landscapes and the College of Engineering at the University of Nebraska, Lincoln. Funding for
-                        this project was provided by Nebraska Game and Parks Commission W-125-R-1. The application was
-                        developed by:
+                        this project was provided by Nebraska Game and Parks Commission (W-125-R-1) and the National
+                        Science Foundation (OIA-1920938). The application was developed by:
                     </p>
                     <ul>
                         <li>
@@ -108,6 +108,16 @@
                             Stephen Ralph
                         </li>
                     </ul>
+                    <p>
+                        To reference the Integrative Ecosystem Service Analysis Tool, please use the following citation:
+                        <br />
+                        <br />
+                        <i
+                            >Fogarty, D.T., Burbach, C., Saltzman, A., Doan, V., Ralph, S., Twidwell, D. Integrative
+                            Ecosystem Service Analysis Tool. Retrieved from https://ecoserve-app.com (Last updated: 1
+                            May 2020).</i
+                        >
+                    </p>
                 </div>
                 <div class="col-sm-4">
                     <i class="las la-users text-primary"></i>
