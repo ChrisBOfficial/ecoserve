@@ -76,15 +76,15 @@ export default {
                     .append("rect")
                     .attr("fill", d => {
                         if (d.confidence_num != null) {
-                            if (d.confidence_num > 2.4) {
+                            if (d.confidence_num >=3.0) {
                                 return "#3574c7";
-                            } else if (d.confidence_num <= 2.4 && d.confidence_num > 0.8) {
+                            } else if (d.confidence_num < 3.0 && d.confidence_num >= 1.0) {
                                 return "#96cdfa";
-                            } else if (d.confidence_num <= 0.8 && d.confidence_num > -0.8) {
+                            } else if (d.confidence_num < 1.0 && d.confidence_num >= -1.0) {
                                 return "#ede592";
-                            } else if (d.confidence_num <= -0.8 && d.confidence_num > -2.4) {
+                            } else if (d.confidence_num < -1.0 && d.confidence_num >= -3.0) {
                                 return "#ec5428";
-                            } else if (d.confidence_num <= -2.4) {
+                            } else if (d.confidence_num < -3.0) {
                                 return "#bd271a";
                             }
                         } else {

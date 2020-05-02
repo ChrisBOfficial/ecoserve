@@ -417,48 +417,48 @@ const barchartPipeline = function(surveyId) {
                             branches: [
                                 {
                                     'case': {
-                                        $lte: [
+                                        $gte: [
                                             '$confidence',
-                                            -2.4
+                                            3.0
                                         ]
                                     },
-                                    then: 'None'
+                                    then: 'Extreme'
                                 },
                                 {
                                     'case': {
-                                        $lte: [
+                                        $gte: [
                                             '$confidence',
-                                            -0.8
-                                        ]
-                                    },
-                                    then: 'Low'
-                                },
-                                {
-                                    'case': {
-                                        $lte: [
-                                            '$confidence',
-                                            0.8
-                                        ]
-                                    },
-                                    then: 'Moderate'
-                                },
-                                {
-                                    'case': {
-                                        $lte: [
-                                            '$confidence',
-                                            2.4
+                                            1.0
                                         ]
                                     },
                                     then: 'High'
                                 },
                                 {
                                     'case': {
-                                        $gt: [
+                                        $gte: [
                                             '$confidence',
-                                            2.4
+                                            -1.0
                                         ]
                                     },
-                                    then: 'Extreme'
+                                    then: 'Moderate'
+                                },
+                                {
+                                    'case': {
+                                        $gte: [
+                                            '$confidence',
+                                            -3.0
+                                        ]
+                                    },
+                                    then: 'Low'
+                                },
+                                {
+                                    'case': {
+                                        $lt: [
+                                            '$confidence',
+                                            -3.0
+                                        ]
+                                    },
+                                    then: 'None'
                                 }
                             ],
                             'default': 'Moderate'
