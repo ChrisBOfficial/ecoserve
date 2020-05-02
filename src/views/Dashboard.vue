@@ -120,8 +120,7 @@ export default {
             lastUpdate: 0,
             projectName: String,
             surveyId: String,
-            surveyLink: String,
-            intervalId: Number
+            surveyLink: String
         };
     },
     computed: {
@@ -179,21 +178,9 @@ export default {
                     }
                 }.bind(this)
             );
-
-            //* Refresh data every 30 seconds to grab any residual responses
-            if (process.env.NODE_ENV === "production") {
-                this.intervalId = setInterval(
-                    function() {
-                        console.log("INTERVAL");
-                        this.loadData();
-                    }.bind(this),
-                    30000
-                );
-            }
         }
     },
     destroyed() {
-        clearInterval(this.intervalId);
         this.socket.close();
     },
     methods: {
@@ -303,9 +290,11 @@ export default {
         // Download the zip file
         async downloadZip() {
             this.downloadText = "LOADING...";
+            document.body.style.cursor = "wait";
             await this.generateZipFile();
             const content = await this.zipFile.generateAsync({ type: "blob" });
             FileSaver.saveAs(content, "Charts.zip");
+            document.body.style.cursor = "auto";
             this.downloadText = "DOWNLOAD ZIP";
         },
         getBarDomain(question) {
@@ -320,12 +309,13 @@ export default {
             return m;
         },
         showToast() {
-            this.$bvToast.toast("Bad data in survey response, will manually re-fetch in 30 seconds", {
+            this.$bvToast.toast("Bad data in survey response, manually re-fetching", {
                 toaster: "b-toaster-bottom-right",
                 variant: "warning",
                 solid: true,
                 noCloseButton: true
             });
+            this.loadData();
         },
         JSONtoCSV() {
             const questions = this.barchartAggregate;

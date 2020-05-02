@@ -21,11 +21,10 @@
                             ABOUT
                         </b-nav-item>
                         <b-nav-item-dropdown text="SUPPORT" style="margin: auto 1vw;">
-                            <b-dropdown-item href="https://www.guidetoes.eu/step3.html" target="_blank"
+                            <b-dropdown-item href="https://www.guidetoes.eu/index.html" target="_blank"
                                 >About ecosystem service assessments</b-dropdown-item
                             >
                             <b-dropdown-item to="/guidelines">User guide</b-dropdown-item>
-                            <b-dropdown-item>Project examples (coming soon)</b-dropdown-item>
                         </b-nav-item-dropdown>
                         <b-nav-item v-if="authorized" to="/projects" style="margin: auto 1vw;">
                             PROJECTS
