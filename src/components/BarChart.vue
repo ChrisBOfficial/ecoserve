@@ -209,19 +209,17 @@ export default {
                 .attr("fill", function(d) {
                     return color(d);
                 })
-                .attr("stroke", function(d){
-                    if (color(d) == "grey"){
+                .attr("stroke", function(d) {
+                    if (color(d) == "grey") {
                         return "black";
-                    }
-                    else{
+                    } else {
                         return "none";
                     }
                 })
-                .attr("fill-opacity", function(d){
-                    if (color(d) == "grey"){
+                .attr("fill-opacity", function(d) {
+                    if (color(d) == "grey") {
                         return 0.35;
-                    }
-                    else {
+                    } else {
                         return 100;
                     }
                 });
@@ -265,6 +263,5 @@ export default {
 .error-cap {
     stroke: #b30059;
     stroke-width: 2px;
-    stroke-type: solid;
 }
 </style>

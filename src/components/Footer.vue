@@ -9,7 +9,7 @@
                 <div class="col-md-4 mt-md-0 mt-3" />
                 <div class="col-md-2 mt-md-0 mt-3" />
                 <div class="col-md-2 mt-md-0 mt-3 text-md-right" style="padding-bottom: 24px;">
-                    <p id="footerLink" @click="footerRoute('guidelines')">User guide</p>
+                    <a id="footerLink" href="./etc/User Guide IESAT_Version 1.0.pdf" target="_blank">User guide</a>
                     <p id="footerLink" @click="footerRoute('security')">Security</p>
                     <a id="footerLink" href="./etc/privacyPolicy.pdf" target="_blank">Privacy policy</a>
                 </div>

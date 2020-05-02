@@ -24,7 +24,9 @@
                             <b-dropdown-item href="https://www.guidetoes.eu/index.html" target="_blank"
                                 >About ecosystem service assessments</b-dropdown-item
                             >
-                            <b-dropdown-item to="/guidelines">User guide</b-dropdown-item>
+                            <b-dropdown-item href="./etc/User Guide IESAT_Version 1.0.pdf" target="_blank"
+                                >User guide</b-dropdown-item
+                            >
                         </b-nav-item-dropdown>
                         <b-nav-item v-if="authorized" to="/projects" style="margin: auto 1vw;">
                             PROJECTS

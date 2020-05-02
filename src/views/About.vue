@@ -69,15 +69,15 @@
                     </ul>
                     <p>
                         To learn how to create an account, connect to a qualtrics account, and start creating projects
-                        see our user guide <router-link to="/guidelines">here</router-link>
+                        see our user guide <a href="./etc/User Guide IESAT_Version 1.0.pdf" target="_blank">here</a>
                     </p>
                     <br />
                     <h2>How does it work?</h2>
                     <br />
                     <p>
                         The IESAT works alongside Qualtrics survey software. You design the survey following our
-                        <router-link to="/guidelines">user guidelines</router-link> and IESAT builds user selected
-                        visualizations in real-time as surveys are completed
+                        <a href="./etc/User Guide IESAT_Version 1.0.pdf" target="_blank">user guidelines</a> and IESAT
+                        builds user selected visualizations in real-time as surveys are completed
                     </p>
                 </div>
             </div>

@@ -183,7 +183,8 @@
                                         <h3>Easy to start</h3>
                                         <p class="text-muted">
                                             Our user guide makes creating compatible surveys easy. Click
-                                            <router-link to="/guidelines">here</router-link> for more
+                                            <a href="./etc/User Guide IESAT_Version 1.0.pdf" target="_blank">here</a>
+                                            for more
                                         </p>
                                     </div>
                                 </div>
@@ -217,7 +218,9 @@
             <div class="cta-content">
                 <div class="container">
                     <h2>Stop waiting.<br />Start building.</h2>
-                    <router-link to="/guidelines" class="btn btn-outline btn-xl">See our user guide</router-link>
+                    <a href="./etc/User Guide IESAT_Version 1.0.pdf" target="_blank" class="btn btn-outline btn-xl"
+                        >See our user guide</a
+                    >
                 </div>
             </div>
             <div class="overlay"></div>

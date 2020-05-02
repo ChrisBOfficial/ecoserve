@@ -38,14 +38,6 @@ const routes = [
         component: () => import("@/views/Contact.vue")
     },
     {
-        path: "/guidelines",
-        name: "guidelines",
-        meta: {
-            title: prefix + "ecoserve - Guidelines"
-        },
-        component: () => import("@/views/Guidelines.vue")
-    },
-    {
         path: "/security",
         name: "security",
         meta: {

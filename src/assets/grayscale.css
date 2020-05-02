@@ -102,6 +102,7 @@ a:hover {
 
 #footerLink {
     color: white;
+    margin-top: 15px;
 }
 
 #footerLink:hover {
