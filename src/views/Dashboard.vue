@@ -437,7 +437,7 @@ export default {
 .axisText {
     font-size: 18px;
     transform: rotate(-90deg);
-    margin-top: -200px;
+    margin-top: -280px;
     margin-left: 10px;
     transform-origin: top left;
 }

@@ -76,7 +76,7 @@ export default {
                     .append("rect")
                     .attr("fill", d => {
                         if (d.confidence_num != null) {
-                            if (d.confidence_num >=3.0) {
+                            if (d.confidence_num >= 3.0) {
                                 return "#3574c7";
                             } else if (d.confidence_num < 3.0 && d.confidence_num >= 1.0) {
                                 return "#96cdfa";
@@ -254,14 +254,5 @@ export default {
     fill: none;
     stroke: #000;
     shape-rendering: crispEdges;
-}
-.error-line {
-    stroke: #b30059;
-    stroke-dasharray: 2, 2;
-}
-
-.error-cap {
-    stroke: #b30059;
-    stroke-width: 2px;
 }
 </style>
