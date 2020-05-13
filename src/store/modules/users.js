@@ -24,7 +24,7 @@ export default {
                             current.getSignInUserSession().getIdToken().payload.exp -
                             Math.floor(new Date().getTime() / 1000);
                         if (process.env.NODE_ENV == "development") {
-                            console.log("Token expires in " + expires + " seconds");
+                            // console.log("Token expires in " + expires + " seconds");
                         }
                         setTimeout(async () => {
                             await dispatch("fetchUser");

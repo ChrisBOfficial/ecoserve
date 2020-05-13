@@ -313,7 +313,6 @@ export default {
                 this.comparisonData = JSON.parse(reader.result);
             };
             reader.onerror = e => {
-                console.log("Error with uploading comparison data");
                 console.log(e);
             };
         }

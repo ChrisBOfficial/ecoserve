@@ -132,8 +132,6 @@ export default {
                             }
                             row.Impact = impactText;
                             let group_mean = bca[index].group_mean;
-                            console.log("group mean: " + group_mean);
-                            console.log("individual mean" + impactNum);
                             //let group_mean = (comparator * data.values.length - impactNum) / (data.values.length - 1);
                             let ratio;
                             if (group_mean === 0) {
@@ -142,7 +140,6 @@ export default {
                                 ratio = (group_mean - impactNum) / group_mean;
                             }
                             ratio = Math.abs(ratio);
-                            console.log("ratio: " + ratio);
                             let vsval;
                             if (ratio < 0.2) {
                                 vsval = "Similar";
@@ -159,7 +156,6 @@ export default {
                                     vsval = "Much better";
                                 }
                             }
-                            console.log("comparative_impact: " + vsval);
                             row.Comparative_Impact = vsval;
 
                             let bca1 = bca[index].data;
