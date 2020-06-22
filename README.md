@@ -1,25 +1,8 @@
 <img src="src/assets/ecoserve-lower.png" align="middle" />
 
-# Invasive Species
+# ecoserve
 
-### Deptartment of Agronomy and Horticulture
-
-#### Senior Design Repository
-
-**Authors:**
-
--   Christopher Burbach (Development Manager, Squad Lead)
--   Alexis Saltzman (Product Manager)
--   Stephen Ralph
--   Vy Doan
-
-**Tribe Lead:** Shruti Daggumati
-
-**Project Manager:** Melanie Kugler-Wright
-
-**Coach:** CJ O'Hara
-
-**Sponsor Contact:** Dillon Fogarty
+Repository for ecoserve-app.com. Created during the Fall 2019 and Spring 2020 semesters at UNL for the Senior Design program.
 
 # Technologies used
 
