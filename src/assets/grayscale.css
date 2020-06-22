@@ -1,0 +1,178 @@
+.masthead {
+    position: relative;
+    width: 100%;
+    height: auto;
+    min-height: 35rem;
+    padding: 15rem 0;
+    background: linear-gradient(to bottom, rgba(22, 22, 22, 0.1) 0%, rgba(22, 22, 22, 0.5) 75%, #161616 100%),
+        url("./matthew.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-size: cover;
+}
+
+.masthead h1 {
+    font-family: "Arial";
+    font-size: 2rem;
+    line-height: 2rem;
+    letter-spacing: 0.8rem;
+    background: -webkit-linear-gradient(rgba(255, 255, 255, 1), rgba(255, 255, 255, 0.65));
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}
+
+.masthead h2 {
+    max-width: 20rem;
+    font-size: 1rem;
+}
+
+@media (min-width: 768px) {
+    .masthead h1 {
+        font-size: 2.5rem;
+        line-height: 2.5rem;
+    }
+}
+
+@media (min-width: 992px) {
+    .masthead {
+        height: 100vh;
+        padding: 0;
+    }
+    .masthead h1 {
+        font-size: 3.5rem;
+        line-height: 3.5rem;
+        letter-spacing: 0.8rem;
+    }
+    .masthead h2 {
+        max-width: 30rem;
+        font-size: 1.25rem;
+    }
+}
+
+.btn {
+    box-shadow: 0 0.1875rem 0.1875rem 0 rgba(0, 0, 0, 0.1) !important;
+    padding: 1.25rem 2rem;
+    font-family: "Varela Round";
+    font-size: 80%;
+    text-transform: uppercase;
+    letter-spacing: 0.15rem;
+    border: 0;
+}
+
+.btn-primary {
+    background-color: darkseagreen;
+}
+
+.btn-primary:hover {
+    background-color: darkseagreen;
+}
+
+.btn-primary:focus {
+    background-color: #4f837f;
+    color: white;
+}
+
+.btn-primary:active {
+    background-color: #467370 !important;
+}
+
+body {
+    font-family: "Nunito";
+    letter-spacing: 0.0625em;
+}
+
+a {
+    color: darkseagreen;
+}
+
+a:focus,
+a:hover {
+    text-decoration: none;
+    color: #5f9f5f;
+}
+
+.text-primary {
+    color: #64a19d !important;
+}
+
+#footerCopy:hover {
+    cursor: default;
+}
+
+#footerLink {
+    color: white;
+    margin-top: 15px;
+}
+
+#footerLink:hover {
+    cursor: pointer;
+    color: lightgray;
+}
+
+.showcase .showcase-text {
+    padding: 3rem;
+}
+
+.showcase .showcase-img {
+    min-height: 30rem;
+    background-size: cover;
+}
+
+@media (min-width: 768px) {
+    .showcase .showcase-text {
+        padding: 7rem;
+    }
+}
+
+.features-icons {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+}
+
+.features-icons .features-icons-item {
+    max-width: 20rem;
+}
+
+.features-icons .features-icons-item .features-icons-icon {
+    height: 7rem;
+}
+
+.features-icons .features-icons-item .features-icons-icon i {
+    font-size: 4.5rem;
+    color: darkseagreen;
+}
+
+.features-icons .features-icons-item:hover .features-icons-icon i {
+    font-size: 5rem;
+}
+
+.dropbox {
+    outline: 2px dashed grey;
+    outline-offset: -10px;
+    background: darkseagreen;
+    color: white;
+    min-height: 59.2px;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    position: relative;
+    cursor: default;
+}
+
+.input-file {
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    cursor: default;
+}
+
+.dropbox:hover {
+    opacity: 0.8;
+}
+
+.dropbox p {
+    text-align: center;
+    padding-top: 19px;
+    font-size: 13px;
+}

@@ -1,0 +1,76 @@
+{
+    "name": "invasive-species",
+    "version": "1.0.0",
+    "private": true,
+    "description": "A web platform for visualizing Qualtrics survey responses.",
+    "scripts": {
+        "serve": "vue-cli-service serve",
+        "build": "vue-cli-service build",
+        "deploy": "npm run build && cd resources && ./prep-deploy.sh",
+        "devstart": "NODE_ENV=development nodemon src/server.js",
+        "prestart": "npm install",
+        "start": "node src/server.js",
+        "test": "mocha --exit"
+    },
+    "main": "server.js",
+    "dependencies": {
+        "aws-amplify": "^2.2.5",
+        "aws-sdk": "^2.648.0",
+        "axios": "^0.19.1",
+        "bootstrap-vue": "^2.1.0",
+        "canvas-toBlob": "^1.0.0",
+        "connect-history-api-fallback": "^1.6.0",
+        "cors": "^2.8.5",
+        "d3": "^5.12.0",
+        "d3-array": "2.3.3",
+        "d3-scale": "3.2.0",
+        "d3-selection": "1.4.0",
+        "d3-transition": "1.2.0",
+        "dotenv": "^8.2.0",
+        "express": "^4.17.1",
+        "file-saver": "^2.0.2",
+        "helmet": "^3.21.3",
+        "jszip": "^3.2.2",
+        "mongodb": "^3.5.2",
+        "request": "^2.88.0",
+        "socket.io": "^2.3.0",
+        "socket.io-client": "^2.3.0",
+        "unzip-stream": "^0.3.0",
+        "vue": "^2.6.10",
+        "vue-router": "^3.1.3",
+        "vuex": "^3.0.1"
+    },
+    "devDependencies": {
+        "@vue/cli-plugin-router": "^4.0.0",
+        "@vue/cli-plugin-vuex": "^4.0.0",
+        "@vue/cli-service": "^4.2.3",
+        "babel-eslint": "^10.0.3",
+        "eslint": "^6.6.0",
+        "eslint-plugin-vue": "^6.0.1",
+        "mocha": "^7.1.1",
+        "nodemon": "^2.0.2",
+        "supertest": "^4.0.2",
+        "vue-template-compiler": "^2.6.10"
+    },
+    "postcss": {
+        "plugins": {
+            "autoprefixer": {}
+        }
+    },
+    "browserslist": [
+        "> 1%",
+        "last 2 versions"
+    ],
+    "bugs": "https://github.com/cseseniordesign/invasive-species/issues",
+    "contributors": [
+        "Chris Burbach (Development Manager, Squad Lead)",
+        "Alexis Saltzman (Product Manager)",
+        "Stephen Ralph",
+        "Vy Doan"
+    ],
+    "homepage": "https://github.com/cseseniordesign/invasive-species#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/cseseniordesign/invasive-species.git"
+    }
+}

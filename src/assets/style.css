@@ -1,0 +1,71 @@
+.masthead-2 {
+    min-height: 500px;
+    margin-bottom: 10vh;
+}
+
+.contact-profile {
+    height: 35vh;
+}
+
+.thumb {
+    object-fit: cover;
+    width: 200px;
+    height: 200px;
+}
+
+@media (min-width: 768px) {
+    .thumb {
+        object-fit: cover;
+        width: 300px;
+        height: 300px;
+    }
+}
+
+@media (min-width: 991px) {
+    .thumb {
+        object-fit: cover;
+        width: 400px;
+        height: 400px;
+    }
+}
+
+@media (min-width: 1230px) {
+    .thumb {
+        object-fit: cover;
+        width: 600px;
+        height: 600px;
+    }
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Full-width input fields */
+input[type="text"] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Set a style for all buttons */
+button {
+    background-color: darkseagreen;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.container {
+    padding: 16px;
+}

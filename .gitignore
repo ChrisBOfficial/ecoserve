@@ -1,0 +1,37 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+**/.DS_Store
+*.zip
+node_modules
+/dist
+
+# Compiled binary addons
+build/Release
+
+# local env files
+env
+.env.local
+.env.*.local
+.env
+.env.test
+
+# Log files
+logs
+*.log
+npm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.swp
+.eslintrc.json
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
