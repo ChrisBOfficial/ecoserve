@@ -21,7 +21,9 @@
         </b-row>
         <br />
         <b-row class="align-items-center">
-            <b-button v-on:click="addVisualization" style="background-color:DarkSeaGreen;">ADD VISUALIZATION</b-button>
+            <b-button v-on:click="addVisualization" style="background-color:DarkSeaGreen;"
+                >ADD VISUALIZATION(s)</b-button
+            >
         </b-row>
         <br />
         <b-row class="align-items-center">
@@ -34,7 +36,7 @@
         <br />
         <b-row class="align-items-center">
             <b-button v-on:click="removeVisualization" style="background-color:DarkSeaGreen;">
-                REMOVE VISUALIZATION
+                REMOVE VISUALIZATION(s)
             </b-button>
         </b-row>
     </b-container>

@@ -37,24 +37,6 @@ dbClient.connect(err => {
 
 // Add express configurations
 app.use(helmet());
-app.use(
-    helmet.featurePolicy({
-        features: {
-            accelerometer: ["'none'"],
-            ambientLightSensor: ["'none'"],
-            autoplay: ["'none'"],
-            camera: ["'none'"],
-            geolocation: ["'none'"],
-            gyroscope: ["'none'"],
-            magnetometer: ["'none'"],
-            microphone: ["'none'"],
-            payment: ["'none'"],
-            speaker: ["'none'"],
-            usb: ["'none'"],
-            vibrate: ["'none'"]
-        }
-    })
-);
 app.use(helmet.permittedCrossDomainPolicies()); // Prevents Adobe Flash and Acrobat hijacking
 app.use(helmet.referrerPolicy({ policy: "same-origin" })); // Hides Referer header from other sites
 app.use(cors()); // Allow interaction with Vue serve and Qualtrics Web Listeners
@@ -188,8 +170,8 @@ app.route("/api/surveys/responses")
                                 });
                                 let v = Object.values(values);
                                 let email = results.indexOf(result).toString();
-                                for (let i = 0; i< v.length;i++){
-                                    if (v[i].toString().includes("@")){
+                                for (let i = 0; i < v.length; i++) {
+                                    if (v[i].toString().includes("@")) {
                                         email = v[i];
                                     }
                                 }
