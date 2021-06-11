@@ -2,6 +2,7 @@ const cors = require("cors");
 const express = require("express");
 const history = require("connect-history-api-fallback");
 const request = require("request");
+const axios = require("axios");
 const path = require("path");
 const unzip = require("unzip-stream");
 const util = require("util");
@@ -64,21 +65,24 @@ app.route("/api/surveys").get((req, res) => {
         specifier = req.query.surveyId;
     }
     let targetUrl = "https://" + req.headers["q-data-center"] + ".qualtrics.com/API/v3/surveys/" + specifier;
-    let options = {
-        method: "GET",
+
+    axios({
+        method: "get",
         url: targetUrl,
         headers: {
             "X-API-TOKEN": req.headers["x-api-token"]
         }
-    };
-    request(options, function(error, response, body) {
-        if (error) throw new Error(error);
-        if (response.statusCode !== 200) {
-            res.status(response.statusCode).send(response);
-        } else {
-            res.send(body);
-        }
-    });
+    })
+        .then(function(response) {
+            if (response.status !== 200) {
+                res.status(response.status).send(response);
+            } else {
+                res.send(response.data);
+            }
+        })
+        .catch(function(error) {
+            throw new Error(error);
+        });
 });
 
 //* Endpoint for survey response data and realtime hooks
@@ -103,6 +107,7 @@ app.route("/api/surveys/responses")
                     "X-API-TOKEN": req.headers["x-api-token"]
                 }
             };
+            //! _REQUEST
             let downloadRequestResponse = await requestPromise(options);
             let progressId = downloadRequestResponse.body.result.progressId;
 
@@ -119,6 +124,7 @@ app.route("/api/surveys/responses")
                         "X-API-TOKEN": req.headers["x-api-token"]
                     }
                 };
+                //! _REQUEST
                 let requestCheckResponse = await requestPromise(options);
                 parsedResponse = JSON.parse(requestCheckResponse.body);
                 progressStatus = parsedResponse.result.status;
@@ -136,6 +142,7 @@ app.route("/api/surveys/responses")
                     "X-API-TOKEN": req.headers["x-api-token"]
                 }
             };
+            //! _REQUEST
             request(options)
                 .pipe(unzip.Parse())
                 .on("entry", function(entry) {
@@ -230,6 +237,7 @@ app.route("/api/surveys/responses")
                         "content-type": "application/json"
                     }
                 };
+                //! _REQUEST
                 request(options, function(error, response, body) {
                     if (error) throw new Error(error);
                     if (response.statusCode == 200) {
@@ -307,6 +315,7 @@ app.route("/api/projects")
                 "X-API-TOKEN": req.headers["x-api-token"]
             }
         };
+        //! _REQUEST
         requestPromise(options)
             .then(response => {
                 const result = JSON.parse(response.body).result;
