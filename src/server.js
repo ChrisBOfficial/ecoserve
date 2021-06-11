@@ -115,17 +115,17 @@ app.route("/api/surveys/responses")
             let parsedResponse;
             while (progressStatus !== "complete" && progressStatus !== "failed") {
                 let requestCheckUrl = baseUrl + progressId;
-                let options = {
-                    method: "GET",
+
+                let requestCheckResponse = await axios({
+                    method: "get",
                     url: requestCheckUrl,
                     headers: {
-                        "content-type": "application/json",
-                        "X-API-TOKEN": req.headers["x-api-token"]
+                        "X-API-TOKEN": req.headers["x-api-token"],
+                        "content-type": "application/json"
                     }
-                };
-                //! _REQUEST
-                let requestCheckResponse = await requestPromise(options);
-                parsedResponse = JSON.parse(requestCheckResponse.body);
+                });
+
+                parsedResponse = requestCheckResponse.data;
                 progressStatus = parsedResponse.result.status;
             }
             if (progressStatus === "failed") throw new Error("export failed");
