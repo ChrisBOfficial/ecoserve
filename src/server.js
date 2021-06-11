@@ -312,17 +312,15 @@ app.route("/api/projects")
         }
     })
     .post((req, res) => {
-        let options = {
-            method: "GET",
+        axios({
+            method: "get",
             url: "https://" + req.headers["q-data-center"] + ".qualtrics.com/API/v3/surveys/" + req.body.surveyId,
             headers: {
                 "X-API-TOKEN": req.headers["x-api-token"]
             }
-        };
-        //! _REQUEST
-        requestPromise(options)
-            .then(response => {
-                const result = JSON.parse(response.body).result;
+        })
+            .then(function(response) {
+                const result = response.data.result;
                 // Create descriptions entry
                 let surveyData = [];
                 for (const column in result.exportColumnMap) {
@@ -369,8 +367,8 @@ app.route("/api/projects")
                         throw new Error(err);
                     });
             })
-            .catch(err => {
-                throw new Error(err);
+            .catch(function(error) {
+                throw new Error(error);
             });
     })
     .put((req, res) => {
