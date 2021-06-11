@@ -228,28 +228,32 @@ app.route("/api/surveys/responses")
                     publicationUrl: "https://ecoserve-app.com/api/listener?surveyId=" + surveyId,
                     encrypt: false
                 };
-                let options = {
-                    method: "POST",
+
+                axios({
+                    method: "post",
                     url: baseUrl,
-                    body: JSON.stringify(dataString),
+                    data: dataString,
                     headers: {
                         "X-API-TOKEN": req.headers["x-api-token"],
                         "content-type": "application/json"
                     }
-                };
-                //! _REQUEST
-                request(options, function(error, response, body) {
-                    if (error) throw new Error(error);
-                    if (response.statusCode == 200) {
-                        collection
-                            .updateMany({ surveyId: surveyId, accountToken: accountToken }, { $set: { hooked: true } })
-                            .catch(error => {
-                                throw new Error(error);
-                            });
-                    }
-
-                    res.send(body);
-                });
+                })
+                    .then(function(response) {
+                        if (response.status == 200) {
+                            collection
+                                .updateMany(
+                                    { surveyId: surveyId, accountToken: accountToken },
+                                    { $set: { hooked: true } }
+                                )
+                                .catch(error => {
+                                    throw new Error(error);
+                                });
+                        }
+                        res.send(response.data);
+                    })
+                    .catch(function(error) {
+                        throw new Error(error);
+                    });
             } else {
                 res.send("Webhook already exists for " + surveyId).status(200);
             }
