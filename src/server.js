@@ -6,6 +6,7 @@ const path = require("path");
 const unzip = require("unzip-stream");
 const helmet = require("helmet");
 const app = express();
+const http = require("http");
 
 require("dotenv").config(); // Loads .env file
 
@@ -43,10 +44,10 @@ app.use(express.json()); // Support JSON payloads in POST requests
 app.use(express.static(path.join(__dirname, distDirectory))); // Serve files in dist folder for all HTTP requests
 
 // Start server and socket.io instance on the port
-const server = app.listen(port, () => {
-    console.log("Server listening on port " + port);
-});
-const io = require("socket.io").listen(server);
+const server = http.createServer(app);
+const io = require("socket.io")(server);
+server.listen(port);
+console.log("Server listening on port " + port);
 
 // Root route will be redirected to index.html for Vue app
 app.get("/", (_, res) => {
