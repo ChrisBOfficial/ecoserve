@@ -88,6 +88,7 @@ app.route("/api/surveys").get((req, res) => {
 //* Endpoint for survey response data and realtime hooks
 app.route("/api/surveys/responses")
     .get((req, res) => {
+        // Hacking in an async function to avoid Promise hell and bc Qualtrics' API is weird
         async function respond(req, res) {
             // Create data export
             const surveyId = req.query.surveyId;
@@ -98,25 +99,23 @@ app.route("/api/surveys/responses")
                 ".qualtrics.com/API/v3/surveys/" +
                 surveyId +
                 "/export-responses/";
-            let options = {
-                method: "POST",
+
+            let downloadRequestResponse = await axios({
+                method: "post",
                 url: baseUrl,
-                json: { format: "json" },
+                data: { format: "json" },
                 headers: {
-                    "content-type": "application/json",
-                    "X-API-TOKEN": req.headers["x-api-token"]
+                    "X-API-TOKEN": req.headers["x-api-token"],
+                    "content-type": "application/json"
                 }
-            };
-            //! _REQUEST
-            let downloadRequestResponse = await requestPromise(options);
-            let progressId = downloadRequestResponse.body.result.progressId;
+            });
+            let progressId = downloadRequestResponse.data.result.progressId;
 
             // Checking on data export progress and waiting until ready
             let parsedResponse;
             while (progressStatus !== "complete" && progressStatus !== "failed") {
                 let requestCheckUrl = baseUrl + progressId;
-                delete options.json;
-                options = {
+                let options = {
                     method: "GET",
                     url: requestCheckUrl,
                     headers: {
@@ -134,7 +133,7 @@ app.route("/api/surveys/responses")
             // Downloading file
             let fileId = parsedResponse.result.fileId;
             let requestDownloadUrl = baseUrl + fileId + "/file";
-            options = {
+            let options = {
                 method: "GET",
                 url: requestDownloadUrl,
                 encoding: null,
