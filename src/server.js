@@ -1,13 +1,10 @@
 const cors = require("cors");
 const express = require("express");
 const history = require("connect-history-api-fallback");
-const request = require("request");
 const axios = require("axios");
 const path = require("path");
 const unzip = require("unzip-stream");
-const util = require("util");
 const helmet = require("helmet");
-const requestPromise = util.promisify(request);
 const app = express();
 
 require("dotenv").config(); // Loads .env file
@@ -133,18 +130,17 @@ app.route("/api/surveys/responses")
             // Downloading file
             let fileId = parsedResponse.result.fileId;
             let requestDownloadUrl = baseUrl + fileId + "/file";
-            let options = {
-                method: "GET",
+
+            axios({
+                method: "get",
                 url: requestDownloadUrl,
-                encoding: null,
+                responseType: "stream",
+                responseEncoding: null,
                 headers: {
                     "X-API-TOKEN": req.headers["x-api-token"]
                 }
-            };
-            //! _REQUEST
-            request(options)
-                .pipe(unzip.Parse())
-                .on("entry", function(entry) {
+            }).then(function(response) {
+                response.data.pipe(unzip.Parse()).on("entry", function(entry) {
                     // Get the file as a string
                     let chunks = [];
                     entry
@@ -205,6 +201,7 @@ app.route("/api/surveys/responses")
                             res.send(results);
                         });
                 });
+            });
         }
 
         respond(req, res);

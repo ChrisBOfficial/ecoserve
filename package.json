@@ -32,7 +32,6 @@
         "helmet": "^4.6.0",
         "jszip": "^3.6.0",
         "mongodb": "^3.6.9",
-        "request": "^2.88.2",
         "socket.io": "^2.4.1",
         "socket.io-client": "^2.4.0",
         "unzip-stream": "^0.3.1",
