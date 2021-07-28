@@ -106,7 +106,7 @@ export default {
         ...mapActions({
             loadSurveys: "surveys/loadSurveys",
             loadSurvey: "surveys/loadSurvey",
-            saveProject: "projects/saveProject"
+            createProject: "projects/createProject"
         }),
         ...mapMutations({
             setSurvey: "surveys/setSurvey",
@@ -152,7 +152,7 @@ export default {
                 comparisonData: this.comparisonData,
                 hooked: false
             };
-            this.saveProject(payload);
+            this.createProject(payload);
             this.$router.push("projects");
         },
         downloadJSON() {

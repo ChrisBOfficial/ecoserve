@@ -291,18 +291,18 @@ app.route("/api/listener").post((req, res) => {
 //* Endpoint for project documents in MongoDB
 app.route("/api/projects")
     .get((req, res) => {
-        const projectName = req.query.name;
-        const id = req.query.id;
+        const name = req.query.name;
+        const surveyId = req.query.id;
         const accountToken = req.headers["x-api-token"];
         const collection = dbClient.db("DB1").collection("Projects");
 
-        if (projectName === undefined && id === undefined) {
+        if (name === undefined && surveyId === undefined) {
             collection.find({ accountToken: accountToken }).toArray(function(err, docs) {
                 if (err) throw new Error(err);
                 res.send(docs);
             });
-        } else if (projectName !== undefined && id !== undefined) {
-            collection.findOne({ projectId: projectName + "+" + id }, function(err, result) {
+        } else if (name !== undefined && surveyId !== undefined) {
+            collection.findOne({ projectId: name + "+" + surveyId }, function(err, result) {
                 if (err) throw new Error(err);
                 res.send(result);
             });

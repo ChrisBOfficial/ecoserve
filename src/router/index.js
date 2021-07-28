@@ -70,7 +70,7 @@ const routes = [
             title: prefix + "ecoserve - Edit Project",
             requiresAuth: true
         },
-        component: () => import("@/views/ExistingProject.vue")
+        component: () => import("@/views/EditProject.vue")
     },
     {
         path: "/dashboard",

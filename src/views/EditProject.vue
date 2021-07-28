@@ -2,27 +2,12 @@
     <div>
         <Header />
         <section class="existing-project-container" style="padding: 15vh 0vh 0vh 0vh; min-height:100vh;">
-            <b-container v-show="!projectPicked">
-                <b-row>
-                    <b-form-select v-model="selected" :select-size="5">
-                        <option v-for="project in projects" :value="project" :key="project.name">
-                            {{ project.name }}
-                        </option>
-                    </b-form-select>
-                </b-row>
-                <b-row>
-                    <b-button v-on:click="selectProject" style="background-color:DarkSeaGreen;">
-                        Edit project
-                    </b-button>
-                </b-row>
-            </b-container>
-
-            <b-container v-show="projectPicked">
+            <b-container>
                 <b-row class="h-100">
                     <h1>{{ title }}</h1>
                 </b-row>
                 <b-row>
-                    <h4>Survey name: "{{ this.selectedSurvey.name }}"</h4>
+                    <h4>Survey name: {{ this.selectedSurvey.name }}</h4>
                 </b-row>
                 <b-row>
                     <b-form-input v-model.trim="title" placeholder="Enter Project Title"></b-form-input>
@@ -91,7 +76,7 @@
                     </b-col>
                     <b-col>
                         <router-link
-                            :to="{ name: 'dashboard', query: { id: selected.projectId, view: 'live' } }"
+                            :to="{ name: 'dashboard', query: { id: project.projectId, view: 'live' } }"
                             tag="b-button"
                             style="background-color:DarkSeaGreen;"
                             >Go To Visualization</router-link
@@ -124,7 +109,7 @@
 import VisualizationDashboard from "@/components/VisualizationDashboard.vue";
 import Header from "@/components/Header.vue";
 import Footer from "@/components/Footer.vue";
-import { mapActions, mapState, mapMutations } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
     components: {
@@ -136,10 +121,8 @@ export default {
         return {
             title: "",
             description: "",
-            projectPicked: false,
             uploadText: "Drag comparison data or browse",
             downloadText: "",
-            selected: {},
             visualizations: [],
             existingBlocks: [],
             comparisonData: [],
@@ -150,17 +133,10 @@ export default {
     },
     computed: {
         ...mapState({
-            projects: state => state.projects.projects,
+            project: state => state.projects.project,
             projectBlocks: state => state.projects.projectBlocks,
             selectedSurvey: state => state.surveys.survey
-        }),
-        projectNames: function() {
-            let names = [];
-            for (const project of this.projects) {
-                names.push(project.name);
-            }
-            return names;
-        }
+        })
     },
     async created() {
         window.scrollTo(0, 0);
@@ -168,49 +144,41 @@ export default {
         if (!window.axios.defaults.headers["x-api-token"] && !window.axios.defaults.headers["q-data-center"]) {
             await new Promise(r => setTimeout(r, 550));
         }
-        this.loadProjects();
+        await this.loadProject(this.$route.query.id);
+        this.loadSurvey(this.project.surveyId);
+
+        this.populateForm();
     },
     destroyed() {
         window.onbeforeunload = null;
     },
     methods: {
         ...mapActions({
-            loadProjects: "projects/loadProjects",
+            loadProject: "projects/loadProject",
             updateProject: "projects/updateProject",
             removeProject: "projects/deleteProject",
-            saveProjectBlocks: "projects/saveProjectBlocks",
             loadSurvey: "surveys/loadSurvey"
         }),
-        ...mapMutations({
-            setSelectedId: "projects/setSelectedProjectId"
-        }),
-        selectProject() {
-            // Prevent showing edit form if no project is selected
-            if (Object.entries(this.selected).length !== 0) {
-                this.title = this.selected.name;
-                this.description = this.selected.description;
-                this.projectPicked = !this.projectPicked;
-                this.loadSurvey(this.selected.surveyId);
-                this.saveProjectBlocks(this.selected.blocks);
+        populateForm() {
+            this.title = this.project.name;
+            this.description = this.project.description;
+            this.existingBlocks = this.project.blocks;
 
-                this.existingBlocks = this.selected.blocks;
-                for (const block of this.selected.blocks) {
-                    for (const graph of block.visuals) {
-                        this.visualizations.push(block.title + " - " + graph);
-                    }
+            for (const block of this.project.blocks) {
+                for (const graph of block.visuals) {
+                    this.visualizations.push(block.title + " - " + graph);
                 }
-
-                this.comparisonData = this.selected.comparisonData;
-                if (this.comparisonData.length > 0) {
-                    this.downloadText = "Download previous data";
-                } else {
-                    this.downloadText = "Download data template";
-                }
-
-                this.previousProjectId = this.selected.projectId;
-                this.hookStatus = this.selected.hooked;
-                this.setSelectedId(this.selected.projectId);
             }
+
+            this.comparisonData = this.project.comparisonData;
+            if (this.comparisonData.length > 0) {
+                this.downloadText = "Download previous data";
+            } else {
+                this.downloadText = "Download data template";
+            }
+
+            this.previousProjectId = this.project.projectId;
+            this.hookStatus = this.project.hooked;
         },
         validateForm(bvModalEvt) {
             let invalid = false;
@@ -225,7 +193,7 @@ export default {
                 this.validateErrors.push("Please provide a description");
                 invalid = true;
             }
-            if (this.selected.surveyId === undefined) {
+            if (this.project.surveyId === undefined) {
                 this.validateErrors.push("Project requires a survey");
                 invalid = true;
             }
@@ -249,14 +217,19 @@ export default {
                         accountToken: window.axios.defaults.headers["x-api-token"],
                         name: this.title,
                         description: this.description,
-                        surveyId: this.selected.surveyId,
-                        projectId: this.title + "+" + this.selected.surveyId,
+                        surveyId: this.project.surveyId,
+                        projectId: this.project.projectId,
                         blocks: this.projectBlocks,
                         comparisonData: this.comparisonData,
                         hooked: this.hookStatus
                     }
                 };
-                this.updateProject(payload);
+                this.updateProject(payload).then(() => {
+                    this.loadProject(this.$route.query.id).then(() => {
+                        this.visualizations = [];
+                        this.populateForm();
+                    });
+                });
             }
         },
         exitEditing() {
@@ -267,7 +240,7 @@ export default {
         },
         deleteProject() {
             const payload = {
-                projectId: this.title + "+" + this.selected.surveyId,
+                projectId: this.project.projectId,
                 accountToken: window.axios.defaults.headers["x-api-token"]
             };
             this.removeProject(payload);
@@ -275,8 +248,8 @@ export default {
         },
         downloadJSON() {
             let exportObj = [];
-            if (this.selected.comparisonData.length > 0) {
-                exportObj = this.selected.comparisonData;
+            if (this.project.comparisonData.length > 0) {
+                exportObj = this.project.comparisonData;
             } else {
                 const questions = this.selectedSurvey.questions;
 

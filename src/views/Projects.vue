@@ -6,7 +6,7 @@
                 <b-row class="h-100">
                     <b-col class="col-6 text-center align-items-center" id="ProjectList">
                         <h3>PROJECTS</h3>
-                        <b-col>
+                        <b-col style="padding-top: 15px;">
                             <ProjectDescription
                                 v-for="project in projects"
                                 :key="project.projectId"
@@ -16,14 +16,9 @@
                         <br />
 
                         <b-row>
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <router-link to="/newProject" tag="b-button" style="background-color:DarkSeaGreen;"
                                     >Create new project</router-link
-                                >
-                            </div>
-                            <div class="col-md-6 col-md-offset-6">
-                                <router-link to="/editProject" tag="b-button" style="background-color:DarkSeaGreen;"
-                                    >Edit existing project</router-link
                                 >
                             </div>
                         </b-row>

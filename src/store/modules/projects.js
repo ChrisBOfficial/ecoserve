@@ -6,9 +6,9 @@ export default {
     state: {
         projects: [],
         projectsLoadStatus: 0,
-        projectBlocks: [],
 
         project: {},
+        projectBlocks: [],
         selectedProjectId: ""
     },
 
@@ -39,6 +39,7 @@ export default {
                 ProjectsAPI.getProject(data.split("+")[0], data.split("+")[1])
                     .then(response => {
                         commit("setProject", response.data);
+                        commit("setProjectBlocks", response.data.blocks);
                         resolve();
                     })
                     .catch(err => {
@@ -49,7 +50,7 @@ export default {
         },
 
         // Save a project to MongoDB
-        saveProject({ commit, dispatch }, data) {
+        createProject({ commit, dispatch }, data) {
             return new Promise((resolve, reject) => {
                 commit("setProjectsLoadStatus", 1);
                 ProjectsAPI.postProject(data)
@@ -104,14 +105,14 @@ export default {
         setProjectsLoadStatus(state, status) {
             state.projectsLoadStatus = status;
         },
-        setProjectBlocks(state, blocks) {
-            state.projectBlocks = blocks;
+        setProject(state, project) {
+            state.project = project;
         },
         setSelectedProjectId(state, newId) {
             state.selectedProjectId = newId;
         },
-        setProject(state, project) {
-            state.project = project;
+        setProjectBlocks(state, blocks) {
+            state.projectBlocks = blocks;
         }
     }
 };
